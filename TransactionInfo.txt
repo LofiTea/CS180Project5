@@ -1,0 +1,9 @@
+1,4,3,Mackay,6.00,4,Basketball;Mackay Arena;Back;6.00
+2,5,3,Mackay,200.00,3,Basketball;Mackay Arena;Courtside;200.00
+3,4,3,Mackay,6.00,2,Basketball;Mackay Arena;Back;6.00
+4,5,3,Mackay,6.00,3,Basketball;Mackay Arena;Back;6.00
+5,4,3,Mackay,6.00,2,Basketball;Mackay Arena;Back;6.00
+6,4,3,Mackay,200.00,1,Basketball;Mackay Arena;Courtside;200.00
+7,4,6,RossAde,23.45,3,Football;Ross Ade;Student;23.45
+8,5,6,Mackay,4.00,3,Basketball;Mackey Arena;Nosebleeds;4.00
+9,4,6,Mackay,4.00,5,Basketball;Mackey Arena;Nosebleeds;4.00
