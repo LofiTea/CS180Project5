@@ -1002,6 +1002,69 @@ public class Marketplace {
                         }
                         break;
                     case "5":
+                        ArrayList<String> allTransactions2 = Marketplace.readFile("TransactionInfo.txt");
+                        System.out.println("Viewing seller-side statistics");
+                        stores = currentSeller.retrieveStores();
+
+                        if (stores == null) {
+                            System.out.println("There are no stores, so you cannot view statistics by store");
+                        } else {
+                            ArrayList<String> sales = new ArrayList<>();
+                            int store = 0;
+                            boolean invalidStore = false;
+                            double totalRevenue = 0;
+
+
+                            System.out.println("Which store would you like to view the sales for?");
+                            for (int i = 0; i < stores.size(); i++) {
+                                System.out.println(i + 1 + ". " + stores.get(i));
+                            }
+
+                            do {
+                                try {
+                                    store = Integer.parseInt(scan.nextLine());
+                                    if (store < 1 || store > stores.size()) {
+                                        System.out.println("Please enter a number listed above");
+                                        invalidStore = true;
+                                    } else {
+                                        invalidStore = false;
+                                    }
+                                } catch (NumberFormatException e) {
+                                    invalidStore = true;
+                                    System.out.println("Please enter a valid integer");
+                                }
+                            } while (invalidStore);
+
+                            int statChoice = 0;
+                            boolean invalidStatChoice = false;
+                            System.out.println("How would you like to view the statistics?");
+                            System.out.println("1. List of customers and items purchased");
+                            System.out.println("2. List of products and number of sales");
+
+                            do {
+                                try {
+                                    statChoice = Integer.parseInt(scan.nextLine());
+                                    if (statChoice < 1 || statChoice > 2) {
+                                        System.out.println("Please enter a number listed above");
+                                        invalidStatChoice = true;
+                                    } else {
+                                        invalidStatChoice = false;
+                                    }
+                                } catch (NumberFormatException e) {
+                                    invalidStatChoice = true;
+                                    System.out.println("Please enter a valid integer");
+                                }
+                            } while (invalidStatChoice);
+
+                            if(statChoice == 1) {
+
+                            } else {
+
+                            }
+
+                        }
+                        break;
+                    case "6":
                         boolean shouldRepeat = true;
                         while (shouldRepeat) {
 
@@ -1059,7 +1122,7 @@ public class Marketplace {
                             break;
                         }
                         break;
-                    case "6":
+                    case "7":
                         System.out.println("Are you sure you want to delete your account?");
                         String response = scan.nextLine();
                         if (response.toLowerCase().equals("yes")) {
@@ -1069,7 +1132,7 @@ public class Marketplace {
                         }
                         System.out.println("We are sad to see you go. Goodbye!");
                         return;
-                    case "7":
+                    case "8":
                         System.out.println("Thank you for using Tickets@Purdue! Goodbye!");
                         return;
                     default:
@@ -1155,10 +1218,11 @@ public class Marketplace {
                 "1. Sell a ticket\n" +
                 "2. Edit a ticket\n" +
                 "3. Remove a ticket\n" +
-                "4. View History (Statistics)\n" +
-                "5. Edit my account\n" +
-                "6. Delete my account\n" +
-                "7. Logout");
+                "4. View History\n" +
+                "5. View Statistics\n" +
+                "6. Edit my account\n" +
+                "7. Delete my account\n" +
+                "8. Logout");
     }
 
 
