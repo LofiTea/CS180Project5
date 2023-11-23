@@ -17,7 +17,7 @@ public class StoreNameIDCombo {
     }
 
     public String getStoreName() {
-        return storeName
+        return storeName;
     }
     public int getSellerID() {
         return sellerId;
