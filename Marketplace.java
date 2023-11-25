@@ -1,6 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Project 4: Marketplace
@@ -274,10 +274,7 @@ public class Marketplace {
                                 }
                                 break;
                         }
-
-
                         break;
-                    //this is where you can buy a ticket
                     case "2":
                         shoppingCart = currentBuyer.retrieveShoppingCart();
                         if (shoppingCart == null) {
@@ -632,7 +629,7 @@ public class Marketplace {
 
                             int store = 0;
                             int listingNum = 0;
-                            boolean invalidStore = false;
+                            boolean invalidStore;
                             boolean invalidChoice = false;
                             do {
                                 try {
@@ -1013,9 +1010,11 @@ public class Marketplace {
                             int store = 0;
                             boolean invalidStore = false;
                             double totalRevenue = 0;
+                            String storeName = "";
 
 
                             System.out.println("Which store would you like to view the sales for?");
+
                             for (int i = 0; i < stores.size(); i++) {
                                 System.out.println(i + 1 + ". " + stores.get(i));
                             }
@@ -1023,6 +1022,7 @@ public class Marketplace {
                             do {
                                 try {
                                     store = Integer.parseInt(scan.nextLine());
+                                    storeName = stores.get(store - 1);
                                     if (store < 1 || store > stores.size()) {
                                         System.out.println("Please enter a number listed above");
                                         invalidStore = true;
@@ -1056,12 +1056,40 @@ public class Marketplace {
                                 }
                             } while (invalidStatChoice);
 
-                            if(statChoice == 1) {
+                            if (statChoice == 1) {
 
                             } else {
-
+                                System.out.println("How would you like to view the statistics?");
+                                System.out.println("1. Location\n2. Sport\n3. Number of Sales\n4. Return to Main " +
+                                        "Menu");
+                                String num = scan.nextLine();
+                                switch (num) {
+                                    case "1":
+                                        ArrayList<String> list1 = uniqueProductsByLocation(storeName);
+                                        for (int i = 0; i < list1.size(); i++) {
+                                            System.out.println(list1.get(i));
+                                        }
+                                        break;
+                                    case "2":
+                                        ArrayList<String> list2 = uniqueProductsBySport(storeName);
+                                        for (int i = 0; i < list2.size(); i++) {
+                                            System.out.println(list2.get(i));
+                                        }
+                                        break;
+                                    case "3":
+                                        ArrayList<String> list3 = uniqueProductsBySales(storeName);
+                                        for (int i = 0; i < list3.size(); i++) {
+                                            System.out.println(list3.get(i));
+                                        }
+                                        break;
+                                    case "4":
+                                        break;
+                                    default:
+                                        System.out.println("Please enter a valid choice!");
+                                        break;
+                                }
+                                break;
                             }
-
                         }
                         break;
                     case "6":
@@ -1142,7 +1170,6 @@ public class Marketplace {
             }
         }
     }
-
 
     public static ArrayList<String> readFile(String fileName) {
         ArrayList<String> list = new ArrayList<>();
@@ -1442,7 +1469,6 @@ public class Marketplace {
         writeFile(loginInfo, "LoginInfo.txt");
     }
 
-
     public static void editPassword(String email, String oldPassword, String newPassword) {
         ArrayList<String> loginInfo = readFile("LoginInfo.txt");
         int indexToChange = 0;
@@ -1461,5 +1487,63 @@ public class Marketplace {
         }
         loginInfo.set(indexToChange, id + "," + email + "," + newPassword + "," + role);
         writeFile(loginInfo, "LoginInfo.txt");
+    }
+
+    //Must split by store
+    public static ArrayList<String> uniqueProducts() {
+        ArrayList<String> transactions = readFile("TransactionInfo.txt");
+        ArrayList<String> products = new ArrayList<>();
+        ArrayList<String> unique = new ArrayList<>();
+        for (int i = 0; i < transactions.size(); i++) {
+            String[] arr = transactions.get(i).split(",");
+            products.add(arr[5] + ";" + arr[6]);
+        }
+        for (int j = 0; j < products.size(); j++) {
+            if (unique.contains(products.get(j))) {
+                continue;
+            } else {
+                unique.add(products.get(j));
+            }
+        }
+        return unique;
+    }
+
+    public static ArrayList<String> uniqueProductsBySport(String storeName) {
+        ArrayList<String> uniqueProducts = uniqueProducts();
+        ArrayList<String> sortBySport = new ArrayList<>();
+        for (int i = 0; i < uniqueProducts.size(); i++) {
+            String[] arr = uniqueProducts.get(i).split(";");
+            if (arr[2].equals(storeName)) {
+                sortBySport.add(arr[1] + "," + arr[2] + "," + arr[3]);
+            }
+        }
+        Collections.sort(sortBySport);
+        return sortBySport;
+    }
+
+    public static ArrayList<String> uniqueProductsByLocation(String storeName) {
+        ArrayList<String> uniqueProducts = uniqueProducts();
+        ArrayList<String> sortByLocation = new ArrayList<>();
+        for (int i = 0; i < uniqueProducts.size(); i++) {
+            String[] arr = uniqueProducts.get(i).split(";");
+            if (arr[2].equals(storeName)) {
+                sortByLocation.add(arr[2] + "," + arr[1] + "," + arr[3]);
+            }
+        }
+        Collections.sort(sortByLocation);
+        return sortByLocation;
+    }
+
+    public static ArrayList<String> uniqueProductsBySales(String storeName) {
+        ArrayList<String> uniqueProducts = uniqueProducts();
+        ArrayList<String> sortBySales = new ArrayList<String>();
+        for (int i = 0; i < uniqueProducts.size(); i++) {
+            String[] arr = uniqueProducts.get(i).split(";");
+            if (arr[2].equals(storeName)) {
+                sortBySales.add(arr[0] + ":" + arr[1] + "," + arr[2] + "," + arr[3]);
+            }
+        }
+        Collections.sort(sortBySales);
+        return sortBySales;
     }
 }
