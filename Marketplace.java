@@ -1056,7 +1056,109 @@ public class Marketplace {
                                 }
                             } while (invalidStatChoice);
 
+                            ArrayList<String> buyerIDList = new ArrayList<>();
+                            ArrayList<PrintableStat> toPrint = new ArrayList<>();
+
                             if (statChoice == 1) {
+                                for (int i = 0; i < allTransactions2.size(); i++) {
+                                    String[] transactionLine = allTransactions2.get(i).split(",");
+                                    if(Integer.parseInt(transactionLine[2])==currentSeller.getSellerID() && transactionLine[3].equals(stores.get(store-1))) {
+                                        if(buyerIDList.isEmpty()) {
+                                            buyerIDList.add(transactionLine[1]);
+                                        } else {
+                                            if(!buyerIDList.contains(transactionLine[1])) {
+                                                buyerIDList.add(transactionLine[1]);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                ArrayList<Integer> quantities = new ArrayList<>();
+
+                                for (int i = 0; i < buyerIDList.size(); i++) {
+                                    ArrayList<String> uniqueItems = new ArrayList<>();
+                                    int qty = 0;
+                                    for (int j = 0; j < allTransactions2.size(); j++) {
+                                        String[] transactionLine = allTransactions2.get(j).split(",");
+                                        if(Integer.parseInt(transactionLine[2])==currentSeller.getSellerID() && transactionLine[1].equals(buyerIDList.get(i)) && transactionLine[3].equals(stores.get(store-1))) {
+                                            String[] ticketInfo = transactionLine[6].split(";");
+                                            qty += Integer.parseInt(transactionLine[5]);
+                                            if (uniqueItems.isEmpty()) {
+                                                uniqueItems.add(ticketInfo[0] + ";" + ticketInfo[1] + ";" + ticketInfo[3]);
+                                            } else {
+                                                if (!uniqueItems.contains(ticketInfo[0] + ";" + ticketInfo[1] + ";" + ticketInfo[3])) {
+                                                    uniqueItems.add(ticketInfo[0] + ";" + ticketInfo[1] + ";" + ticketInfo[3]);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    quantities.add(qty);
+
+                                    String buyerEmail = "";
+
+                                    ArrayList<String> buyers = Marketplace.readFile("BuyerHistory.txt");
+                                    for (int j = 0; j < buyers.size(); j++) {
+                                        String[] buyerInfo = buyers.get(j).split(",");
+                                        if (buyerInfo[0].equals(buyerIDList.get(i))) {
+                                            buyerEmail = buyerInfo[1];
+                                            break;
+                                        }
+                                    }
+
+                                    toPrint.add(new PrintableStat(Integer.parseInt(buyerIDList.get(i)), buyerEmail,
+                                            quantities.get(i),
+                                            uniqueItems.size()));
+                                }
+
+                                System.out.println("How would you like to sort the data?");
+                                System.out.println("1. Default (by buyer ID)");
+                                System.out.println("2. By customer email (alphabetical order)");
+                                System.out.println("3. By number of items purchased");
+
+                                int sortChoice = 0;
+                                boolean invalidSortChoice = false;
+
+
+                                do {
+                                    try {
+                                        sortChoice = Integer.parseInt(scan.nextLine());
+                                        if (sortChoice < 1 || sortChoice > 3) {
+                                            System.out.println("Please enter a number listed above");
+                                            invalidSortChoice = true;
+                                        } else {
+                                            invalidSortChoice = false;
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        invalidSortChoice = true;
+                                        System.out.println("Please enter a valid integer");
+                                    }
+                                } while (invalidSortChoice);
+
+                                switch (sortChoice) {
+                                    case 1:
+                                        Collections.sort(toPrint, (stat1, stat2) -> {
+                                            return stat1.getBuyerID().compareTo(stat2.getBuyerID());
+                                        });
+                                        break;
+                                    case 2:
+                                        Collections.sort(toPrint, (stat1, stat2) -> {
+                                            return stat1.getBuyerEmail().compareTo(stat2.getBuyerEmail());
+                                        });
+                                        break;
+                                    case 3:
+                                        Collections.sort(toPrint, (stat1, stat2) -> {
+                                            return stat1.getTotalItems().compareTo(stat2.getTotalItems());
+                                        });
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                                for (int i = 0; i < toPrint.size(); i++) {
+                                    System.out.println("Customer " + (i+1));
+                                    System.out.println(toPrint.get(i).toString());
+                                    System.out.println();
+                                }
 
                             } else {
                                 System.out.println("How would you like to view the statistics?");
