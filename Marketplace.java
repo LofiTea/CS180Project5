@@ -456,7 +456,20 @@ public class Marketplace {
                               {
                                 case "1":
                                  System.out.println("In progress");
-                                 //ruhaan code
+                                 System.out.println("Store dashboard: ");
+                                    try (BufferedReader bufferedReader = new BufferedReader (new FileReader("TransactionInfo.txt"))) {
+                                        String line;
+                                        while ((line = bufferedReader.readLine()) != null) {
+                                            String[] parts = line.split(",");
+
+                                            for (String i : parts) {
+                                                System.out.println(i);
+                                            }
+                                        }
+                                    } catch (IOException e) {
+                                        System.out.println("Error reading data from file.");
+                                        e.printStackTrace();
+                                    }
                                  break;
                                 case "2":
                                  boolean shouldRepeat2 = true;
