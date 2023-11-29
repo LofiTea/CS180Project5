@@ -1167,21 +1167,42 @@ public class Marketplace {
                                 String num = scan.nextLine();
                                 switch (num) {
                                     case "1":
-                                        ArrayList<String> list1 = uniqueProductsByLocation(storeName);
+                                        ArrayList<String> list1 = uniqueProductsByLocation(stores.get(store-1),
+                                                currentSeller.getSellerID());
                                         for (int i = 0; i < list1.size(); i++) {
-                                            System.out.println(list1.get(i));
+                                            String[] listItem = list1.get(i).split(";");
+
+
+                                            System.out.println("Product " + (i+1));
+                                            System.out.println("Product Info - \nSport: " + listItem[1] + "\nLocation" +
+                                                    ": " + listItem[2] + "\nSection: " + listItem[3] + "\nSales: " + listItem[0]);
+                                            System.out.println();
                                         }
                                         break;
                                     case "2":
-                                        ArrayList<String> list2 = uniqueProductsBySport(storeName);
+                                        ArrayList<String> list2 = uniqueProductsBySport(stores.get(store-1),
+                                                currentSeller.getSellerID());
                                         for (int i = 0; i < list2.size(); i++) {
-                                            System.out.println(list2.get(i));
+                                            String[] listItem = list2.get(i).split(";");
+
+
+                                            System.out.println("Product " + (i+1));
+                                            System.out.println("Product Info - \nSport: " + listItem[1] + "\nLocation" +
+                                                    ": " + listItem[2] + "\nSection: " + listItem[3] + "\nSales: " + listItem[0]);
+                                            System.out.println();
                                         }
                                         break;
                                     case "3":
-                                        ArrayList<String> list3 = uniqueProductsBySales(storeName);
+                                        ArrayList<String> list3 = uniqueProductsBySales(stores.get(store-1),
+                                                currentSeller.getSellerID());
                                         for (int i = 0; i < list3.size(); i++) {
-                                            System.out.println(list3.get(i));
+                                            String[] listItem = list3.get(i).split(";");
+
+
+                                            System.out.println("Product " + (i+1));
+                                            System.out.println("Product Info - \nSport: " + listItem[1] + "\nLocation" +
+                                                    ": " + listItem[2] + "\nSection: " + listItem[3] + "\nSales: " + listItem[0]);
+                                            System.out.println();
                                         }
                                         break;
                                     case "4":
@@ -1592,60 +1613,78 @@ public class Marketplace {
     }
 
     //Must split by store
-    public static ArrayList<String> uniqueProducts() {
+    public static ArrayList<String> uniqueProducts(String store, int sellerID) {
         ArrayList<String> transactions = readFile("TransactionInfo.txt");
         ArrayList<String> products = new ArrayList<>();
         ArrayList<String> unique = new ArrayList<>();
+        ArrayList<String> returnList = new ArrayList<>();
+
         for (int i = 0; i < transactions.size(); i++) {
             String[] arr = transactions.get(i).split(",");
-            products.add(arr[5] + ";" + arr[6]);
+            if(arr[3].equals(store) && Integer.parseInt(arr[2]) == sellerID) {
+                products.add(arr[5] + ";" + arr[6]);
+            }
         }
         for (int j = 0; j < products.size(); j++) {
-            if (unique.contains(products.get(j))) {
-                continue;
+            String[] product = products.get(j).split(";");
+
+            if (unique.contains(product[1]+";"+product[2]+";"+product[3])) {
+                for (int i = 0; i < unique.size(); i++) {
+                    if(unique.get(i).equals(product[1]+";"+product[2]+";"+product[3])) {
+                        String tempStr = returnList.get(i);
+                        int qty = Integer.parseInt(tempStr.substring(0, tempStr.indexOf(";")));
+                        tempStr = tempStr.substring(tempStr.indexOf(";")+1);
+                        returnList.set(i, (qty+Integer.parseInt(product[0])+";"+tempStr));
+                    }
+                }
             } else {
-                unique.add(products.get(j));
+                unique.add(product[1]+";"+product[2]+";"+product[3]);
+                returnList.add(product[0]+";"+product[1]+";"+product[2]+";"+product[3]);
             }
         }
-        return unique;
+        return returnList;
     }
 
-    public static ArrayList<String> uniqueProductsBySport(String storeName) {
-        ArrayList<String> uniqueProducts = uniqueProducts();
+    public static ArrayList<String> uniqueProductsBySport(String storeName, int sellerID) {
+        ArrayList<String> uniqueProducts = uniqueProducts(storeName, sellerID);
         ArrayList<String> sortBySport = new ArrayList<>();
-        for (int i = 0; i < uniqueProducts.size(); i++) {
-            String[] arr = uniqueProducts.get(i).split(";");
-            if (arr[2].equals(storeName)) {
-                sortBySport.add(arr[1] + "," + arr[2] + "," + arr[3]);
+        Collections.sort(uniqueProducts, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] arr1 = o1.split(";");
+                String[] arr2 = o2.split(";");
+                return arr1[1].compareTo(arr2[1]);
             }
-        }
-        Collections.sort(sortBySport);
-        return sortBySport;
+        });
+        return uniqueProducts;
     }
 
-    public static ArrayList<String> uniqueProductsByLocation(String storeName) {
-        ArrayList<String> uniqueProducts = uniqueProducts();
-        ArrayList<String> sortByLocation = new ArrayList<>();
-        for (int i = 0; i < uniqueProducts.size(); i++) {
-            String[] arr = uniqueProducts.get(i).split(";");
-            if (arr[2].equals(storeName)) {
-                sortByLocation.add(arr[2] + "," + arr[1] + "," + arr[3]);
+    public static ArrayList<String> uniqueProductsByLocation(String storeName, int sellerID) {
+        ArrayList<String> uniqueProducts = uniqueProducts(storeName, sellerID);
+
+        Collections.sort(uniqueProducts, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] arr1 = o1.split(";");
+                String[] arr2 = o2.split(";");
+                return arr1[2].compareTo(arr2[2]);
             }
-        }
-        Collections.sort(sortByLocation);
-        return sortByLocation;
+        });
+        return uniqueProducts;
     }
 
-    public static ArrayList<String> uniqueProductsBySales(String storeName) {
-        ArrayList<String> uniqueProducts = uniqueProducts();
+    public static ArrayList<String> uniqueProductsBySales(String storeName, int sellerID) {
+        ArrayList<String> uniqueProducts = uniqueProducts(storeName, sellerID);
         ArrayList<String> sortBySales = new ArrayList<String>();
-        for (int i = 0; i < uniqueProducts.size(); i++) {
-            String[] arr = uniqueProducts.get(i).split(";");
-            if (arr[2].equals(storeName)) {
-                sortBySales.add(arr[0] + ":" + arr[1] + "," + arr[2] + "," + arr[3]);
+
+        Collections.sort(uniqueProducts, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] arr1 = o1.split(";");
+                String[] arr2 = o2.split(";");
+                return Integer.compare(Integer.parseInt(arr1[0]), Integer.parseInt(arr2[0]));
             }
-        }
-        Collections.sort(sortBySales);
-        return sortBySales;
+        });
+        return uniqueProducts;
     }
 }
