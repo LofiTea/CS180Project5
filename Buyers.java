@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Project 4: Buyers
@@ -712,5 +714,98 @@ public class Buyers {
         }
     }
 //^^^^^ this is the buy ticket you should use when the user wants to buy when the listings are sorted buy ticket qty
+
+
+  public ArrayList<ArrayList<String>> listCustomerSpecificDashboard(boolean shouldSort)
+   {
+        ArrayList<ArrayList<String>> dashInfo = new ArrayList<>();
+        ArrayList<String> transFileInfo = Marketplace.readFile("TransactionInfo.txt");
+
+        for(String b: transFileInfo)
+        {
+            String[] splits = b.split(",");
+            String curSport = splits[6].split(";")[0];
+            String curStore = splits[3];
+            int curQty = Integer.parseInt(splits[5]);
+
+            if(Integer.parseInt(splits[1]) == buyerID) {
+                boolean isSportThere = false;
+                for(ArrayList<String> cd : dashInfo)
+                {
+                   if(cd.get(0).equals(curSport+":"))
+                   {
+                      isSportThere = true;
+                      boolean isStoreThere = false;
+                      for(int i = 1;i<cd.size();i++)
+                      {
+                        String[] curSplits = cd.get(i).split(",");
+                        if(curStore.equals(curSplits[0]))
+                        {
+                            isStoreThere = true;
+                            curSplits[1] = String.valueOf(Integer.parseInt(curSplits[1])+ curQty);
+                            String updatedEntry  = String.join(",",curSplits);
+                            cd.set(i,updatedEntry);
+                        }
+
+                      }
+
+                       if(!isStoreThere)
+                        {
+                            String newENtryString = curStore +","+curQty;
+                            cd.add(newENtryString);
+                        }
+                    
+                   } 
+                 
+                }
+              
+                if(!isSportThere)
+                {
+                    ArrayList<String> newEntry = new ArrayList<>();
+                    newEntry.add(curSport+":");
+                    String newEntryString = curStore+","+curQty;
+                    newEntry.add(newEntryString);
+                    dashInfo.add(newEntry);
+                }
+                
+            }
+          
+        }  
+        if(shouldSort){
+             class TicketComparator implements Comparator<String> {
+                @Override
+                public int compare(String ticket1, String ticket2) {
+                    int tickets1 = Integer.parseInt(ticket1.split(",")[1]);
+                    int tickets2 = Integer.parseInt(ticket2.split(",")[1]);
+                    return Integer.compare(tickets2, tickets1);
+                }
+            }
+         
+         for(int i = 0; i<dashInfo.size();i++)
+         {
+            ArrayList<String> thing = dashInfo.get(i);
+            ArrayList<String> subsetList = new ArrayList<>(thing.subList(1, thing.size()));
+            Collections.sort(subsetList, new TicketComparator());
+            ArrayList<String> newEntryList = new ArrayList<>();
+            newEntryList.add(thing.get(0));
+            newEntryList.addAll(subsetList);
+            dashInfo.set(i,newEntryList);
+            
+
+         }
+         
+        }
+        
+        for(ArrayList<String> thing : dashInfo)
+        {
+            for(int i = 1; i<thing.size();i++)
+            {
+                String curEntry = thing.get(i);
+                curEntry = curEntry.replace(",",": ");
+                thing.set(i,curEntry);
+            }
+        }
+        return dashInfo;
+   }
 
 }

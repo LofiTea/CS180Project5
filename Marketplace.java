@@ -439,6 +439,74 @@ public class Marketplace {
                     case "8":
                         System.out.println("Thank you for using Tickets@Purdue! Goodbye!");
                         return;
+                    case "9":
+                        boolean isrepeating = true;
+                           while(isrepeating)
+                           {
+                              System.out.println("What dashboard would you like to view?\n" +
+                                       "1. View entire store dashboard\n" +
+                                       "2. Personal Store transaction data\n" +
+                                       "3. Nothing. Go back to menu");
+                              String curChoice = scan.nextLine();
+   
+                              switch(curChoice)
+                              {
+                                case "1":
+                                 System.out.println("In progress");
+                                 System.out.println("Store dashboard: ");
+                                    try (BufferedReader bufferedReader = new BufferedReader (new FileReader("TransactionInfo.txt"))) {
+                                        String line;
+                                        while ((line = bufferedReader.readLine()) != null) {
+                                            String[] parts = line.split(",");
+
+                                            for (String i : parts) {
+                                                System.out.println(i);
+                                            }
+                                        }
+                                    } catch (IOException e) {
+                                        System.out.println("Error reading data from file.");
+                                        e.printStackTrace();
+                                    }
+                                 break;
+                                case "2":
+                                 boolean shouldRepeat2 = true;
+                                  while(shouldRepeat2)
+                                  {
+                                       System.out.println("How would like to view this dashboard?\n" +
+                                       "1. Raw Data\n" +
+                                       "2. Sorted Dash\n" +
+                                       "3. Exit Dashboard");
+                                       String thisChoice = scan.nextLine();
+                                       switch(thisChoice)
+                                       {
+                                           case "1":
+                                            printBuyerDash(currentBuyer.listCustomerSpecificDashboard(false));
+                                            break;
+                                           case "2":
+                                           printBuyerDash(currentBuyer.listCustomerSpecificDashboard(true));
+                                            break;
+                                           case "3":
+                                               System.out.println("Exiting");
+                                               shouldRepeat2 = false;
+                                               break;
+                                           default:
+                                            System.out.println("Invalid Input. Please try again");
+                                            break;
+                                       }
+                                  }
+                                 break;
+                                case "3":
+                                   System.out.println("Exiting");
+                                   isrepeating = false;
+                                   break;
+                                default:
+                                 System.out.println("Invalid Input. Please try again");
+                                 break;
+                                
+                              }
+   
+                           }
+                           break;
                     default:
                         System.out.println("Please enter a valid choice.");
                         break;
@@ -1357,10 +1425,11 @@ public class Marketplace {
                 "2. View shopping cart\n" +
                 "3. Remove from shopping cart" + "\n" +
                 "4. Checkout cart\n" +
-                "5. View History (Statistics)\n" +
+                "5. View History\n" +
                 "6. Edit my account\n" +
                 "7. Delete my account\n" +
-                "8. Logout");
+                "8. Logout\n" +
+                "9. View Statistics");
     }
 
     public static void sellerDashboard() {
@@ -1612,6 +1681,7 @@ public class Marketplace {
         writeFile(loginInfo, "LoginInfo.txt");
     }
 
+
     //Must split by store
     public static ArrayList<String> uniqueProducts(String store, int sellerID) {
         ArrayList<String> transactions = readFile("TransactionInfo.txt");
@@ -1687,4 +1757,17 @@ public class Marketplace {
         });
         return uniqueProducts;
     }
+
+    private static void printBuyerDash(ArrayList<ArrayList<String>> dashInfo)
+    {
+        for(ArrayList<String> thing : dashInfo)
+        {
+            for(String b : thing)
+            {
+                System.out.println(b);
+            }
+            System.out.println();
+        }
+    }
+ 
 }
