@@ -1,6 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Project 4: Marketplace
@@ -274,10 +274,7 @@ public class Marketplace {
                                 }
                                 break;
                         }
-
-
                         break;
-                    //this is where you can buy a ticket
                     case "2":
                         shoppingCart = currentBuyer.retrieveShoppingCart();
                         if (shoppingCart == null) {
@@ -700,7 +697,7 @@ public class Marketplace {
 
                             int store = 0;
                             int listingNum = 0;
-                            boolean invalidStore = false;
+                            boolean invalidStore;
                             boolean invalidChoice = false;
                             do {
                                 try {
@@ -1081,9 +1078,11 @@ public class Marketplace {
                             int store = 0;
                             boolean invalidStore = false;
                             double totalRevenue = 0;
+                            String storeName = "";
 
 
                             System.out.println("Which store would you like to view the sales for?");
+
                             for (int i = 0; i < stores.size(); i++) {
                                 System.out.println(i + 1 + ". " + stores.get(i));
                             }
@@ -1091,6 +1090,7 @@ public class Marketplace {
                             do {
                                 try {
                                     store = Integer.parseInt(scan.nextLine());
+                                    storeName = stores.get(store - 1);
                                     if (store < 1 || store > stores.size()) {
                                         System.out.println("Please enter a number listed above");
                                         invalidStore = true;
@@ -1124,12 +1124,163 @@ public class Marketplace {
                                 }
                             } while (invalidStatChoice);
 
-                            if(statChoice == 1) {
+                            ArrayList<String> buyerIDList = new ArrayList<>();
+                            ArrayList<PrintableStat> toPrint = new ArrayList<>();
+
+                            if (statChoice == 1) {
+                                for (int i = 0; i < allTransactions2.size(); i++) {
+                                    String[] transactionLine = allTransactions2.get(i).split(",");
+                                    if(Integer.parseInt(transactionLine[2])==currentSeller.getSellerID() && transactionLine[3].equals(stores.get(store-1))) {
+                                        if(buyerIDList.isEmpty()) {
+                                            buyerIDList.add(transactionLine[1]);
+                                        } else {
+                                            if(!buyerIDList.contains(transactionLine[1])) {
+                                                buyerIDList.add(transactionLine[1]);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                ArrayList<Integer> quantities = new ArrayList<>();
+
+                                for (int i = 0; i < buyerIDList.size(); i++) {
+                                    ArrayList<String> uniqueItems = new ArrayList<>();
+                                    int qty = 0;
+                                    for (int j = 0; j < allTransactions2.size(); j++) {
+                                        String[] transactionLine = allTransactions2.get(j).split(",");
+                                        if(Integer.parseInt(transactionLine[2])==currentSeller.getSellerID() && transactionLine[1].equals(buyerIDList.get(i)) && transactionLine[3].equals(stores.get(store-1))) {
+                                            String[] ticketInfo = transactionLine[6].split(";");
+                                            qty += Integer.parseInt(transactionLine[5]);
+                                            if (uniqueItems.isEmpty()) {
+                                                uniqueItems.add(ticketInfo[0] + ";" + ticketInfo[1] + ";" + ticketInfo[3]);
+                                            } else {
+                                                if (!uniqueItems.contains(ticketInfo[0] + ";" + ticketInfo[1] + ";" + ticketInfo[3])) {
+                                                    uniqueItems.add(ticketInfo[0] + ";" + ticketInfo[1] + ";" + ticketInfo[3]);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    quantities.add(qty);
+
+                                    String buyerEmail = "";
+
+                                    ArrayList<String> buyers = Marketplace.readFile("BuyerHistory.txt");
+                                    for (int j = 0; j < buyers.size(); j++) {
+                                        String[] buyerInfo = buyers.get(j).split(",");
+                                        if (buyerInfo[0].equals(buyerIDList.get(i))) {
+                                            buyerEmail = buyerInfo[1];
+                                            break;
+                                        }
+                                    }
+
+                                    toPrint.add(new PrintableStat(Integer.parseInt(buyerIDList.get(i)), buyerEmail,
+                                            quantities.get(i),
+                                            uniqueItems.size()));
+                                }
+
+                                System.out.println("How would you like to sort the data?");
+                                System.out.println("1. Default (by buyer ID)");
+                                System.out.println("2. By customer email (alphabetical order)");
+                                System.out.println("3. By number of items purchased");
+
+                                int sortChoice = 0;
+                                boolean invalidSortChoice = false;
+
+
+                                do {
+                                    try {
+                                        sortChoice = Integer.parseInt(scan.nextLine());
+                                        if (sortChoice < 1 || sortChoice > 3) {
+                                            System.out.println("Please enter a number listed above");
+                                            invalidSortChoice = true;
+                                        } else {
+                                            invalidSortChoice = false;
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        invalidSortChoice = true;
+                                        System.out.println("Please enter a valid integer");
+                                    }
+                                } while (invalidSortChoice);
+
+                                switch (sortChoice) {
+                                    case 1:
+                                        Collections.sort(toPrint, (stat1, stat2) -> {
+                                            return stat1.getBuyerID().compareTo(stat2.getBuyerID());
+                                        });
+                                        break;
+                                    case 2:
+                                        Collections.sort(toPrint, (stat1, stat2) -> {
+                                            return stat1.getBuyerEmail().compareTo(stat2.getBuyerEmail());
+                                        });
+                                        break;
+                                    case 3:
+                                        Collections.sort(toPrint, (stat1, stat2) -> {
+                                            return stat1.getTotalItems().compareTo(stat2.getTotalItems());
+                                        });
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                                for (int i = 0; i < toPrint.size(); i++) {
+                                    System.out.println("Customer " + (i+1));
+                                    System.out.println(toPrint.get(i).toString());
+                                    System.out.println();
+                                }
 
                             } else {
+                                System.out.println("How would you like to view the statistics?");
+                                System.out.println("1. Location\n2. Sport\n3. Number of Sales\n4. Return to Main " +
+                                        "Menu");
+                                String num = scan.nextLine();
+                                switch (num) {
+                                    case "1":
+                                        ArrayList<String> list1 = uniqueProductsByLocation(stores.get(store-1),
+                                                currentSeller.getSellerID());
+                                        for (int i = 0; i < list1.size(); i++) {
+                                            String[] listItem = list1.get(i).split(";");
 
+
+                                            System.out.println("Product " + (i+1));
+                                            System.out.println("Product Info - \nSport: " + listItem[1] + "\nLocation" +
+                                                    ": " + listItem[2] + "\nSection: " + listItem[3] + "\nSales: " + listItem[0]);
+                                            System.out.println();
+                                        }
+                                        break;
+                                    case "2":
+                                        ArrayList<String> list2 = uniqueProductsBySport(stores.get(store-1),
+                                                currentSeller.getSellerID());
+                                        for (int i = 0; i < list2.size(); i++) {
+                                            String[] listItem = list2.get(i).split(";");
+
+
+                                            System.out.println("Product " + (i+1));
+                                            System.out.println("Product Info - \nSport: " + listItem[1] + "\nLocation" +
+                                                    ": " + listItem[2] + "\nSection: " + listItem[3] + "\nSales: " + listItem[0]);
+                                            System.out.println();
+                                        }
+                                        break;
+                                    case "3":
+                                        ArrayList<String> list3 = uniqueProductsBySales(stores.get(store-1),
+                                                currentSeller.getSellerID());
+                                        for (int i = 0; i < list3.size(); i++) {
+                                            String[] listItem = list3.get(i).split(";");
+
+
+                                            System.out.println("Product " + (i+1));
+                                            System.out.println("Product Info - \nSport: " + listItem[1] + "\nLocation" +
+                                                    ": " + listItem[2] + "\nSection: " + listItem[3] + "\nSales: " + listItem[0]);
+                                            System.out.println();
+                                        }
+                                        break;
+                                    case "4":
+                                        break;
+                                    default:
+                                        System.out.println("Please enter a valid choice!");
+                                        break;
+                                }
+                                break;
                             }
-
                         }
                         break;
                     case "6":
@@ -1210,7 +1361,6 @@ public class Marketplace {
             }
         }
     }
-
 
     public static ArrayList<String> readFile(String fileName) {
         ArrayList<String> list = new ArrayList<>();
@@ -1511,7 +1661,6 @@ public class Marketplace {
         writeFile(loginInfo, "LoginInfo.txt");
     }
 
-
     public static void editPassword(String email, String oldPassword, String newPassword) {
         ArrayList<String> loginInfo = readFile("LoginInfo.txt");
         int indexToChange = 0;
@@ -1530,6 +1679,83 @@ public class Marketplace {
         }
         loginInfo.set(indexToChange, id + "," + email + "," + newPassword + "," + role);
         writeFile(loginInfo, "LoginInfo.txt");
+    }
+
+
+    //Must split by store
+    public static ArrayList<String> uniqueProducts(String store, int sellerID) {
+        ArrayList<String> transactions = readFile("TransactionInfo.txt");
+        ArrayList<String> products = new ArrayList<>();
+        ArrayList<String> unique = new ArrayList<>();
+        ArrayList<String> returnList = new ArrayList<>();
+
+        for (int i = 0; i < transactions.size(); i++) {
+            String[] arr = transactions.get(i).split(",");
+            if(arr[3].equals(store) && Integer.parseInt(arr[2]) == sellerID) {
+                products.add(arr[5] + ";" + arr[6]);
+            }
+        }
+        for (int j = 0; j < products.size(); j++) {
+            String[] product = products.get(j).split(";");
+
+            if (unique.contains(product[1]+";"+product[2]+";"+product[3])) {
+                for (int i = 0; i < unique.size(); i++) {
+                    if(unique.get(i).equals(product[1]+";"+product[2]+";"+product[3])) {
+                        String tempStr = returnList.get(i);
+                        int qty = Integer.parseInt(tempStr.substring(0, tempStr.indexOf(";")));
+                        tempStr = tempStr.substring(tempStr.indexOf(";")+1);
+                        returnList.set(i, (qty+Integer.parseInt(product[0])+";"+tempStr));
+                    }
+                }
+            } else {
+                unique.add(product[1]+";"+product[2]+";"+product[3]);
+                returnList.add(product[0]+";"+product[1]+";"+product[2]+";"+product[3]);
+            }
+        }
+        return returnList;
+    }
+
+    public static ArrayList<String> uniqueProductsBySport(String storeName, int sellerID) {
+        ArrayList<String> uniqueProducts = uniqueProducts(storeName, sellerID);
+        ArrayList<String> sortBySport = new ArrayList<>();
+        Collections.sort(uniqueProducts, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] arr1 = o1.split(";");
+                String[] arr2 = o2.split(";");
+                return arr1[1].compareTo(arr2[1]);
+            }
+        });
+        return uniqueProducts;
+    }
+
+    public static ArrayList<String> uniqueProductsByLocation(String storeName, int sellerID) {
+        ArrayList<String> uniqueProducts = uniqueProducts(storeName, sellerID);
+
+        Collections.sort(uniqueProducts, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] arr1 = o1.split(";");
+                String[] arr2 = o2.split(";");
+                return arr1[2].compareTo(arr2[2]);
+            }
+        });
+        return uniqueProducts;
+    }
+
+    public static ArrayList<String> uniqueProductsBySales(String storeName, int sellerID) {
+        ArrayList<String> uniqueProducts = uniqueProducts(storeName, sellerID);
+        ArrayList<String> sortBySales = new ArrayList<String>();
+
+        Collections.sort(uniqueProducts, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] arr1 = o1.split(";");
+                String[] arr2 = o2.split(";");
+                return Integer.compare(Integer.parseInt(arr1[0]), Integer.parseInt(arr2[0]));
+            }
+        });
+        return uniqueProducts;
     }
 
     private static void printBuyerDash(ArrayList<ArrayList<String>> dashInfo)
