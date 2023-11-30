@@ -289,10 +289,7 @@ public class Buyers {
         System.out.println("Enter which one (pick the number only): ");
         int temp = scan.nextInt();
 
-        if (temp == 1)
-        {
-            viewAllListingsGeneral(product);
-        }
+    
 
     }
 
