@@ -273,9 +273,74 @@ public class Buyers {
         }
     }
 
-    public void dashboardInteraction(String marketFile) {
-        //open dashboard with file
-        // do different operations to view dashBoard and sort it
+        public void dashboardInteraction(String marketFile)  {
+        Scanner scan = new Scanner(System.in);
+
+        ArrayList<String> product = Marketplace.readFile(marketFile);
+        if (product.isEmpty()) {
+            System.out.println("No data found in file.");
+        }
+
+        System.out.println("Dashboard: ");
+        System.out.println("1. Show Items");
+        System.out.println("2. Show IDs");
+        System.out.println("3. Show Prices");
+
+        System.out.println("Enter which one (pick the number only): ");
+        int temp = scan.nextInt();
+
+        if (temp == 1)
+        {
+            viewAllListingsGeneral(product);
+        }
+
+    }
+
+    public void showItems (ArrayList<String> product) {
+        System.out.println("Show Items: ");
+        for (String i : product) {
+            System.out.println(i);
+        }
+    }
+
+    public void showIDs (ArrayList<String> product) {
+        Collections.sort(product, Comparator.comparingDouble(this::getIDs));
+        System.out.println("Show Items: ");
+        for (String i : product) {
+            System.out.println(i);
+        }
+    }
+
+    public void showPrices (ArrayList<String> product) {
+        Collections.sort(product, Comparator.comparingDouble(this::getPrices));
+        System.out.println("Show Items: ");
+        for (String i : product) {
+            System.out.println(i);
+        }
+    }
+
+    public double getPrices (String prod) {
+        String[] parts = prod.split(",");
+        if (parts.length >= 3) {
+            try {
+                return Double.parseDouble(parts[2]);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0.0;
+    }
+
+    public double getIDs (String prod) {
+        String[] parts = prod.split(",");
+        if (parts.length >= 2) {
+            try {
+                return Integer.parseInt(parts[1]);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
     }
 
 
