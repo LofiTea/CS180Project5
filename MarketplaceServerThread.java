@@ -32,6 +32,8 @@ public class MarketplaceServerThread extends Thread {
   public void run()
   {
     try{
+      String email = null;
+      String password = null;
       int id = 0;
       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
@@ -45,14 +47,14 @@ public class MarketplaceServerThread extends Thread {
 
             while(notLoggedIn) {
                 String message = "";
-                String email2 = (String)ois.readObject();
-                String password2 = (String)ois.readObject();
+                email = (String)ois.readObject();
+                password = (String)ois.readObject();
                 //System.out.println(email2 + password2);
-                LoginInfo user = new LoginInfo(email2, password2);
-                String currentAuthentication = user.authenticate(email2, password2);
+                LoginInfo user = new LoginInfo(email, password);
+                String currentAuthentication = user.authenticate(email, password);
                 if (!currentAuthentication.isEmpty()) {
                     message = "Successfully logged in!";
-                    String[] userInfo = user.authenticate(email2, password2).split(",");
+                    String[] userInfo = user.authenticate(email, password).split(",");
                     id = Integer.parseInt(userInfo[0]);
                     notLoggedIn = false;
 
@@ -68,8 +70,8 @@ public class MarketplaceServerThread extends Thread {
             
             break;
         case 2: 
-            String email = (String)ois.readObject();
-            String password = (String)ois.readObject();
+            email = (String)ois.readObject();
+            password = (String)ois.readObject();
             int accountChoice = (int)ois.readObject();
             
 
