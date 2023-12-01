@@ -2,3 +2,7 @@
 4,rasidd2005@gmail.com,basketball3!,b
 5,nikhilsidd2010@gmail.com,soccer10!,b
 6,shrishmahesh11@gmail.com,CS180Project4!,s
+7,henrylee@gmail.com,henrySeller123!,s
+8,ruhaans123@gmail.com,Tickets789!,s
+9,miles3005@gmail.com,basketball3!,s
+10,henryleebuyer@gmail.com,basketball3!,b
