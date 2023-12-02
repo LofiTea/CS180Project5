@@ -32,13 +32,13 @@ public class LoginInGUI extends JComponent implements Runnable {
                 loginInfo = new LoginInfo(email, password);
                 if (!loginInfo.authenticate(email, password).isEmpty()) {
                     if (Marketplace.determineRole(email, password).equals("b")) {
-                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI(loginInfo);
+                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI(getLoginInfo());
                         buyerDashboardGUI.run();
-                        frame.setVisible(false);
+                        frame.dispose();
                     } else {
-                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI(loginInfo);
+                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI(getLoginInfo());
                         sellerDashboardGUI.run();
-                        frame.setVisible(false);
+                        frame.dispose();
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Error! Account not found!",
@@ -139,6 +139,10 @@ public class LoginInGUI extends JComponent implements Runnable {
         createAccountPanel.add(createAccountButton, gbc);
 
         return createAccountPanel;
+    }
+
+    public LoginInfo getLoginInfo() {
+        return this.loginInfo;
     }
 
     public static void main(String[] args) {
