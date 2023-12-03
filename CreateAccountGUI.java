@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -29,6 +30,13 @@ public class CreateAccountGUI extends JComponent implements Runnable {
     ActionListener actionListenerBottom = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            MarketplaceClient client;
+
+            try {
+                client = new MarketplaceClient();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             if (buyerChoice.isSelected()) {
                 type = "b";
             }
@@ -37,13 +45,13 @@ public class CreateAccountGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == createAccountButton) {
                 if (!buyerChoice.isSelected() && !sellerChoice.isSelected()) {
-                    JOptionPane.showMessageDialog(null, "Error! Please selection an account type!",
+                    JOptionPane.showMessageDialog(null, "Error! Please select an account type!",
                             "Tickets@Purdue Marketplace", JOptionPane.ERROR_MESSAGE);
                 } else if (!emailTextField.getText().contains("@")) {
                     JOptionPane.showMessageDialog(null, "Error! Email needs an '@' symbol!",
                             "Tickets@Purdue Marketplace", JOptionPane.ERROR_MESSAGE);
                 } else if (passwordTextField.getText().length() < 8 ||
-                        !Marketplace.isStrongAlphanumeric(passwordTextField.getText())) {
+                        !MarketplaceClient.isStrongAlphanumeric(passwordTextField.getText())) {
                     JOptionPane.showMessageDialog(null, "Error! " +
                                     "Please check your password is 8 or more\n" +
                                     "characters and has letters, a number, and special character.",
@@ -52,51 +60,64 @@ public class CreateAccountGUI extends JComponent implements Runnable {
                     JOptionPane.showMessageDialog(null, "Error! Passwords don't match!",
                             "Tickets@Purdue Marketplace", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    ArrayList<String> fileInfo = Marketplace.readFile("LoginInfo.txt");
-                    ArrayList<String> userInfo = new ArrayList<>();
-                    LoginInfo loginInfo = new LoginInfo(emailTextField.getText(), passwordTextField.getText());
-                    AccountGUI accountGUI = new AccountGUI(loginInfo);
-                    String filename;
-                    String role;
-                    int id;
+                    String email = emailTextField.getText();
+                    String password = passwordTextField.getText();
+
+                    try {
+                        client.createAccount(email, password, 2, type);
+
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
+//                    ArrayList<String> fileInfo = Marketplace.readFile("LoginInfo.txt");
+//                    ArrayList<String> userInfo = new ArrayList<>();
+//                    LoginInfo loginInfo = new LoginInfo(emailTextField.getText(), passwordTextField.getText());
+
+                    // AccountGUI accountGUI = new AccountGUI(loginInfo);
+//                    String filename;
+//                    String role;
+//                    int id;
+//                    if (type.equals("b")) {
+//                        role = "b";
+//                        filename = "BuyerInfo.txt";
+//                    } else {
+//                        role = "s";
+//                        filename = "SellerInfo.txt";
+//                    }
+//                    userInfo = Marketplace.readFile(filename);
+//                    if (fileInfo.isEmpty()) {
+//                        fileInfo.add(String.format("1,%s,%s,%s", emailTextField.getText(), passwordTextField.getText(),
+//                                role));
+//                        userInfo.add(String.format("1,%s", emailTextField.getText()));
+//                        id = 1;
+//                    } else {
+//                        String[] lastLine = fileInfo.get(fileInfo.size() - 1).split(",");
+//
+//                        fileInfo.add(String.format("%d,%s,%s,%s", Integer.parseInt(lastLine[0]) + 1,
+//                                emailTextField.getText(), passwordTextField.getText(), role));
+//                        id = Integer.parseInt(lastLine[0]) + 1;
+//                        userInfo.add(String.format("%d,%s", Integer.parseInt(lastLine[0]) + 1, emailTextField.getText()));
+//                    }
+//                    Marketplace.writeFile(userInfo, filename);
+//                    Marketplace.writeFile(fileInfo, "LoginInfo.txt");
+//
+//                    String filename2 = "";
+//                    if (role.equals("b")) {
+//                        filename2 = "BuyerHistory.txt";
+//                        Marketplace.writeFile(userInfo, filename2);
+//                    }
+
                     if (type.equals("b")) {
-                        role = "b";
-                        filename = "BuyerInfo.txt";
+//                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI(loginInfo);
+//                        buyerDashboardGUI.run();
+//                        frame.setVisible(false);
                     } else {
-                        role = "s";
-                        filename = "SellerInfo.txt";
-                    }
-                    userInfo = Marketplace.readFile(filename);
-                    if (fileInfo.isEmpty()) {
-                        fileInfo.add(String.format("1,%s,%s,%s", emailTextField.getText(), passwordTextField.getText(),
-                                role));
-                        userInfo.add(String.format("1,%s", emailTextField.getText()));
-                        id = 1;
-                    } else {
-                        String[] lastLine = fileInfo.get(fileInfo.size() - 1).split(",");
-
-                        fileInfo.add(String.format("%d,%s,%s,%s", Integer.parseInt(lastLine[0]) + 1,
-                                emailTextField.getText(), passwordTextField.getText(), role));
-                        id = Integer.parseInt(lastLine[0]) + 1;
-                        userInfo.add(String.format("%d,%s", Integer.parseInt(lastLine[0]) + 1, emailTextField.getText()));
-                    }
-                    Marketplace.writeFile(userInfo, filename);
-                    Marketplace.writeFile(fileInfo, "LoginInfo.txt");
-
-                    String filename2 = "";
-                    if (role.equals("b")) {
-                        filename2 = "BuyerHistory.txt";
-                        Marketplace.writeFile(userInfo, filename2);
-                    }
-
-                    if (role.equals("b")) {
-                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI(loginInfo);
-                        buyerDashboardGUI.run();
-                        frame.setVisible(false);
-                    } else {
-                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI(loginInfo);
-                        sellerDashboardGUI.run();
-                        frame.setVisible(false);
+//                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI(loginInfo);
+//                        sellerDashboardGUI.run();
+//                        frame.setVisible(false);
                     }
                 }
             }
@@ -220,6 +241,8 @@ public class CreateAccountGUI extends JComponent implements Runnable {
 
         return bottomPanel;
     }
+
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new CreateAccountGUI());

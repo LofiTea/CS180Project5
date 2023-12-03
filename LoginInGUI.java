@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 /**
  * Homework/Project X: ClassName
@@ -12,6 +13,12 @@ import java.awt.event.*;
  */
 
 public class LoginInGUI extends JComponent implements Runnable {
+
+    //MarketplaceClient client;
+    int optionInitial;
+    String email;
+    String password;
+    int id;
     JFrame frame;
     JLabel welcomeMessage;
     JLabel emailLabel;
@@ -21,29 +28,61 @@ public class LoginInGUI extends JComponent implements Runnable {
     JButton loginButton;
     JLabel newUserMessage;
     JButton createAccountButton;
-    LoginInfo loginInfo;
     ActionListener actionListenerTop = new ActionListener() {
+        boolean loginSuccess = false;
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == loginButton) {
-                String email = emailTextField.getText();
-                String password = passwordTextField.getText();
 
-                loginInfo = new LoginInfo(email, password);
-                if (!loginInfo.authenticate(email, password).isEmpty()) {
-                    if (Marketplace.determineRole(email, password).equals("b")) {
-                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI(loginInfo);
-                        buyerDashboardGUI.run();
-                        frame.setVisible(false);
-                    } else {
-                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI(loginInfo);
-                        sellerDashboardGUI.run();
-                        frame.setVisible(false);
+
+            if (e.getSource() == loginButton && !loginSuccess) {
+                MarketplaceClient client = null;
+                try {
+                    client = new MarketplaceClient();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                loginSuccess = false;
+                email = emailTextField.getText();
+                password = passwordTextField.getText();
+
+                try {
+                    //client.sendOptionInitial(1);
+                    loginSuccess = client.sendLogin(email, password, 1);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                if(loginSuccess) {
+                    String role;
+                    try {
+                        role = client.getString();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
                     }
+
+                    if (role.equals("b")) {
+                        System.out.println(role);
+////                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI(loginInfo);
+////                        buyerDashboardGUI.run();
+////                        frame.setVisible(false);
+                    } else {
+                        System.out.println(role);
+////                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI(loginInfo);
+////                        sellerDashboardGUI.run();
+////                        frame.setVisible(false);
+                    }
+
                 } else {
                     JOptionPane.showMessageDialog(null, "Error! Account not found!",
                             "Tickets@Purdue Marketplace", JOptionPane.ERROR_MESSAGE);
                 }
+
             }
         }
     };
@@ -52,6 +91,7 @@ public class LoginInGUI extends JComponent implements Runnable {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == createAccountButton) {
+
                 CreateAccountGUI createAccountGUI = new CreateAccountGUI();
                 createAccountGUI.run();
             }
@@ -140,6 +180,8 @@ public class LoginInGUI extends JComponent implements Runnable {
 
         return createAccountPanel;
     }
+
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new LoginInGUI());
