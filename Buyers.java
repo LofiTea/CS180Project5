@@ -293,7 +293,7 @@ public class Buyers {
                     }
                 }
                 if (!bool) {
-                    amtSold.add(new Sllers(store, numTickets));
+                    amtSold.add(new Sellers(store, numTickets));
                 }
             }
 
