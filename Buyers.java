@@ -301,7 +301,7 @@ public class Buyers {
 
             System.out.println("View Dashboard: ");
             for (Sellers i : amtSold) {
-                System.out.println(i.getStoreName() + " " + i.getTickets() + " tickets were sold.");
+                System.out.println(i.getStoreName() + " " + i.getTickets() + " tickets.");
             }
         } catch (Exception e) {
             e.printStackTrace();
