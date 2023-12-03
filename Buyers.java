@@ -273,6 +273,42 @@ public class Buyers {
         }
     }
 
+        public void showDashboard() {
+        ArrayList<storeInfo> amtSold = new ArrayList<storeInfo>();
+
+        try {
+            ArrayList<String> soldInfo = Marketplace.readFile("TransactionInfo.txt");
+            for (String i : soldInfo) {
+                String[] data = i.split(",");
+                String store = data[4];
+
+                int numTickets = Integer.parseInt(data[5]);
+
+                boolean bool = false;
+                for (storeInfo j : amtSold) {
+                    if (j.getStoreName(storeName).equals(storeName)) {
+
+                        bool = true;
+                        break;
+                    }
+                }
+                if (!bool) {
+                    amtSold.add(new storeInfo(store, numTickets));
+                }
+            }
+
+            Collections.sort(amtSold, Collections.reverseOrder());
+
+            System.out.println("View Dashboard: ");
+            for (storeInfo i : amtSold) {
+                System.out.println(i.getStoreName() + " " + i.getTickets() + " tickets were sold.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
         public void dashboardInteraction(String marketFile)  {
         Scanner scan = new Scanner(System.in);
 
