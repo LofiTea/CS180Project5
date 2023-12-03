@@ -274,7 +274,7 @@ public class Buyers {
     }
 
         public void showDashboard() {
-        ArrayList<storeInfo> amtSold = new ArrayList<storeInfo>();
+        ArrayList<Sellers> amtSold = new ArrayList<Sellers>();
 
         try {
             ArrayList<String> soldInfo = Marketplace.readFile("TransactionInfo.txt");
@@ -285,7 +285,7 @@ public class Buyers {
                 int numTickets = Integer.parseInt(data[5]);
 
                 boolean bool = false;
-                for (storeInfo j : amtSold) {
+                for (Sellers j : amtSold) {
                     if (j.getStoreName(storeName).equals(storeName)) {
 
                         bool = true;
@@ -293,14 +293,14 @@ public class Buyers {
                     }
                 }
                 if (!bool) {
-                    amtSold.add(new storeInfo(store, numTickets));
+                    amtSold.add(new Sllers(store, numTickets));
                 }
             }
 
             Collections.sort(amtSold, Collections.reverseOrder());
 
             System.out.println("View Dashboard: ");
-            for (storeInfo i : amtSold) {
+            for (Sellers i : amtSold) {
                 System.out.println(i.getStoreName() + " " + i.getTickets() + " tickets were sold.");
             }
         } catch (Exception e) {
