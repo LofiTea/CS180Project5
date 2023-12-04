@@ -16,6 +16,8 @@ import java.util.Arrays;
 public class MarketplaceServerThread extends Thread {
     Socket socket;
 
+    public static Object obj = new Object();
+
 
     MarketplaceServerThread(Socket socket) {
         this.socket = socket;
@@ -151,46 +153,70 @@ public class MarketplaceServerThread extends Thread {
                         case 3:
                          break;
                         case 4:
-                         boolean notReturnedToMenu = true;
-                         while(notReturnedToMenu)
-                         {
-                          int whatEditOption = (int)ois.readObject();
-                          System.out.println(whatEditOption);
-                         switch(whatEditOption)
-                         {
-                            case 1:
-                             
-                             break;
-                            case 2:
-                            String newEmail = (String)ois.readObject();
-                            if(!newEmail.equals(""))
+                            boolean notReturnedToMenu = true;
+                            while(notReturnedToMenu)
                             {
-                                
-                                MarketplaceServer.editEmail(email, newEmail, password);
-                                email = newEmail;
+                            int whatEditOption = (int)ois.readObject();
+                            System.out.println(whatEditOption);
+                            switch(whatEditOption)
+                            {
+                                case 1:
+                                    ArrayList<String> details = MarketplaceServer.readFile("LoginInfo.txt");
+                                    for (int i = 0; i < details.size(); i++) {
+                                        String[] arr = details.get(i).split(",");
+                                        if (email.equals(arr[1]) && password.equals(arr[2])) {
+                                            oos.writeObject(arr[0]);
+                                            oos.writeObject(arr[1]);
+
+
+                                            if (arr[3].equals("b")) {
+                                                oos.writeObject("Buyer");
+                                            } else {
+                                                oos.writeObject("Seller");
+                                            }
+                                        }
+                                    }
+
+                                    break;
+                                case 2:
+                                    String newEmail = (String)ois.readObject();
+                                    if(!newEmail.equals(""))
+                                    {
+                                        
+                                        MarketplaceServer.editEmail(email, newEmail, password);
+                                        email = newEmail;
+                                    }
+                                    //editing the email
+                                    break;
+                                case 3:
+                                    String newPassword = (String) ois.readObject();
+                                    System.out.println(newPassword);
+                                    if(newPassword!=null) {
+                                        synchronized (obj) {
+                                            MarketplaceServer.editPassword(email, password, newPassword);
+                                            password = newPassword;
+                                        }
+                                    }
+
+                                    break;
+                                case 4:
+                                    String confirmation = (String)ois.readObject();
+                                    if(confirmation.equals("yes"))
+                                    {
+                                        MarketplaceServer.deleteAccount(email, password);
+                                        notLoggedOut = false;
+                                        notReturnedToMenu = false;
+                                    }
+                                    break;
+                                case 5:
+                                    oos.writeObject(role);
+                                    notReturnedToMenu = false;
+                                    break;
+                            
                             }
-                            //editing the email
-                             break;
-                            case 3:
-                             break;
-                            case 4:
-                             String confirmation = (String)ois.readObject();
-                             if(confirmation.equals("yes"))
-                             {
-                                MarketplaceServer.deleteAccount(email, password);
-                                notLoggedOut = false;
-                                notReturnedToMenu = false;
-                             }
-                             break;
-                        case 5:
-                            oos.writeObject(role);
-                            notReturnedToMenu = false;
-                             break;
-                         
-                           }
                          
                         }
-                         break;
+                        break;
                      case 5:
                       System.out.println("Thread closing");
                       notLoggedOut = false;

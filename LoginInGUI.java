@@ -47,8 +47,6 @@ public class LoginInGUI extends JComponent implements Runnable {
                 email = emailTextField.getText();
                 password = passwordTextField.getText();
 
-                
-
                 try {
                     //client.sendOptionInitial(1);
                     loginSuccess = client.sendLogin(email, password, 1);
@@ -67,7 +65,7 @@ public class LoginInGUI extends JComponent implements Runnable {
                     } catch (ClassNotFoundException ex) {
                         throw new RuntimeException(ex);
                     }
-                  
+
                     if (role.equals("b")) {
                         //System.out.println(role);
 ////                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI(loginInfo);

@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Scanner;
 
 /**
  * Program Name
@@ -35,10 +34,9 @@ public class MarketplaceClient {
 //        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 //        Scanner scan = new Scanner(System.in);
 //
-          LoginInGUI loginInGUI = new LoginInGUI();
-          //System.out.println("Starting new gui stack");
-          loginInGUI.run();
-          
+        LoginInGUI loginInGUI = new LoginInGUI();
+        //System.out.println("Starting new gui stack");
+        loginInGUI.run();
 
 //
 //
@@ -168,56 +166,6 @@ public class MarketplaceClient {
 //        }
     }
 
-    public void sendOptionInitial(int optionInitial) throws IOException {
-//        oos.writeObject(optionInitial);
-//        oos.flush();
-    }
-    synchronized public boolean sendLogin(String email, String password, int optionInitial) throws IOException,
-            ClassNotFoundException {
-      //System.out.println("I am in here");
-        oos.writeObject(optionInitial);
-        oos.writeObject(email);
-        oos.writeObject(password);
-        oos.flush();
-
-        boolean success = (boolean) ois.readObject();
-
-       
-
-        return success;
-
-    }
-
-    synchronized public void createAccount(String email, String password, int optionInitial, String type) throws IOException,
-            ClassNotFoundException {
-        oos.writeObject(optionInitial);
-        oos.writeObject(email);
-        oos.writeObject(password);
-        oos.writeObject(type);
-        oos.flush();
-
-
-    }
-
-    synchronized public String getString() throws IOException, ClassNotFoundException {
-        return (String) ois.readObject();
-    }
-
-    synchronized public void sendString(String str) throws IOException {
-        oos.writeObject(str);
-    }
-
-    synchronized public void sendInt(int x) 
-    {
-        try {
-            oos.writeObject(x);
-            oos.flush();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
     public static boolean isStrongAlphanumeric(String password) {
         int letterCount = 0;
         int numCount = 0;
@@ -234,4 +182,71 @@ public class MarketplaceClient {
         }
         return letterCount != 0 && numCount != 0 && specialCount != 0;
     }
+
+    public void sendOptionInitial(int optionInitial) throws IOException {
+//        oos.writeObject(optionInitial);
+//        oos.flush();
+    }
+
+    synchronized public boolean sendLogin(String email, String password, int optionInitial) throws IOException,
+            ClassNotFoundException {
+        //System.out.println("I am in here");
+        oos.writeObject(optionInitial);
+        oos.writeObject(email);
+        oos.writeObject(password);
+        oos.flush();
+
+        boolean success = (boolean) ois.readObject();
+
+
+        return success;
+
+    }
+
+    synchronized public void createAccount(String email, String password, int optionInitial, String type) throws IOException,
+            ClassNotFoundException {
+        oos.writeObject(optionInitial);
+        oos.writeObject(email);
+        oos.writeObject(password);
+        oos.writeObject(type);
+        oos.flush();
+
+
+    }
+
+    synchronized public String receiveAccountDetails() {
+        String ID = null;
+        String email = null;
+        String type = null;
+        try {
+            ID = (String) ois.readObject();
+            email = (String) ois.readObject();
+            type = (String) ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "ID: " + ID + "\nEmail: " + email + "\nAccount Type: " + type;
+    }
+
+    synchronized public String getString() throws IOException, ClassNotFoundException {
+        return (String) ois.readObject();
+    }
+
+    synchronized public void sendString(String str) throws IOException {
+        oos.writeObject(str);
+    }
+
+    synchronized public void sendInt(int x) {
+        try {
+            oos.writeObject(x);
+            oos.flush();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+
 }

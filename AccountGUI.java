@@ -30,16 +30,21 @@ public class AccountGUI extends JComponent implements Runnable {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == viewAccountDetailsButton) {
 
-                 client.sendInt(1);
-                 
-                if (count == 0) {
-                    JOptionPane.showMessageDialog(null, viewDetails(loginInfo.getEmail(),
-                            loginInfo.getPassword()), "Account Details", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Please logout to see the " +
-                            "new account details.", "Account Details", JOptionPane.INFORMATION_MESSAGE);
-                    count = 0;
-                }
+                client.sendInt(1);
+
+//                if (count == 0) {
+//                    JOptionPane.showMessageDialog(null, viewDetails(loginInfo.getEmail(),
+//                            loginInfo.getPassword()), "Account Details", JOptionPane.INFORMATION_MESSAGE);
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Please logout to see the " +
+//                            "new account details.", "Account Details", JOptionPane.INFORMATION_MESSAGE);
+//                    count = 0;
+//                }
+
+                String details = client.receiveAccountDetails();
+
+                JOptionPane.showMessageDialog(null, details, "Account Details", JOptionPane.INFORMATION_MESSAGE);
+
             }
             if (e.getSource() == editEmailButton) {
                 client.sendInt(2);
@@ -72,19 +77,26 @@ public class AccountGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == editPasswordButton) {
                 client.sendInt(3);
+
                 String newPassword = JOptionPane.showInputDialog(null, "What would you like to "
                         + "change your password to?", "Change Password", JOptionPane.QUESTION_MESSAGE);
-                if (newPassword == null || newPassword.isEmpty()) {
-                    return;
-                } else if (newPassword.length() < 8) {
-                    JOptionPane.showMessageDialog(null, "Error! Password needs to be at least "
-                            + "8 characters long!", "Change Password", JOptionPane.ERROR_MESSAGE);
-                } else if (!Marketplace.isStrongAlphanumeric(newPassword)) {
-                    JOptionPane.showMessageDialog(null, "Error! Password must have letters, " +
-                            "numbers and special characters.", "Change Password", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    Marketplace.editPassword(loginInfo.getEmail(),loginInfo.getPassword(), newPassword);
-                    loginInfo.setPassword(newPassword);
+                if(newPassword != null) {
+                    if (newPassword.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Error! Password needs to be at least "
+                                + "8 characters long!", "Change Password", JOptionPane.ERROR_MESSAGE);
+                    } else if (newPassword.length() < 8) {
+                        JOptionPane.showMessageDialog(null, "Error! Password needs to be at least "
+                                + "8 characters long!", "Change Password", JOptionPane.ERROR_MESSAGE);
+                    } else if (!MarketplaceClient.isStrongAlphanumeric(newPassword)) {
+                        JOptionPane.showMessageDialog(null, "Error! Password must have letters, " +
+                                "numbers and special characters.", "Change Password", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+
+                try {
+                    client.sendString(newPassword);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
             if (e.getSource() == deleteAccountButton) {
@@ -126,10 +138,10 @@ public class AccountGUI extends JComponent implements Runnable {
                     ef.printStackTrace();
                 }
                 if (role.equals("b")) {
-                    BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
-                    buyerDashboardGUI.setLoginInfo(loginInfo);
-                    buyerDashboardGUI.run();
-                    frame.dispose();
+//                    BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
+//                    buyerDashboardGUI.setLoginInfo(loginInfo);
+//                    buyerDashboardGUI.run();
+//                    frame.dispose();
                 } else {
                     SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
                     sellerDashboardGUI.setClient(client);
@@ -217,10 +229,12 @@ public class AccountGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-
-    public void setClient(MarketplaceClient client)
-    {
+    synchronized public void setClient(MarketplaceClient client) {
         this.client = client;
+    }
+
+    public void setLoginInfo(LoginInfo loginInfo) {
+        this.loginInfo = loginInfo;
     }
 
     public static void main(String[] args) {
