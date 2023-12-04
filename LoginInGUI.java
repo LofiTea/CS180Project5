@@ -69,15 +69,14 @@ public class LoginInGUI extends JComponent implements Runnable {
                     }
                   
                     if (role.equals("b")) {
-                        JOptionPane.showMessageDialog(null, "Buyer Detected",
-                            "Tickets@Purdue Marketplace", JOptionPane.ERROR_MESSAGE);
                         //System.out.println(role);
 ////                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI(loginInfo);
 ////                        buyerDashboardGUI.run();
 ////                        frame.setVisible(false);
                     } else {
-                        //System.out.println(role);
+                        //System.out.println(role)
                      SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
+                     sellerDashboardGUI.setClient(client);
                      sellerDashboardGUI.run();
                      frame.setVisible(false);
                     }

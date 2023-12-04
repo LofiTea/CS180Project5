@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /**
  * Homework/Project X: ClassName
@@ -21,25 +22,39 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
     JButton accountButton;
     JButton logOutButton;
     LoginInfo loginInfo;
+    MarketplaceClient client;
+   
 
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            
+        // MarketplaceClient client = null;
+        //   try {
+        //     client = new MarketplaceClient();
+        //   } catch (IOException d) {
+        //     d.printStackTrace();
+        //   }          
             if (e.getSource() == sellTicketButton) {
+                client.sendInt(1);
                 //put logic here
             }
             if (e.getSource() == viewHistoryButton) {
+                client.sendInt(2);
                 SellerHistoryGUI sellerHistoryGUI = new SellerHistoryGUI();
                 sellerHistoryGUI.setLoginInfo(loginInfo);
                 sellerHistoryGUI.run();
                 frame.dispose();
             }
             if (e.getSource() == viewStatisticsButton) {
+                client.sendInt(3);
                 // put logic here
             }
             if (e.getSource() == accountButton) {
+                client.sendInt(4);
+                
                 AccountGUI accountGUI = new AccountGUI();
-                accountGUI.setLoginInfo(loginInfo);
+                accountGUI.setClient(client);
                 accountGUI.run();
                 frame.dispose();
             }
@@ -52,7 +67,9 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
         }
     };
 
-    public SellerDashboardGUI() {
+    
+    public SellerDashboardGUI()
+    {
 
     }
 
@@ -114,10 +131,15 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
     }
 
     public void setLoginInfo(LoginInfo loginInfo) {
         this.loginInfo = loginInfo;
+    }
+
+    synchronized public void setClient(MarketplaceClient client) {
+        this.client = client;
     }
 
     public static void main(String[] args) {

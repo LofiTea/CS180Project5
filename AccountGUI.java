@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -22,11 +23,15 @@ public class AccountGUI extends JComponent implements Runnable {
     JButton deleteAccountButton;
     JButton returnToMenuButton;
     LoginInfo loginInfo;
+    MarketplaceClient client;
     ActionListener actionListener = new ActionListener() {
         int count = 0;
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == viewAccountDetailsButton) {
+
+                 client.sendInt(1);
+                 
                 if (count == 0) {
                     JOptionPane.showMessageDialog(null, viewDetails(loginInfo.getEmail(),
                             loginInfo.getPassword()), "Account Details", JOptionPane.INFORMATION_MESSAGE);
@@ -37,6 +42,7 @@ public class AccountGUI extends JComponent implements Runnable {
                 }
             }
             if (e.getSource() == editEmailButton) {
+                client.sendInt(2);
                 String newEmail = JOptionPane.showInputDialog(null, "What would you like to " +
                                 "change your email to?", "Change Email", JOptionPane.QUESTION_MESSAGE);
                 if (newEmail == null || newEmail.isEmpty()) {
@@ -51,6 +57,7 @@ public class AccountGUI extends JComponent implements Runnable {
                 }
             }
             if (e.getSource() == editPasswordButton) {
+                client.sendInt(3);
                 String newPassword = JOptionPane.showInputDialog(null, "What would you like to "
                         + "change your password to?", "Change Password", JOptionPane.QUESTION_MESSAGE);
                 if (newPassword == null || newPassword.isEmpty()) {
@@ -67,6 +74,7 @@ public class AccountGUI extends JComponent implements Runnable {
                 }
             }
             if (e.getSource() == deleteAccountButton) {
+                client.sendInt(4);
                 int num = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete"
                         + " your account?", "Delete Account", JOptionPane.YES_NO_OPTION);
                 if (num == JOptionPane.YES_OPTION) {
@@ -82,6 +90,7 @@ public class AccountGUI extends JComponent implements Runnable {
                 }
             }
             if (e.getSource() == returnToMenuButton) {
+                client.sendInt(5);
                 String role = Marketplace.determineRole(loginInfo.getEmail(),
                         loginInfo.getPassword());
                 if (role.equals("b")) {
@@ -181,6 +190,11 @@ public class AccountGUI extends JComponent implements Runnable {
 
     public void setLoginInfo(LoginInfo loginInfo) {
         this.loginInfo = loginInfo;
+    }
+
+    public void setClient(MarketplaceClient client)
+    {
+        this.client = client;
     }
 
     public static void main(String[] args) {

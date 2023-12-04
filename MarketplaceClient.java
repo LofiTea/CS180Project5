@@ -36,6 +36,7 @@ public class MarketplaceClient {
 //        Scanner scan = new Scanner(System.in);
 //
           LoginInGUI loginInGUI = new LoginInGUI();
+          //System.out.println("Starting new gui stack");
           loginInGUI.run();
           
 
@@ -204,6 +205,18 @@ public class MarketplaceClient {
 
     synchronized public void sendString(String str) throws IOException {
         oos.writeObject(str);
+    }
+
+    synchronized public void sendInt(int x) 
+    {
+        try {
+            oos.writeObject(x);
+            oos.flush();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
     public static boolean isStrongAlphanumeric(String password) {
         int letterCount = 0;

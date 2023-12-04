@@ -60,4 +60,180 @@ public class MarketplaceServer {
         }
         return role;
     }
+
+   synchronized public static void editEmail(String oldEmail, String newEmail, String password) {
+        ArrayList<String> loginInfo = readFile("LoginInfo.txt");
+        int indexToChange = 0;
+        String id = "";
+        String role = "";
+        for (int i = 0; i < loginInfo.size(); i++) {
+            String[] line = loginInfo.get(i).split(",");
+            id = line[0];
+            String check1 = line[1];
+            String check2 = line[2];
+            role = line[3];
+            if (check1.equals(oldEmail) && check2.equals(password)) {
+                indexToChange = i;
+                break;
+            }
+        }
+        loginInfo.set(indexToChange, id + "," + newEmail + "," + password + "," + role);
+        if (role.equals("b")) {
+            ArrayList<String> buyerInfo = readFile("BuyerHistory.txt");
+            for (int j = 0; j < buyerInfo.size(); j++) {
+                String newLine = "";
+                String[] anotherLine = buyerInfo.get(j).split(",");
+                String check3 = anotherLine[0];
+                String check4 = anotherLine[1];
+                if (check3.equals(id) && check4.equals(oldEmail)) {
+                    anotherLine[1] = newEmail;
+                    for (int k = 0; k < anotherLine.length; k++) {
+                        if (k == anotherLine.length - 1) {
+                            newLine += anotherLine[k];
+                        } else {
+                            newLine += anotherLine[k] + ",";
+                        }
+                    }
+                    buyerInfo.set(j, newLine);
+                    writeFile(buyerInfo, "BuyerHistory.txt");
+                    break;
+                }
+            }
+
+            ArrayList<String> buyerInfo2 = readFile("BuyerInfo.txt");
+            for (int j = 0; j < buyerInfo2.size(); j++) {
+                String newLine = "";
+                String[] anotherLine = buyerInfo2.get(j).split(",");
+                String check3 = anotherLine[0];
+                String check4 = anotherLine[1];
+                if (check3.equals(id) && check4.equals(oldEmail)) {
+                    anotherLine[1] = newEmail;
+                    for (int k = 0; k < anotherLine.length; k++) {
+                        if (k == anotherLine.length - 1) {
+                            newLine += anotherLine[k];
+                        } else {
+                            newLine += anotherLine[k] + ",";
+                        }
+                    }
+                    buyerInfo2.set(j, newLine);
+                    writeFile(buyerInfo, "BuyerInfo.txt");
+                    break;
+                }
+            }
+
+        } else if (role.equals("s")) {
+            ArrayList<String> sellerInfo = readFile("SellerInfo.txt");
+            for (int j = 0; j < sellerInfo.size(); j++) {
+                String newLine = "";
+                String[] anotherLine = sellerInfo.get(j).split(",");
+                String check5 = anotherLine[0];
+                String check6 = anotherLine[1];
+                if (check5.equals(id) && check6.equals(oldEmail)) {
+                    anotherLine[1] = newEmail;
+                    for (int k = 0; k < anotherLine.length; k++) {
+                        if (k == anotherLine.length - 1) {
+                            newLine += anotherLine[k];
+                        } else {
+                            newLine += anotherLine[k] + ",";
+                        }
+                    }
+                    sellerInfo.set(j, newLine);
+                    writeFile(sellerInfo, "SellerInfo.txt");
+                    break;
+                }
+            }
+        }
+        writeFile(loginInfo, "LoginInfo.txt");
+    }
+
+    synchronized public static void editPassword(String email, String oldPassword, String newPassword) {
+        ArrayList<String> loginInfo = readFile("LoginInfo.txt");
+        int indexToChange = 0;
+        String id = "";
+        String role = "";
+        for (int i = 0; i < loginInfo.size(); i++) {
+            String[] line = loginInfo.get(i).split(",");
+            id = line[0];
+            String check1 = line[1];
+            String check2 = line[2];
+            role = line[3];
+            if (check1.equals(email) && check2.equals(oldPassword)) {
+                indexToChange = i;
+                break;
+            }
+        }
+        loginInfo.set(indexToChange, id + "," + email + "," + newPassword + "," + role);
+        writeFile(loginInfo, "LoginInfo.txt");
+    }
+
+
+   synchronized public static void deleteAccount(String email, String password) {
+        ArrayList<String> loginInfo = readFile("LoginInfo.txt");
+        String role = "";
+        int id = 0;
+        int indexToChange = 0;
+        for (int i = 0; i < loginInfo.size(); i++) {
+            String[] line = loginInfo.get(i).split(",");
+            id = Integer.parseInt(line[0]);
+            String check1 = line[1];
+            String check2 = line[2];
+            role = line[3];
+            if (check1.equals(email) && check2.equals(password)) {
+                indexToChange = i;
+                break;
+            }
+        }
+
+        ArrayList<String> newLoginInfo = new ArrayList<>();
+
+
+        for (int i = 0; i < loginInfo.size(); i++) {
+            if (i != indexToChange) {
+                newLoginInfo.add(loginInfo.get(i));
+            }
+        }
+        writeFile(newLoginInfo, "LoginInfo.txt");
+
+        if (role.equals("b")) {
+            int curIndextoChange = -1;
+            ArrayList<String> buyerInfo = readFile("BuyerInfo.txt");
+            for (int j = 0; j < buyerInfo.size(); j++) {
+                String[] newLine = buyerInfo.get(j).split(",");
+                if (id == Integer.parseInt(newLine[0])) {
+                    curIndextoChange = j;
+                    break;
+                }
+            }
+
+
+            ArrayList<String> buyerInfo2 = new ArrayList<>();
+            for (int j = 0; j < buyerInfo.size(); j++) {
+                if (j != curIndextoChange) {
+                    buyerInfo2.add(buyerInfo.get(j));
+                }
+            }
+            writeFile(buyerInfo2, "BuyerInfo.txt");
+        } else if (role.equals("s")) {
+            int curIndextoChange = -1;
+            ArrayList<String> buyerInfo = readFile("SellerInfo.txt");
+            for (int j = 0; j < buyerInfo.size(); j++) {
+                String[] newLine = buyerInfo.get(j).split(",");
+                if (id == Integer.parseInt(newLine[0])) {
+                    curIndextoChange = j;
+                    break;
+                }
+            }
+
+
+            ArrayList<String> buyerInfo2 = new ArrayList<>();
+            for (int j = 0; j < buyerInfo.size(); j++) {
+                if (j != curIndextoChange) {
+                    buyerInfo2.add(buyerInfo.get(j));
+                }
+            }
+            writeFile(buyerInfo2, "SellerInfo.txt");
+        }
+    }
+
+
 }
