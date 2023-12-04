@@ -115,9 +115,9 @@ public class CreateAccountGUI extends JComponent implements Runnable {
 //                        buyerDashboardGUI.run();
 //                        frame.setVisible(false);
                     } else {
-//                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI(loginInfo);
-//                        sellerDashboardGUI.run();
-//                        frame.setVisible(false);
+                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
+                        sellerDashboardGUI.run();
+                        frame.setVisible(false);
                     }
                 }
             }
@@ -241,8 +241,6 @@ public class CreateAccountGUI extends JComponent implements Runnable {
 
         return bottomPanel;
     }
-
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new CreateAccountGUI());

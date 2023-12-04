@@ -1,3 +1,6 @@
 3,mahesh49@purdue,Mackay{Basketball;Mackay Arena;Back row;6.00|5:Basketball;Mackay Arena;Middle;21.00|12}
 6,shrishmahesh11@gmail.com,Ross Ade{Basketball;Mackay Arena; Back row;10.00|2},Mackay{Basketball;Mackey Arena;Nosebleeds;4.00|5}
-7,henryleeseller@gmail.com
+7,henrylee@gmail.com
+8,ruhaans123@gmail.com
+9,miles3005@gmail.com
+11,henryleeseller@gmail.com

@@ -31,13 +31,11 @@ public class MarketplaceServerThread extends Thread {
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             boolean notLoggedIn = true;
+            String role  = "";
+  
 
             while(notLoggedIn) {
-
                 int optionInitial = (Integer) ois.readObject();
-
-
-
                 switch (optionInitial) {
                     case 1:
                             boolean successful = false;
@@ -45,6 +43,7 @@ public class MarketplaceServerThread extends Thread {
                             String message = "";
                             email = (String) ois.readObject();
                             password = (String) ois.readObject();
+    
                             //System.out.println(email2 + password2);
                             LoginInfo user = new LoginInfo(email, password);
                             String currentAuthentication = user.authenticate(email, password);
@@ -63,6 +62,7 @@ public class MarketplaceServerThread extends Thread {
                             //oos.writeObject(notLoggedIn);
                             oos.writeObject(successful);
                             if(successful) {
+                                role = MarketplaceServer.determineRole(email,password);
                                 oos.writeObject(MarketplaceServer.determineRole(email, password));
                                 //System.out.println(notLoggedIn);
                             }
@@ -82,7 +82,6 @@ public class MarketplaceServerThread extends Thread {
                         ArrayList<String> fileInfo = MarketplaceServer.readFile("LoginInfo.txt");
 
                         ArrayList<String> userInfo = new ArrayList<>();
-                        String role;
                         String filename;
 
                         if (accountChoice.equals("b")) {
@@ -128,9 +127,56 @@ public class MarketplaceServerThread extends Thread {
                         notLoggedIn = false;
 
                 }
+            
             }
 
-            System.out.println("Out");
+            boolean notLoggedOut = true;
+            while(notLoggedOut)
+            {
+              switch(role)
+              {
+                case "b":
+                    //wip
+                    break;
+                case "s":
+                   System.out.println("Before waiting for object");
+                    int whatDash = (int)ois.readObject();
+                    System.out.println(whatDash);
+                   switch(whatDash)
+                    {
+                        case 1:
+                          break;
+                        case 2:
+                          break;
+                        case 3:
+                         break;
+                        case 4:
+                         boolean notReturnedToMenu = true;
+                         while(notReturnedToMenu)
+                         {
+                          int whatEditOption = (int)ois.readObject();
+                         switch(whatEditOption)
+                         {
+                            case 1:
+                             break;
+                            case 2:
+                             break;
+                            case 3:
+                             break;
+                            case 4:
+                             break;
+                            case 5:
+                             break;
+                         
+                           }
+                         
+                        }
+                         break;
+                    }
+              }
+            }
+
+           // System.out.println("Out");
         } catch (Exception e) {
 
         }

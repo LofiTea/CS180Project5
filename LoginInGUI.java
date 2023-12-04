@@ -47,6 +47,8 @@ public class LoginInGUI extends JComponent implements Runnable {
                 email = emailTextField.getText();
                 password = passwordTextField.getText();
 
+
+
                 try {
                     //client.sendOptionInitial(1);
                     loginSuccess = client.sendLogin(email, password, 1);
@@ -67,22 +69,21 @@ public class LoginInGUI extends JComponent implements Runnable {
                     }
 
                     if (role.equals("b")) {
-                        System.out.println(role);
+                        //System.out.println(role);
 ////                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI(loginInfo);
 ////                        buyerDashboardGUI.run();
 ////                        frame.setVisible(false);
                     } else {
-                        System.out.println(role);
-////                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI(loginInfo);
-////                        sellerDashboardGUI.run();
-////                        frame.setVisible(false);
+                        //System.out.println(role)
+                     SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
+                     sellerDashboardGUI.setClient(client);
+                     sellerDashboardGUI.run();
+                     frame.setVisible(false);
                     }
-
                 } else {
                     JOptionPane.showMessageDialog(null, "Error! Account not found!",
                             "Tickets@Purdue Marketplace", JOptionPane.ERROR_MESSAGE);
                 }
-
             }
         }
     };
@@ -180,8 +181,6 @@ public class LoginInGUI extends JComponent implements Runnable {
 
         return createAccountPanel;
     }
-
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new LoginInGUI());
