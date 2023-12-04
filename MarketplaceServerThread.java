@@ -11,11 +11,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MarketplaceServerThread extends Thread {
     Socket socket;
 
+    public static Object obj = new Object();
 
     MarketplaceServerThread(Socket socket) {
         this.socket = socket;
@@ -31,52 +31,52 @@ public class MarketplaceServerThread extends Thread {
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             boolean notLoggedIn = true;
-            String role  = "";
-  
+            String role = "";
 
-            while(notLoggedIn) {
+
+            while (notLoggedIn) {
                 int optionInitial = (Integer) ois.readObject();
                 switch (optionInitial) {
                     case 1:
-                            boolean successful = false;
+                        boolean successful = false;
                         //while (notLoggedIn) {
-                            String message = "";
-                            email = (String) ois.readObject();
-                            password = (String) ois.readObject();
-    
-                            //System.out.println(email2 + password2);
-                            LoginInfo user = new LoginInfo(email, password);
-                            String currentAuthentication = user.authenticate(email, password);
-                            if (!currentAuthentication.isEmpty()) {
-                                successful = true;
-                                message = "Successfully logged in!";
-                                String[] userInfo = user.authenticate(email, password).split(",");
-                                id = Integer.parseInt(userInfo[0]);
-                                notLoggedIn = false;
+                        String message = "";
+                        email = (String) ois.readObject();
+                        password = (String) ois.readObject();
 
-                            } else {
-                                message = "Error.  Account not found.  Please try again.";
+                        //System.out.println(email2 + password2);
+                        LoginInfo user = new LoginInfo(email, password);
+                        String currentAuthentication = user.authenticate(email, password);
+                        if (!currentAuthentication.isEmpty()) {
+                            successful = true;
+                            message = "Successfully logged in!";
+                            String[] userInfo = user.authenticate(email, password).split(",");
+                            id = Integer.parseInt(userInfo[0]);
+                            notLoggedIn = false;
 
-                            }
+                        } else {
+                            message = "Error.  Account not found.  Please try again.";
 
-                            //oos.writeObject(notLoggedIn);
-                            oos.writeObject(successful);
-                            if(successful) {
-                                role = MarketplaceServer.determineRole(email,password);
-                                oos.writeObject(MarketplaceServer.determineRole(email, password));
-                                //System.out.println(notLoggedIn);
-                            }
-                            oos.flush();
-                       // }
+                        }
+
+                        //oos.writeObject(notLoggedIn);
+                        oos.writeObject(successful);
+                        if (successful) {
+                            role = MarketplaceServer.determineRole(email, password);
+                            oos.writeObject(MarketplaceServer.determineRole(email, password));
+                            //System.out.println(notLoggedIn);
+                        }
+                        oos.flush();
+                        // }
 
                         break;
                     case 2:
                         email = (String) ois.readObject();
                         password = (String) ois.readObject();
-                        System.out.println(email+password);
+                        System.out.println(email + password);
                         String accountChoice = (String) ois.readObject();
 
-                       // System.out.println(email + password + accountChoice);
+                        // System.out.println(email + password + accountChoice);
 
 
                         ArrayList<String> fileInfo = MarketplaceServer.readFile("LoginInfo.txt");
@@ -114,7 +114,6 @@ public class MarketplaceServerThread extends Thread {
                         MarketplaceServer.writeFile(fileInfo, "LoginInfo.txt");
 
 
-
                         if (role.equals("b")) {
                             String filename2 = "BuyerHistory.txt";
 
@@ -127,62 +126,79 @@ public class MarketplaceServerThread extends Thread {
                         notLoggedIn = false;
 
                 }
-            
+
             }
 
             boolean notLoggedOut = true;
-            while(notLoggedOut)
-            {
-              switch(role)
-              {
-                case "b":
-                    //wip
-                    break;
-                case "s":
-                   System.out.println("Before waiting for object");
-                    int whatDash = (int)ois.readObject();
-                    System.out.println(whatDash);
-                   switch(whatDash)
-                    {
-                        case 1:
-                          break;
-                        case 2:
-                          break;
-                        case 3:
-                         break;
-                        case 4:
-                         boolean notReturnedToMenu = true;
-                         while(notReturnedToMenu)
-                         {
-                          int whatEditOption = (int)ois.readObject();
-                         switch(whatEditOption)
-                         {
+            while (notLoggedOut) {
+                switch (role) {
+                    case "b":
+                        //wip
+                        break;
+                    case "s":
+                        System.out.println("Before waiting for object");
+                        int whatDash = (int) ois.readObject();
+                        //System.out.println(whatDash);
+                        switch (whatDash) {
                             case 1:
-                             break;
+
+                                break;
                             case 2:
-                             break;
+                                break;
                             case 3:
-                             break;
+                                break;
                             case 4:
-                             break;
-                            case 5:
-                             break;
-                         
-                           }
-                         
+                                boolean notReturnedToMenu = true;
+                                while (notReturnedToMenu) {
+                                    int whatEditOption = (int) ois.readObject();
+                                    switch (whatEditOption) {
+                                        case 1:
+                                            ArrayList<String> details = MarketplaceServer.readFile("LoginInfo.txt");
+                                            for (int i = 0; i < details.size(); i++) {
+                                                String[] arr = details.get(i).split(",");
+                                                if (email.equals(arr[1]) && password.equals(arr[2])) {
+                                                    oos.writeObject(arr[0]);
+                                                    oos.writeObject(arr[1]);
+
+                                                    if (arr[3].equals("b")) {
+                                                        oos.writeObject("Buyer");
+                                                    } else {
+                                                        oos.writeObject("Seller");
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        case 2:
+                                            break;
+                                        case 3:
+                                            String newPassword = (String) ois.readObject();
+                                            System.out.println(newPassword);
+                                            if(newPassword!=null) {
+                                                synchronized (obj) {
+                                                    MarketplaceServer.editPassword(email, password, newPassword);
+                                                    password = newPassword;
+                                                }
+                                            }
+                                            break;
+                                        case 4:
+                                            break;
+                                        case 5:
+                                            break;
+
+                                    }
+
+                                }
+                                break;
                         }
-                         break;
-                    }
-              }
+                }
             }
 
-           // System.out.println("Out");
+            // System.out.println("Out");
         } catch (Exception e) {
 
         }
 
     }
-
 
 
 }

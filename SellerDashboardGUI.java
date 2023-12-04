@@ -23,18 +23,18 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
     JButton logOutButton;
     LoginInfo loginInfo;
     MarketplaceClient client;
-   
+
 
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
-        // MarketplaceClient client = null;
-        //   try {
-        //     client = new MarketplaceClient();
-        //   } catch (IOException d) {
-        //     d.printStackTrace();
-        //   }          
+
+            // MarketplaceClient client = null;
+            //   try {
+            //     client = new MarketplaceClient();
+            //   } catch (IOException d) {
+            //     d.printStackTrace();
+            //   }
             if (e.getSource() == sellTicketButton) {
                 client.sendInt(1);
                 //put logic here
@@ -52,7 +52,7 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == accountButton) {
                 client.sendInt(4);
-                
+
                 AccountGUI accountGUI = new AccountGUI();
                 accountGUI.setClient(client);
                 accountGUI.run();
@@ -67,7 +67,7 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
         }
     };
 
-    
+
     public SellerDashboardGUI()
     {
 

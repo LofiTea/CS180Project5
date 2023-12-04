@@ -242,6 +242,8 @@ public class CreateAccountGUI extends JComponent implements Runnable {
         return bottomPanel;
     }
 
+
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new CreateAccountGUI());
     }
