@@ -43,18 +43,32 @@ public class AccountGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == editEmailButton) {
                 client.sendInt(2);
-                String newEmail = JOptionPane.showInputDialog(null, "What would you like to " +
+              boolean isValidEmail = false;
+              String newEmail = "";
+                do{
+                    newEmail = JOptionPane.showInputDialog(null, "What would you like to " +
                                 "change your email to?", "Change Email", JOptionPane.QUESTION_MESSAGE);
                 if (newEmail == null || newEmail.isEmpty()) {
-                    return;
+                     isValidEmail = true;
                 } else if (!newEmail.contains("@")) {
                     JOptionPane.showMessageDialog(null, "Error! Email needs an '@' symbol!",
                             "Change Email", JOptionPane.ERROR_MESSAGE);
-                    loginInfo.setEmail(newEmail);
-                } else {
-                    Marketplace.editEmail(loginInfo.getEmail(), newEmail, loginInfo.getPassword());
-                    count++;
                 }
+                else{
+                    isValidEmail = true;
+                }
+            }
+            while(!isValidEmail);
+
+
+            try {
+                client.sendString(newEmail);
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            
+             
             }
             if (e.getSource() == editPasswordButton) {
                 client.sendInt(3);
@@ -78,9 +92,14 @@ public class AccountGUI extends JComponent implements Runnable {
                 int num = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete"
                         + " your account?", "Delete Account", JOptionPane.YES_NO_OPTION);
                 if (num == JOptionPane.YES_OPTION) {
-                    Marketplace.deleteAccount(loginInfo.getEmail(), loginInfo.getPassword());
                     JOptionPane.showMessageDialog(null, "We are sorry to see you go! Goodbye!",
                             "Account Deleted", JOptionPane.INFORMATION_MESSAGE);
+                    try {
+                        client.sendString("yes");
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
                     Window[] windows = Window.getWindows();
                     for (Window window : windows) {
                         if (window instanceof JFrame) {
@@ -88,11 +107,24 @@ public class AccountGUI extends JComponent implements Runnable {
                         }
                     }
                 }
+                else{
+                    try {
+                        client.sendString("no");
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }
             }
             if (e.getSource() == returnToMenuButton) {
                 client.sendInt(5);
-                String role = Marketplace.determineRole(loginInfo.getEmail(),
-                        loginInfo.getPassword());
+                String role = "";
+                try {
+                    role = client.getString();
+                } 
+                catch(Exception ef){
+                    ef.printStackTrace();
+                }
                 if (role.equals("b")) {
                     BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
                     buyerDashboardGUI.setLoginInfo(loginInfo);
@@ -100,7 +132,7 @@ public class AccountGUI extends JComponent implements Runnable {
                     frame.dispose();
                 } else {
                     SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                    sellerDashboardGUI.setLoginInfo(loginInfo);
+                    sellerDashboardGUI.setClient(client);
                     sellerDashboardGUI.run();
                     frame.dispose();
                 }
@@ -112,9 +144,7 @@ public class AccountGUI extends JComponent implements Runnable {
 
     }
 
-    public AccountGUI(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
+
 
     public String viewDetails(String email, String password) {
         ArrayList<String> details = Marketplace.readFile("LoginInfo.txt");
@@ -132,7 +162,6 @@ public class AccountGUI extends JComponent implements Runnable {
     }
 
     public void run() {
-        setLoginInfo(loginInfo);
         frame = new JFrame("My Account");
         frame.setLayout(new GridBagLayout());
 
@@ -188,9 +217,6 @@ public class AccountGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
 
     public void setClient(MarketplaceClient client)
     {

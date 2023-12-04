@@ -59,6 +59,7 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
                 frame.dispose();
             }
             if (e.getSource() == logOutButton) {
+                client.sendInt(5);
                 JOptionPane.showMessageDialog(null, "Thank you for using Tickets@Purdue! " +
                                 "We hope to see you soon!", "Tickets@Purdue Marketplace",
                         JOptionPane.INFORMATION_MESSAGE);

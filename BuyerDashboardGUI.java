@@ -38,7 +38,6 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == accountButton) {
                 AccountGUI accountGUI = new AccountGUI();
-                accountGUI.setLoginInfo(loginInfo);
                 accountGUI.run();
                 frame.dispose();
             }

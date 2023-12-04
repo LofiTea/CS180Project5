@@ -63,7 +63,7 @@ public class MarketplaceServerThread extends Thread {
                             oos.writeObject(successful);
                             if(successful) {
                                 role = MarketplaceServer.determineRole(email,password);
-                                oos.writeObject(MarketplaceServer.determineRole(email, password));
+                                oos.writeObject(role);
                                 //System.out.println(notLoggedIn);
                             }
                             oos.flush();
@@ -155,29 +155,52 @@ public class MarketplaceServerThread extends Thread {
                          while(notReturnedToMenu)
                          {
                           int whatEditOption = (int)ois.readObject();
+                          System.out.println(whatEditOption);
                          switch(whatEditOption)
                          {
                             case 1:
+                             
                              break;
                             case 2:
+                            String newEmail = (String)ois.readObject();
+                            if(!newEmail.equals(""))
+                            {
+                                
+                                MarketplaceServer.editEmail(email, newEmail, password);
+                                email = newEmail;
+                            }
+                            //editing the email
                              break;
                             case 3:
                              break;
                             case 4:
+                             String confirmation = (String)ois.readObject();
+                             if(confirmation.equals("yes"))
+                             {
+                                MarketplaceServer.deleteAccount(email, password);
+                                notLoggedOut = false;
+                                notReturnedToMenu = false;
+                             }
                              break;
-                            case 5:
+                        case 5:
+                            oos.writeObject(role);
+                            notReturnedToMenu = false;
                              break;
                          
                            }
                          
                         }
                          break;
+                     case 5:
+                      System.out.println("Thread closing");
+                      notLoggedOut = false;
                     }
               }
             }
 
            // System.out.println("Out");
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
 
         }
 
