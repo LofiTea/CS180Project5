@@ -48,32 +48,29 @@ public class AccountGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == editEmailButton) {
                 client.sendInt(2);
-              boolean isValidEmail = false;
-              String newEmail = "";
-                do{
+                boolean isValidEmail = false;
+                String newEmail = "";
+                do {
                     newEmail = JOptionPane.showInputDialog(null, "What would you like to " +
                                 "change your email to?", "Change Email", JOptionPane.QUESTION_MESSAGE);
-                if (newEmail == null || newEmail.isEmpty()) {
-                     isValidEmail = true;
-                } else if (!newEmail.contains("@")) {
-                    JOptionPane.showMessageDialog(null, "Error! Email needs an '@' symbol!",
-                            "Change Email", JOptionPane.ERROR_MESSAGE);
-                }
-                else{
-                    isValidEmail = true;
-                }
-            }
-            while(!isValidEmail);
+                    if (newEmail == null || newEmail.isEmpty()) {
+                         isValidEmail = true;
+                    } else if (!newEmail.contains("@")) {
+                        JOptionPane.showMessageDialog(null, "Error! Email needs an '@' symbol!",
+                                "Change Email", JOptionPane.ERROR_MESSAGE);
+                    }
+                    else{
+                        isValidEmail = true;
+                    }
+                } while(!isValidEmail);
 
 
-            try {
-                client.sendString(newEmail);
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-            
-             
+                try {
+                    client.sendString(newEmail);
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
             }
             if (e.getSource() == editPasswordButton) {
                 client.sendInt(3);
@@ -118,8 +115,7 @@ public class AccountGUI extends JComponent implements Runnable {
                             window.dispose();
                         }
                     }
-                }
-                else{
+                } else {
                     try {
                         client.sendString("no");
                     } catch (IOException e1) {
