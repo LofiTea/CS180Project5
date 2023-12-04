@@ -151,11 +151,13 @@ public class MarketplaceServerThread extends Thread {
                         case 3:
                          break;
                         case 4:
-                         int whatEditOption = (int)ois.readObject();
+                         boolean notReturnedToMenu = true;
+                         while(notReturnedToMenu)
+                         {
+                          int whatEditOption = (int)ois.readObject();
                          switch(whatEditOption)
                          {
                             case 1:
-                              System.out.println("Im ready for this");
                              break;
                             case 2:
                              break;
@@ -165,7 +167,10 @@ public class MarketplaceServerThread extends Thread {
                              break;
                             case 5:
                              break;
-                         }
+                         
+                           }
+                         
+                        }
                          break;
                     }
               }
