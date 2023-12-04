@@ -274,9 +274,9 @@ public class Buyers {
     }
 
         public void showDashboard() {
-        ArrayList<Sellers> amtSold = new ArrayList<Sellers>();
+        List<Sellers> amtSold = new ArrayList<Sellers>();
 
-        try {
+
             ArrayList<String> soldInfo = Marketplace.readFile("TransactionInfo.txt");
             for (String i : soldInfo) {
                 String[] data = i.split(",");
@@ -285,29 +285,30 @@ public class Buyers {
                 int numTickets = Integer.parseInt(data[5]);
 
                 boolean bool = false;
-                for (Sellers j : amtSold) {
-                    if (j.getStoreName(storeName).equals(storeName)) {
-
-                        bool = true;
-                        break;
+                try (BufferedReader bufferedReader = new BufferedReader(new FileReader("TransactionInfo.txt"))) {
+                    String temp;
+                    while ((temp = bufferedReader.readLine() != null)) {
+                        String[] parts = temp.split(",");
+                        String storename = parts[3];
+                        double price = Double.parseDouble(parts[5]);
+                        soldInfo.add(new Buyers(storename, price));
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                if (!bool) {
-                    amtSold.add(new Sellers(store, numTickets));
-                }
-            }
 
             Collections.sort(amtSold, Collections.reverseOrder());
 
             System.out.println("View Dashboard: ");
-            for (Sellers i : amtSold) {
-                System.out.println(i.getStoreName() + " " + i.getTickets() + " tickets.");
+
+            for (Sellers k : amtSold)
+            {
+                System.out.printf("%s: $%.2f%n", k.getSellerID(), k.getTickets());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+
         }
     }
-
 
         public void dashboardInteraction(String marketFile)  {
         Scanner scan = new Scanner(System.in);
