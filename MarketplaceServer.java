@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  
@@ -61,18 +62,18 @@ public class MarketplaceServer {
         return role;
     }
 
-   synchronized public static void editEmail(String oldEmail, String newEmail, String password) {
+   synchronized public static void editEmail(int id, String newEmail) {
         ArrayList<String> loginInfo = readFile("LoginInfo.txt");
         int indexToChange = 0;
-        String id = "";
+        String password = "";
         String role = "";
         for (int i = 0; i < loginInfo.size(); i++) {
             String[] line = loginInfo.get(i).split(",");
-            id = line[0];
+            String check = line[0];
             String check1 = line[1];
-            String check2 = line[2];
+            password = line[2];
             role = line[3];
-            if (check1.equals(oldEmail) && check2.equals(password)) {
+            if (check.equals(String.valueOf(id))) {
                 indexToChange = i;
                 break;
             }
@@ -85,7 +86,7 @@ public class MarketplaceServer {
                 String[] anotherLine = buyerInfo.get(j).split(",");
                 String check3 = anotherLine[0];
                 String check4 = anotherLine[1];
-                if (check3.equals(id) && check4.equals(oldEmail)) {
+                if (check3.equals(String.valueOf(id))) {
                     anotherLine[1] = newEmail;
                     for (int k = 0; k < anotherLine.length; k++) {
                         if (k == anotherLine.length - 1) {
@@ -105,8 +106,7 @@ public class MarketplaceServer {
                 String newLine = "";
                 String[] anotherLine = buyerInfo2.get(j).split(",");
                 String check3 = anotherLine[0];
-                String check4 = anotherLine[1];
-                if (check3.equals(id) && check4.equals(oldEmail)) {
+                if (check3.equals(String.valueOf(id))) {
                     anotherLine[1] = newEmail;
                     for (int k = 0; k < anotherLine.length; k++) {
                         if (k == anotherLine.length - 1) {
@@ -127,8 +127,8 @@ public class MarketplaceServer {
                 String newLine = "";
                 String[] anotherLine = sellerInfo.get(j).split(",");
                 String check5 = anotherLine[0];
-                String check6 = anotherLine[1];
-                if (check5.equals(id) && check6.equals(oldEmail)) {
+
+                if (check5.equals(String.valueOf(id))) {
                     anotherLine[1] = newEmail;
                     for (int k = 0; k < anotherLine.length; k++) {
                         if (k == anotherLine.length - 1) {
@@ -233,6 +233,24 @@ public class MarketplaceServer {
             }
             writeFile(buyerInfo2, "SellerInfo.txt");
         }
+    }
+
+    synchronized public static ArrayList<String> getEmailPassword(int id) {
+        ArrayList<String> loginInfo = readFile("LoginInfo.txt");
+        String email = "";
+        String password = "";
+        for (int i = 0; i < loginInfo.size(); i++) {
+            String[] line = loginInfo.get(i).split(",");
+            String check = line[0];
+            email = line[1];
+            password = line[2];
+            if (check.equals(String.valueOf(id))) {
+                break;
+            }
+        }
+
+        return new ArrayList<>(Arrays.asList(email, password));
+
     }
 
 
