@@ -11,9 +11,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MarketplaceServerThread extends Thread {
     public static Object obj = new Object();
+    private static final ReadWriteLock lock = new ReentrantReadWriteLock();
+
     Socket socket;
 
 
@@ -149,6 +153,9 @@ public class MarketplaceServerThread extends Thread {
                             case 4:
                                 boolean notReturnedToMenu = true;
                                 while (notReturnedToMenu) {
+                                    email = MarketplaceServer.getEmailPassword(id).get(0);
+                                    password = MarketplaceServer.getEmailPassword(id).get(1);
+                                    System.out.println(email+password);
                                     int whatEditOption = (int) ois.readObject();
                                     System.out.println(whatEditOption);
                                     switch (whatEditOption) {
@@ -173,9 +180,13 @@ public class MarketplaceServerThread extends Thread {
                                         case 2:
                                             String newEmail = (String) ois.readObject();
                                             if (!newEmail.equals("")) {
-
-                                                MarketplaceServer.editEmail(email, newEmail, password);
-                                                email = newEmail;
+                                                MarketplaceServer.editEmail(id, newEmail);
+                                                //Thread.sleep(1000);
+//                                                email = MarketplaceServer.getEmailPassword(id).get(0);
+//
+//
+//
+//                                                System.out.println(email);
                                             }
                                             //editing the email
                                             break;
