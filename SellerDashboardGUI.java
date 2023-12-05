@@ -42,7 +42,7 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
             if (e.getSource() == viewHistoryButton) {
                 client.sendInt(2);
                 SellerHistoryGUI sellerHistoryGUI = new SellerHistoryGUI();
-                sellerHistoryGUI.setLoginInfo(loginInfo);
+                sellerHistoryGUI.setClient(client);
                 sellerHistoryGUI.run();
                 frame.dispose();
             }
@@ -55,6 +55,7 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
 
                 AccountGUI accountGUI = new AccountGUI();
                 accountGUI.setClient(client);
+                accountGUI.setLoginInfo(loginInfo);
                 accountGUI.run();
                 frame.dispose();
             }

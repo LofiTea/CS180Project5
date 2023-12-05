@@ -20,6 +20,7 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
     JButton confirmButton;
     JButton returnToMenuButton;
     LoginInfo loginInfo;
+    MarketplaceClient client;
 
     public BuyerHistoryGUI() {
 
@@ -144,6 +145,11 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
         this.loginInfo = loginInfo;
     }
 
+
+    public void setClient(MarketplaceClient client)
+    {
+        this.client = client;
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new BuyerHistoryGUI());
     }

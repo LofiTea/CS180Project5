@@ -143,6 +143,15 @@ public class MarketplaceServerThread extends Thread {
                             case 1:
                                 break;
                             case 2:
+                              Sellers curSellers = new Sellers(id);
+                              boolean exitCurrentMenu = false;
+
+                              while(!exitCurrentMenu)
+                              {
+                                ArrayList<String> curStores =  curSellers.retrieveStores();
+                                oos.writeObject(curStores);
+
+                              }       
                                 break;
                             case 3:
                                 break;

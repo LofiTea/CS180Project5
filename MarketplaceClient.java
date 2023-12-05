@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * Program Name
@@ -246,6 +247,17 @@ public class MarketplaceClient {
             e.printStackTrace();
         }
 
+    }
+
+    synchronized ArrayList<String> recieveStringArrayList()
+    {
+        try {
+            return (ArrayList<String>)ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+       
     }
 
 

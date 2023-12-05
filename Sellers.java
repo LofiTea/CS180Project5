@@ -12,16 +12,14 @@ import java.util.Arrays;
  */
 
 public class Sellers {
-    private LoginInfo loginInfo;
     private double grossSales;
     private ArrayList<Ticket> products;
     private ArrayList<String> stores;
     private int sellerID;
 
 
-    public Sellers(LoginInfo loginInfo,int sellerID)
+    public Sellers(int sellerID)
     {
-        this.loginInfo = loginInfo;
         this.sellerID= sellerID;
         products = new ArrayList<>();
         stores = new ArrayList<>();
