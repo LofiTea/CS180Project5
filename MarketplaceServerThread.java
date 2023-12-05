@@ -245,9 +245,6 @@ public class MarketplaceServerThread extends Thread {
                                                 MarketplaceServer.editEmail(id, newEmail);
                                                 //Thread.sleep(1000);
 //                                                email = MarketplaceServer.getEmailPassword(id).get(0);
-//
-//
-//
 //                                                System.out.println(email);
                                             }
                                             //editing the email

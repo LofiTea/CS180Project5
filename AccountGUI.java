@@ -54,6 +54,7 @@ public class AccountGUI extends JComponent implements Runnable {
                     newEmail = JOptionPane.showInputDialog(null, "What would you like to " +
                                 "change your email to?", "Change Email", JOptionPane.QUESTION_MESSAGE);
                     if (newEmail == null || newEmail.isEmpty()) {
+                         newEmail = "";
                          isValidEmail = true;
                     } else if (!newEmail.contains("@")) {
                         JOptionPane.showMessageDialog(null, "Error! Email needs an '@' symbol!",
@@ -66,6 +67,11 @@ public class AccountGUI extends JComponent implements Runnable {
 
 
                 try {
+                    if(newEmail == null)
+                    {
+                        JOptionPane.showMessageDialog(null, "String null!",
+                                "Change Email", JOptionPane.ERROR_MESSAGE);
+                    }
                     client.sendString(newEmail);
                 } catch (IOException e1) {
                     // TODO Auto-generated catch block
