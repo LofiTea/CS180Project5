@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * Homework/Project X: ClassName
@@ -21,23 +22,53 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
     JButton accountButton;
     JButton logOutButton;
     LoginInfo loginInfo;
+    ArrayList<CartItems> shoppingCart;
+    ArrayList<CartItems> previousShoppingCart;
+    Buyers currentBuyer;
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            currentBuyer = new Buyers(determineID(loginInfo.getEmail(), loginInfo.getPassword()), loginInfo);
+            shoppingCart = currentBuyer.retrieveShoppingCart();
+            previousShoppingCart = currentBuyer.retrieveShoppingCart2();
+
+            if (shoppingCart == null) shoppingCart = new ArrayList<>();
+            if (previousShoppingCart == null) previousShoppingCart = new ArrayList<>();
+
+            currentBuyer.setShoppingCart(shoppingCart);
+            currentBuyer.setPreviousShopped(previousShoppingCart);
+
             if (e.getSource() == buyTicketButton) {
-               // put logic here
+                shoppingCart = currentBuyer.retrieveShoppingCart();
+                BuyTicketMenuGUI buyTicketMenuGUI = new BuyTicketMenuGUI();
+                buyTicketMenuGUI.setLoginInfo(loginInfo);
+                buyTicketMenuGUI.setCurrentBuyer(currentBuyer);
+                buyTicketMenuGUI.setShoppingCart(shoppingCart);
+                buyTicketMenuGUI.setPreviousShoppingCart(previousShoppingCart);
+                buyTicketMenuGUI.run();
+                frame.dispose();
             }
             if (e.getSource() == viewHistoryButton) {
-                BuyerHistoryGUI buyerHistoryGUI = new BuyerHistoryGUI();
-                buyerHistoryGUI.setLoginInfo(loginInfo);
-                buyerHistoryGUI.run();
-                frame.dispose();
+                previousShoppingCart = currentBuyer.retrieveShoppingCart2();
+                if (previousShoppingCart == null) {
+                    JOptionPane.showMessageDialog(null, "Error! Cannot view the previous cart" +
+                            " because it is empty!", "No Items!", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    BuyerHistoryGUI buyerHistoryGUI = new BuyerHistoryGUI();
+                    buyerHistoryGUI.setLoginInfo(loginInfo);
+                    buyerHistoryGUI.setCurrentBuyer(currentBuyer);
+                    buyerHistoryGUI.setShoppingCart(shoppingCart);
+                    buyerHistoryGUI.setPreviousShoppingCart(previousShoppingCart);
+                    buyerHistoryGUI.run();
+                    frame.dispose();
+                }
             }
             if (e.getSource() == viewStatisticsButton) {
                 // put logic here
             }
             if (e.getSource() == accountButton) {
                 AccountGUI accountGUI = new AccountGUI();
+                accountGUI.setLoginInfo(loginInfo);
                 accountGUI.run();
                 frame.dispose();
             }
@@ -58,6 +89,7 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
         this.loginInfo = loginInfo;
     }
 
+    @Override
     public void run() {
         frame = new JFrame("Tickets@Purdue Buyer Dashboard");
         frame.setLayout(new GridBagLayout());
@@ -116,6 +148,34 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
 
     public void setLoginInfo(LoginInfo loginInfo) {
         this.loginInfo = loginInfo;
+    }
+
+    public void setShoppingCart(ArrayList<CartItems> shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
+    public void setPreviousShoppingCart(ArrayList<CartItems> previousShoppingCart) {
+        this.previousShoppingCart = previousShoppingCart;
+    }
+
+    public Buyers getCurrentBuyer() {
+        return this.currentBuyer;
+    }
+
+    public void setCurrentBuyer(Buyers currentBuyer) {
+        this.currentBuyer = currentBuyer;
+    }
+
+    public static int determineID(String email, String password) {
+        ArrayList<String> arrayList = Marketplace.readFile("LoginInfo.txt");
+        int id = 0;
+        for (int i = 0; i < arrayList.size(); i++) {
+            String[] userInfo = arrayList.get(i).split(",");
+            if (email.equals(userInfo[1]) && password.equals(userInfo[2])) {
+                id = Integer.parseInt(userInfo[0]);
+            }
+        }
+        return id;
     }
 
     public static void main(String[] args) {
