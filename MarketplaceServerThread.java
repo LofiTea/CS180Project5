@@ -147,15 +147,68 @@ public class MarketplaceServerThread extends Thread {
                             case 1:
                                 break;
                             case 2:
-                              Sellers curSellers = new Sellers(id);
-                              boolean exitCurrentMenu = false;
-
-                              while(!exitCurrentMenu)
+                             Sellers curSeller = new Sellers(id);
+                              ArrayList<String> stores = curSeller.retrieveStores();
+                              oos.writeObject(stores);
+                              boolean exitCurrentMenu = (boolean)ois.readObject();
+                              if(!exitCurrentMenu)
                               {
-                                ArrayList<String> curStores =  curSellers.retrieveStores();
-                                oos.writeObject(curStores);
+                                   while(!exitCurrentMenu)
+                                   {
+                                      int curSeleciton = (int)ois.readObject();
+                                      if(curSeleciton == 1)
+                                      {
+                                        int selectedStore = (int)ois.readObject();
+                                        ArrayList<String> sales = new ArrayList<>();
+                                        ArrayList<String> allTransactions = MarketplaceServer.readFile("TransactionInfo.txt");
+                                        double totalRevenue = 0.0;
+                                        for (int i = 0; i < allTransactions.size(); i++) {
+                                            String[] transactionInfo = allTransactions.get(i).split(",");
+                                            if (transactionInfo[2].equals(String.valueOf(id))) {
+                                                if (transactionInfo[3].equals(stores.get(selectedStore - 1))) {
+                                                    String buyerEmail = null;
+                                                    ArrayList<String> buyers = Marketplace.readFile("BuyerHistory.txt");
+                                                    for (int j = 0; j < buyers.size(); j++) {
+                                                        String[] buyerInfo = buyers.get(j).split(",");
+                                                        if (buyerInfo[0].equals(transactionInfo[1])) {
+                                                            buyerEmail = buyerInfo[1];
+                                                            break;
+                                                        }
+                                                    }
+                                                    String[] ticketInfo = transactionInfo[6].split(";");
+                                                    sales.add("Ticket Info -\n" +
+                                                            "Sport: " + ticketInfo[0] + "\n" +
+                                                            "Location: " + ticketInfo[1] + "\n" +
+                                                            "Section: " + ticketInfo[2] + "\n" +
+                                                            "Price: " + ticketInfo[3] + "\n" +
+                                                            "Quantity purchased: " + transactionInfo[5] + "\n" +
+                                                            "Customer Info -" + "\n" +
+                                                            "ID: " + transactionInfo[1] + "\n" +
+                                                            "Email: " + buyerEmail + "\n" +
+                                                            "Revenue from sale: " + String.format("%.2f",
+                                                            Double.parseDouble(transactionInfo[4]) * Integer.parseInt(transactionInfo[5]))
+                                                    );
+            
+                                                    totalRevenue += Double.parseDouble(transactionInfo[4]) * Integer.parseInt(transactionInfo[5]);
+            
+                                                }
+                                            }
+            
+                                        }
+            
+                                        if (!sales.isEmpty()) {
+                                         
 
-                              }       
+                                          sales.add("Total Revenue from store: " + String.format("%.2f", totalRevenue));
+                                        } 
+                                        oos.writeObject(sales);
+                                      }
+                                      else if(curSeleciton == 2)
+                                      {
+                                            exitCurrentMenu = true;
+                                      } 
+                                   }
+                              }
                                 break;
                             case 3:
                                 break;

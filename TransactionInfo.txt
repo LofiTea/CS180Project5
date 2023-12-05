@@ -7,3 +7,4 @@
 7,4,6,RossAde,23.45,3,Football;Ross Ade;Student;23.45
 8,5,6,Mackay,4.00,3,Basketball;Mackey Arena;Nosebleeds;4.00
 9,4,6,Mackay,4.00,5,Basketball;Mackey Arena;Nosebleeds;4.00
+10,4,6,Mackay,4.30,6,Basketball;Mackey Arena;Nosebleeds;4.00

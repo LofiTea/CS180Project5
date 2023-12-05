@@ -249,6 +249,16 @@ public class MarketplaceClient {
 
     }
 
+    synchronized public void sendBoolean(boolean bool)
+    {
+        try {
+            oos.writeObject(bool);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     synchronized ArrayList<String> recieveStringArrayList()
     {
         try {
