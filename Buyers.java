@@ -273,7 +273,7 @@ public class Buyers {
         }
     }
 
-        public void showDashboard() {
+           public String showDashboard() {
         List<Sellers> amtSold = new ArrayList<Sellers>();
 
 
@@ -299,16 +299,19 @@ public class Buyers {
 
             Collections.sort(amtSold, Collections.reverseOrder());
 
-            System.out.println("View Dashboard: ");
 
+            StringBuilder ticketInfo = new StringBuilder("View Dashboard:\n ");
             for (Sellers k : amtSold)
             {
-                System.out.printf("%s: $%.2f%n", k.getSellerID(), k.getTickets());
+                ticketInfo.append("%s: $%.2f%n", k.getSellerID(), k.getTickets());
             }
 
-
+            return ticketInfo.toString();
         }
+
+            return "";
     }
+
 
         public void dashboardInteraction(String marketFile)  {
         Scanner scan = new Scanner(System.in);
