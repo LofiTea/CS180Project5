@@ -196,6 +196,8 @@ public class Marketplace {
                                     int howManybuy = scan.nextInt();
                                     Ticket curTickey = Buyers.buyTicket(b.getListedTicks(), whatToBuy, howManybuy,
                                             b.getHowManyTicks());
+                                    String showDash = currentBuyer.showDashboard();
+                                    System.out.println("View Dashboard:\n" + showDash);
                                     if (curTickey != null) {
                                         shoppingCart.add(new CartItems(curTickey, howManybuy));
                                         currentBuyer.setShoppingCart(shoppingCart);
