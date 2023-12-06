@@ -55,7 +55,10 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == viewStatisticsButton) {
                 client.sendInt(3);
-                // put logic here
+                SellerStatisticsGUI sellerStatisticsGUI = new SellerStatisticsGUI();
+                sellerStatisticsGUI.setLoginInfo(loginInfo);
+                sellerStatisticsGUI.run();
+                frame.dispose();
             }
             if (e.getSource() == accountButton) {
                 client.sendInt(4);
