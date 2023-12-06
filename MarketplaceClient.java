@@ -212,7 +212,6 @@ public class MarketplaceClient {
         oos.writeObject(type);
         oos.flush();
 
-
     }
 
     synchronized public String receiveAccountDetails() {
@@ -234,8 +233,14 @@ public class MarketplaceClient {
         return (String) ois.readObject();
     }
 
-    synchronized public void sendString(String str) throws IOException {
-        oos.writeObject(str);
+
+    synchronized public void sendString(String str) {
+        try {
+            oos.writeObject(str);
+            oos.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     synchronized public void sendInt(int x) {
@@ -249,25 +254,40 @@ public class MarketplaceClient {
 
     }
 
-    synchronized public void sendBoolean(boolean bool)
-    {
+    synchronized public void sendBoolean(boolean bool) {
         try {
             oos.writeObject(bool);
+            oos.flush();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    synchronized ArrayList<String> recieveStringArrayList()
-    {
+    synchronized ArrayList<String> recieveStringArrayList() {
         try {
-            return (ArrayList<String>)ois.readObject();
+            return (ArrayList<String>) ois.readObject();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-       
+
+    }
+
+    synchronized public void sendTicketInfo(String sport, String location, String section, double price, int quantity
+            , String store) {
+        try {
+            oos.writeObject(sport);
+            oos.writeObject(location);
+            oos.writeObject(section);
+            oos.writeObject(price);
+            oos.writeObject(quantity);
+            oos.writeObject(store);
+            oos.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 

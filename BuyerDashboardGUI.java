@@ -56,9 +56,9 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
                 } else {
                     BuyerHistoryGUI buyerHistoryGUI = new BuyerHistoryGUI();
                     buyerHistoryGUI.setLoginInfo(loginInfo);
-                    buyerHistoryGUI.setCurrentBuyer(currentBuyer);
-                    buyerHistoryGUI.setShoppingCart(shoppingCart);
-                    buyerHistoryGUI.setPreviousShoppingCart(previousShoppingCart);
+//                    buyerHistoryGUI.setCurrentBuyer(currentBuyer);
+//                    buyerHistoryGUI.setShoppingCart(shoppingCart);
+//                    buyerHistoryGUI.setPreviousShoppingCart(previousShoppingCart);
                     buyerHistoryGUI.run();
                     frame.dispose();
                 }

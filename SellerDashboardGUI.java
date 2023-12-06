@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.io.IOException;
 
 /**
  * Homework/Project X: ClassName
@@ -22,35 +22,52 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
     JButton accountButton;
     JButton logOutButton;
     LoginInfo loginInfo;
-    Sellers currentSeller;
-    ArrayList<String> stores;
+    MarketplaceClient client;
+
+
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            currentSeller = new Sellers(determineID(loginInfo.getEmail(), loginInfo.getPassword()));
+
+            // MarketplaceClient client = null;
+            //   try {
+            //     client = new MarketplaceClient();
+            //   } catch (IOException d) {
+            //     d.printStackTrace();
+            //   }
             if (e.getSource() == sellTicketButton) {
-                SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
-                sellTicketMenuGUI.setLoginInfo(loginInfo);
-                sellTicketMenuGUI.setCurrentSeller(currentSeller);
-                sellTicketMenuGUI.run();
+                System.out.println("Selling ticket");
+                client.sendInt(1);
+                System.out.println("Entered menu");
+                SellTicketGUI sellTicketGUI = new SellTicketGUI();
+                sellTicketGUI.setClient(client);
+                sellTicketGUI.run();
                 frame.dispose();
+
+                //put logic here
             }
             if (e.getSource() == viewHistoryButton) {
+                client.sendInt(2);
                 SellerHistoryGUI sellerHistoryGUI = new SellerHistoryGUI();
-                sellerHistoryGUI.setLoginInfo(loginInfo);
+                sellerHistoryGUI.setClient(client);
                 sellerHistoryGUI.run();
                 frame.dispose();
             }
             if (e.getSource() == viewStatisticsButton) {
+                client.sendInt(3);
                 // put logic here
             }
             if (e.getSource() == accountButton) {
+                client.sendInt(4);
+
                 AccountGUI accountGUI = new AccountGUI();
+                accountGUI.setClient(client);
                 accountGUI.setLoginInfo(loginInfo);
                 accountGUI.run();
                 frame.dispose();
             }
             if (e.getSource() == logOutButton) {
+                client.sendInt(5);
                 JOptionPane.showMessageDialog(null, "Thank you for using Tickets@Purdue! " +
                                 "We hope to see you soon!", "Tickets@Purdue Marketplace",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -59,7 +76,9 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
         }
     };
 
-    public SellerDashboardGUI() {
+
+    public SellerDashboardGUI()
+    {
 
     }
 
@@ -121,30 +140,15 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
     }
 
     public void setLoginInfo(LoginInfo loginInfo) {
         this.loginInfo = loginInfo;
     }
 
-    public void setCurrentSeller(Sellers currentSeller) {
-        this.currentSeller = currentSeller;
-    }
-
-    public void setStores(ArrayList<String> stores) {
-        this.stores = stores;
-    }
-
-    public int determineID(String email, String password) {
-        ArrayList<String> arrayList = Marketplace.readFile("LoginInfo.txt");
-        int id = 0;
-        for (int i = 0; i < arrayList.size(); i++) {
-            String[] userInfo = arrayList.get(i).split(",");
-            if (email.equals(userInfo[1]) && password.equals(userInfo[2])) {
-                id = Integer.parseInt(userInfo[0]);
-            }
-        }
-        return id;
+    synchronized public void setClient(MarketplaceClient client) {
+        this.client = client;
     }
 
     public static void main(String[] args) {

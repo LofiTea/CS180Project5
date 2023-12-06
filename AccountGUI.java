@@ -66,17 +66,13 @@ public class AccountGUI extends JComponent implements Runnable {
                 } while(!isValidEmail);
 
 
-                try {
-                    if(newEmail == null)
-                    {
-                        JOptionPane.showMessageDialog(null, "String null!",
-                                "Change Email", JOptionPane.ERROR_MESSAGE);
-                    }
-                    client.sendString(newEmail);
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
+
+                if(newEmail == null) {
+                    JOptionPane.showMessageDialog(null, "String null!",
+                            "Change Email", JOptionPane.ERROR_MESSAGE);
                 }
+                client.sendString(newEmail);
+
             }
             if (e.getSource() == editPasswordButton) {
                 client.sendInt(3);
@@ -96,11 +92,9 @@ public class AccountGUI extends JComponent implements Runnable {
                     }
                 }
 
-                try {
-                    client.sendString(newPassword);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+
+                client.sendString(newPassword);
+
             }
             if (e.getSource() == deleteAccountButton) {
                 client.sendInt(4);
@@ -109,12 +103,9 @@ public class AccountGUI extends JComponent implements Runnable {
                 if (num == JOptionPane.YES_OPTION) {
                     JOptionPane.showMessageDialog(null, "We are sorry to see you go! Goodbye!",
                             "Account Deleted", JOptionPane.INFORMATION_MESSAGE);
-                    try {
-                        client.sendString("yes");
-                    } catch (IOException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
+
+                    client.sendString("yes");
+
                     Window[] windows = Window.getWindows();
                     for (Window window : windows) {
                         if (window instanceof JFrame) {
@@ -122,12 +113,7 @@ public class AccountGUI extends JComponent implements Runnable {
                         }
                     }
                 } else {
-                    try {
-                        client.sendString("no");
-                    } catch (IOException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
+                    client.sendString("no");
                 }
             }
             if (e.getSource() == returnToMenuButton) {

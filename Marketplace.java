@@ -521,7 +521,7 @@ public class Marketplace {
         } else {
             while (true) {
                 sellerDashboard();
-                Sellers currentSeller = new Sellers(new LoginInfo(email, password), id);
+                Sellers currentSeller = new Sellers(/*new LoginInfo(email, password),*/ id);
                 String choice = scan.nextLine();
                 switch (choice) {
                     case "1":

@@ -146,18 +146,18 @@ public class MarketplaceServer {
         writeFile(loginInfo, "LoginInfo.txt");
     }
 
-    synchronized public static void editPassword(String email, String oldPassword, String newPassword) {
+    synchronized public static void editPassword(int id, String newPassword) {
         ArrayList<String> loginInfo = readFile("LoginInfo.txt");
         int indexToChange = 0;
-        String id = "";
+        String email = "";
         String role = "";
         for (int i = 0; i < loginInfo.size(); i++) {
             String[] line = loginInfo.get(i).split(",");
-            id = line[0];
-            String check1 = line[1];
+            String check = line[0];
+            email = line[1];
             String check2 = line[2];
             role = line[3];
-            if (check1.equals(email) && check2.equals(oldPassword)) {
+            if (check.equals(String.valueOf(id))) {
                 indexToChange = i;
                 break;
             }

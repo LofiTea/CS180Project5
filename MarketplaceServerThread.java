@@ -7,6 +7,7 @@
  * @version date
  */
 
+import javax.swing.*;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -16,8 +17,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MarketplaceServerThread extends Thread {
     public static Object obj = new Object();
-    private static final ReadWriteLock lock = new ReentrantReadWriteLock();
-
     Socket socket;
 
 
@@ -145,70 +144,129 @@ public class MarketplaceServerThread extends Thread {
                         System.out.println(whatDash);
                         switch (whatDash) {
                             case 1:
-                                break;
-                            case 2:
-                             Sellers curSeller = new Sellers(id);
-                              ArrayList<String> stores = curSeller.retrieveStores();
-                              oos.writeObject(stores);
-                              boolean exitCurrentMenu = (boolean)ois.readObject();
-                              if(!exitCurrentMenu)
-                              {
-                                   while(!exitCurrentMenu)
-                                   {
-                                      int curSeleciton = (int)ois.readObject();
-                                      if(curSeleciton == 1)
-                                      {
-                                        int selectedStore = (int)ois.readObject();
-                                        ArrayList<String> sales = new ArrayList<>();
-                                        ArrayList<String> allTransactions = MarketplaceServer.readFile("TransactionInfo.txt");
-                                        double totalRevenue = 0.0;
-                                        for (int i = 0; i < allTransactions.size(); i++) {
-                                            String[] transactionInfo = allTransactions.get(i).split(",");
-                                            if (transactionInfo[2].equals(String.valueOf(id))) {
-                                                if (transactionInfo[3].equals(stores.get(selectedStore - 1))) {
-                                                    String buyerEmail = null;
-                                                    ArrayList<String> buyers = Marketplace.readFile("BuyerHistory.txt");
-                                                    for (int j = 0; j < buyers.size(); j++) {
-                                                        String[] buyerInfo = buyers.get(j).split(",");
-                                                        if (buyerInfo[0].equals(transactionInfo[1])) {
-                                                            buyerEmail = buyerInfo[1];
-                                                            break;
+                                Sellers seller = new Sellers(id);
+                                ArrayList<String> stores1 = seller.retrieveStores();
+                                oos.writeObject(stores1);
+                                oos.flush();
+                                if(stores1 == null) {
+                                    int option = (int) ois.readObject();
+                                    if(option == JOptionPane.YES_OPTION) {
+                                        String storeName = (String) ois.readObject();
+                                        if(storeName != null) {
+                                            seller.addStore(storeName);
+                                        }
+                                    }
+                                } else {
+                                    String ticket = (String) ois.readObject();
+                                    if(ticket != null) {
+                                        int option = (int) ois.readObject();
+                                        if(option == 0) {
+                                            boolean notDone = true;
+                                            while(notDone) {
+                                                System.out.println();
+                                                notDone = (boolean) ois.readObject();
+                                                if(notDone) {
+                                                    String store = (String) ois.readObject();
+                                                    if(store != null) {
+                                                        if (store.isEmpty() || store.equals("\n")) {
+                                                        } else {
+                                                            seller.addStore(store);
                                                         }
+                                                    } else {
+                                                        notDone = false;
                                                     }
-                                                    String[] ticketInfo = transactionInfo[6].split(";");
-                                                    sales.add("Ticket Info -\n" +
-                                                            "Sport: " + ticketInfo[0] + "\n" +
-                                                            "Location: " + ticketInfo[1] + "\n" +
-                                                            "Section: " + ticketInfo[2] + "\n" +
-                                                            "Price: " + ticketInfo[3] + "\n" +
-                                                            "Quantity purchased: " + transactionInfo[5] + "\n" +
-                                                            "Customer Info -" + "\n" +
-                                                            "ID: " + transactionInfo[1] + "\n" +
-                                                            "Email: " + buyerEmail + "\n" +
-                                                            "Revenue from sale: " + String.format("%.2f",
-                                                            Double.parseDouble(transactionInfo[4]) * Integer.parseInt(transactionInfo[5]))
-                                                    );
-            
-                                                    totalRevenue += Double.parseDouble(transactionInfo[4]) * Integer.parseInt(transactionInfo[5]);
-            
                                                 }
                                             }
-            
-                                        }
-            
-                                        if (!sales.isEmpty()) {
-                                         
 
-                                          sales.add("Total Revenue from store: " + String.format("%.2f", totalRevenue));
-                                        } 
-                                        oos.writeObject(sales);
-                                      }
-                                      else if(curSeleciton == 2)
-                                      {
+                                        } else {
+                                            String storeChoice = (String) ois.readObject();
+                                            if(storeChoice != null) {
+                                                boolean notDone = true;
+                                                while (notDone) {
+                                                    notDone = (boolean) ois.readObject();
+                                                    if (notDone) {
+                                                        boolean notNull = (boolean) ois.readObject();
+                                                        if (notNull) {
+                                                            boolean invalid = (boolean) ois.readObject();
+                                                            if (!invalid) {
+                                                                String sport = (String) ois.readObject();
+                                                                String location = (String) ois.readObject();
+                                                                String section = (String) ois.readObject();
+                                                                double price = (double) ois.readObject();
+                                                                int quantity = (int) ois.readObject();
+                                                                String store = (String) ois.readObject();
+                                                                seller.addTickets(new Ticket(sport, location, section,
+                                                                        price), quantity, store);
+                                                            }
+                                                        } else {
+                                                            notDone = false;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                                break;
+                            case 2:
+                                Sellers curSeller = new Sellers(id);
+                                ArrayList<String> stores = curSeller.retrieveStores();
+                                oos.writeObject(stores);
+                                boolean exitCurrentMenu = (boolean) ois.readObject();
+                                if (!exitCurrentMenu) {
+                                    while (!exitCurrentMenu) {
+                                        int curSeleciton = (int) ois.readObject();
+                                        if (curSeleciton == 1) {
+                                            int selectedStore = (int) ois.readObject();
+                                            ArrayList<String> sales = new ArrayList<>();
+                                            ArrayList<String> allTransactions = MarketplaceServer.readFile("TransactionInfo.txt");
+                                            double totalRevenue = 0.0;
+                                            for (int i = 0; i < allTransactions.size(); i++) {
+                                                String[] transactionInfo = allTransactions.get(i).split(",");
+                                                if (transactionInfo[2].equals(String.valueOf(id))) {
+                                                    if (transactionInfo[3].equals(stores.get(selectedStore - 1))) {
+                                                        String buyerEmail = null;
+                                                        ArrayList<String> buyers = Marketplace.readFile("BuyerHistory.txt");
+                                                        for (int j = 0; j < buyers.size(); j++) {
+                                                            String[] buyerInfo = buyers.get(j).split(",");
+                                                            if (buyerInfo[0].equals(transactionInfo[1])) {
+                                                                buyerEmail = buyerInfo[1];
+                                                                break;
+                                                            }
+                                                        }
+                                                        String[] ticketInfo = transactionInfo[6].split(";");
+                                                        sales.add("Ticket Info -\n" +
+                                                                "Sport: " + ticketInfo[0] + "\n" +
+                                                                "Location: " + ticketInfo[1] + "\n" +
+                                                                "Section: " + ticketInfo[2] + "\n" +
+                                                                "Price: " + ticketInfo[3] + "\n" +
+                                                                "Quantity purchased: " + transactionInfo[5] + "\n" +
+                                                                "Customer Info -" + "\n" +
+                                                                "ID: " + transactionInfo[1] + "\n" +
+                                                                "Email: " + buyerEmail + "\n" +
+                                                                "Revenue from sale: " + String.format("%.2f",
+                                                                Double.parseDouble(transactionInfo[4]) * Integer.parseInt(transactionInfo[5]))
+                                                        );
+
+                                                        totalRevenue += Double.parseDouble(transactionInfo[4]) * Integer.parseInt(transactionInfo[5]);
+
+                                                    }
+                                                }
+
+                                            }
+
+                                            if (!sales.isEmpty()) {
+
+
+                                                sales.add("Total Revenue from store: " + String.format("%.2f", totalRevenue));
+                                            }
+                                            oos.writeObject(sales);
+                                        } else if (curSeleciton == 2) {
                                             exitCurrentMenu = true;
-                                      } 
-                                   }
-                              }
+                                        }
+                                    }
+                                }
                                 break;
                             case 3:
                                 break;
@@ -217,7 +275,7 @@ public class MarketplaceServerThread extends Thread {
                                 while (notReturnedToMenu) {
                                     email = MarketplaceServer.getEmailPassword(id).get(0);
                                     password = MarketplaceServer.getEmailPassword(id).get(1);
-                                    System.out.println(email+password);
+                                    System.out.println(email + password);
                                     int whatEditOption = (int) ois.readObject();
                                     System.out.println(whatEditOption);
                                     switch (whatEditOption) {
@@ -251,12 +309,8 @@ public class MarketplaceServerThread extends Thread {
                                             break;
                                         case 3:
                                             String newPassword = (String) ois.readObject();
-                                            System.out.println(newPassword);
                                             if (newPassword != null) {
-                                                synchronized (obj) {
-                                                    MarketplaceServer.editPassword(email, password, newPassword);
-                                                    password = newPassword;
-                                                }
+                                                MarketplaceServer.editPassword(id, newPassword);
                                             }
 
                                             break;

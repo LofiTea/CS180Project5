@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -33,54 +34,131 @@ public class SellTicketGUI extends JComponent implements Runnable {
     LoginInfo loginInfo;
     Sellers currentSeller;
     ArrayList<String> stores;
+
+    MarketplaceClient client;
     int num;
+
+    int choiceIdx;
+
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == confirmButton) {
-                String store = storeTextField.getText();
-                if (store == null) {
-                    return;
-                } else if (store.isEmpty() || store.equals("\n")) {
-                    JOptionPane.showMessageDialog(null, "Please enter a valid store name!",
-                            "Invalid Store Name", JOptionPane.ERROR_MESSAGE);
+                if(choiceIdx == 0) {
+                    client.sendBoolean(true);
+                    String store = storeTextField.getText();
+                    client.sendString(store);
+                    if (store == null) {
+                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
+                        sellerDashboardGUI.setClient(client);
+                        sellerDashboardGUI.run();
+                        return;
+                    }
+
+                    if (store.isEmpty() || store.equals("\n")) {
+                        JOptionPane.showMessageDialog(null, "Please enter a valid store name!",
+                                "Invalid Store Name", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
-                    currentSeller.addStore(store);
+                    client.sendBoolean(true);
+                    boolean invalidSport = false;
+                    boolean invalidLocation = false;
+                    boolean invalidSection = false;
+                    boolean invalidPrice = false;
+                    boolean invalidQty = false;
+                    String sport = sportTextField.getText();
+                    String location = locationTextField.getText();
+                    String section = sectionTextField.getText();
+                    String price = priceTextField.getText();
+                    String quantity = quantityTextField.getText();
+
+                    if(sport == null || location == null || section == null || price == null || quantity == null) {
+                        client.sendBoolean(false);
+                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
+                        sellerDashboardGUI.setClient(client);
+                        sellerDashboardGUI.run();
+                        return;
+                    }
+
+                    client.sendBoolean(true);
+
+                    if (sport.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame, "Please enter a valid sport!",
+                                "Invalid Sport", JOptionPane.ERROR_MESSAGE);
+                        invalidSport = true;
+                    }
+                    if (location.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame, "Please enter a valid " +
+                                "location!", "Invalid Location", JOptionPane.ERROR_MESSAGE);
+                        invalidLocation = true;
+                    }
+                    if (section.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame, "Please enter a valid " +
+                                "section!", "Invalid Section", JOptionPane.ERROR_MESSAGE);
+                        invalidSection = true;
+                    }
+
+                    try {
+                        double priceNum = Double.parseDouble(price);
+                        if(price.isEmpty() || priceNum <= 0) {
+                            JOptionPane.showMessageDialog(frame, "Please enter a " +
+                                    "valid price!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
+                            invalidPrice = true;
+                        } else {
+                            invalidPrice = false;
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(frame, "Please enter a " +
+                                "valid price!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
+                        invalidPrice = true;
+                    }
+
+
+                    try {
+                        int quantityNum = Integer.parseInt(quantity);
+                        if(quantity.isEmpty() || quantityNum <= 0) {
+                            JOptionPane.showMessageDialog(frame, "Please enter a " +
+                                    "valid quantity!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
+                            invalidQty = true;
+                        } else {
+                            invalidQty = false;
+                        }
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(frame, "Please enter a " +
+                                "valid quantity!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
+                        invalidQty = true;
+                    }
+
+                    boolean invalid = false;
+
+                    if(!invalidSport && !invalidLocation && !invalidSection && !invalidPrice && !invalidQty) {
+                        client.sendBoolean(invalid);
+                        client.sendTicketInfo(sport, location, section, Double.parseDouble(price),
+                                Integer.parseInt(quantity), stores.get(num));
+                        sportTextField.setText("");
+                        locationTextField.setText("");
+                        sectionTextField.setText("");
+                        priceTextField.setText("");
+                        quantityTextField.setText("");
+                    } else {
+                        invalid = true;
+                        client.sendBoolean(invalid);
+                    }
+
+
+
+//                    currentSeller.addTickets(new Ticket(sport, location, section, price), quantity,
+//                            stores.get(num));
                 }
-                String sport = sportTextField.getText();
-                String location = locationTextField.getText();
-                String section = sectionTextField.getText();
-                double price = Double.parseDouble(priceTextField.getText());
-                int quantity = Integer.parseInt(quantityTextField.getText());
-                if (sport == null || sport.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a valid sport!",
-                            "Invalid Sport", JOptionPane.ERROR_MESSAGE);
-                }
-                if (location == null || location.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a valid " +
-                            "location!", "Invalid Location", JOptionPane.ERROR_MESSAGE);
-                }
-                if (section == null || section.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a valid " +
-                            "section!", "Invalid Section", JOptionPane.ERROR_MESSAGE);
-                }
-                if (priceTextField.getText() == null || priceTextField.getText().isEmpty() || price <= 0) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a " +
-                            "valid price!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
-                }
-                if (quantityTextField.getText() == null || quantityTextField.getText().isEmpty() || quantity <= 0) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a " +
-                            "valid quantity!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
-                }
-                currentSeller.addTickets(new Ticket(sport, location, section, price), quantity,
-                        stores.get(num));
             }
 
             if (e.getSource() == returnToMenuButton) {
+                client.sendBoolean(false);
                 SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                sellerDashboardGUI.setLoginInfo(loginInfo);
-                sellerDashboardGUI.setCurrentSeller(currentSeller);
-                sellerDashboardGUI.setStores(stores);
+                //sellerDashboardGUI.setLoginInfo(loginInfo);
+                sellerDashboardGUI.setClient(client);
+//                sellerDashboardGUI.setCurrentSeller(currentSeller);
+//                sellerDashboardGUI.setStores(stores);
                 sellerDashboardGUI.run();
                 frame.dispose();
             }
@@ -91,32 +169,58 @@ public class SellTicketGUI extends JComponent implements Runnable {
     }
 
     public void run() {
-        stores = currentSeller.retrieveStores();
+        stores = client.recieveStringArrayList();
         if (stores == null) {
             int num = JOptionPane.showConfirmDialog(null, "You have no stores currently. " +
                     "Would you like to add a store?"
                     + " your account?", "Add Store?", JOptionPane.YES_NO_OPTION);
+            client.sendInt(num);
             if (num == JOptionPane.YES_OPTION) {
-                String name = JOptionPane.showInputDialog(null, "Enter the name of your " +
-                        "store.", "New Store", JOptionPane.QUESTION_MESSAGE);
-                if (name.isEmpty() || name.equals("\n")) {
-                    JOptionPane.showMessageDialog(null, "Please enter a valid store name!",
-                            "Invalid Store Name", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    currentSeller.addStore(name);
-                }
+                boolean invalidName = false;
+                String name = "";
+                do {
+                    name = JOptionPane.showInputDialog(null, "Enter the name of your " +
+                            "store.", "New Store", JOptionPane.QUESTION_MESSAGE);
+                    if (name != null) {
+                        if (name.isEmpty() || name.equals("\n")) {
+                            JOptionPane.showMessageDialog(null, "Please enter a valid store name!",
+                                    "Invalid Store Name", JOptionPane.ERROR_MESSAGE);
+                            invalidName = true;
+                        } else {
+                            invalidName = false;
+                        }
+                    } else {
+                        invalidName = false;
+                    }
+                } while (invalidName);
+
+
+                client.sendString(name);
+
+                SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
+                sellerDashboardGUI.setClient(client);
+                sellerDashboardGUI.run();
+            } else {
+                SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
+                sellerDashboardGUI.setClient(client);
+                sellerDashboardGUI.run();
             }
         } else {
             String[] options1 = {"1. Add Store\n", "2. Add Ticket"};
             String ticket = (String) JOptionPane.showInputDialog(frame,
                     "What would you like to do?", "Create Store",
                     JOptionPane.PLAIN_MESSAGE, null, options1, options1[0]);
+            client.sendString(ticket);
             if (ticket == null) {
+                SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
+                sellerDashboardGUI.setClient(client);
+                sellerDashboardGUI.run();
                 return;
             }
-            int num1 = Arrays.asList(options1).indexOf(ticket);
+            choiceIdx = Arrays.asList(options1).indexOf(ticket);
+            client.sendInt(choiceIdx);
 
-            if (num1 == 0) {
+            if (choiceIdx == 0) {
                 frame = new JFrame("Sell A Ticket");
                 frame.setLayout(new GridBagLayout());
 
@@ -173,13 +277,22 @@ public class SellTicketGUI extends JComponent implements Runnable {
                 String decision = (String) JOptionPane.showInputDialog(frame,
                         "Which store would you like to add your ticket to?", "Create Store",
                         JOptionPane.PLAIN_MESSAGE, null, options2, options2[0]);
-                num = Arrays.asList(options2).indexOf(decision);
+
+                client.sendString(decision);
+
                 if (decision == null) {
+                    SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
+                    sellerDashboardGUI.setClient(client);
+                    sellerDashboardGUI.run();
                     return;
-                } else if (num < 1 || num > stores.size()) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a valid store!",
-                            "Invalid Store", JOptionPane.ERROR_MESSAGE);
-                } else {
+                }
+
+                num = Arrays.asList(options2).indexOf(decision);
+
+//                if (num < 0 || num > stores.size()-1) {
+//                    JOptionPane.showMessageDialog(frame, "Please enter a valid store!",
+//                            "Invalid Store", JOptionPane.ERROR_MESSAGE);
+//                } else {
                     frame = new JFrame("Sell A Ticket");
                     frame.setLayout(new GridBagLayout());
 
@@ -264,7 +377,7 @@ public class SellTicketGUI extends JComponent implements Runnable {
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.setVisible(true);
 
-                }
+                //}
             }
         }
     }
@@ -279,6 +392,10 @@ public class SellTicketGUI extends JComponent implements Runnable {
 
     public void setStores(ArrayList<String> stores) {
         this.stores = stores;
+    }
+
+    synchronized public void setClient(MarketplaceClient client) {
+        this.client = client;
     }
 
     public static void main(String[] args) {

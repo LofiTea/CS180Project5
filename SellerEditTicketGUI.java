@@ -112,8 +112,8 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
             if (e.getSource() == returnToMenuButton) {
                 SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
                 sellerDashboardGUI.setLoginInfo(loginInfo);
-                sellerDashboardGUI.setCurrentSeller(currentSeller);
-                sellerDashboardGUI.setStores(stores);
+//                sellerDashboardGUI.setCurrentSeller(currentSeller);
+//                sellerDashboardGUI.setStores(stores);
                 sellerDashboardGUI.run();
                 frame.dispose();
             }
