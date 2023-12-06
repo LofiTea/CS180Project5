@@ -28,13 +28,6 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-
-            // MarketplaceClient client = null;
-            //   try {
-            //     client = new MarketplaceClient();
-            //   } catch (IOException d) {
-            //     d.printStackTrace();
-            //   }
             if (e.getSource() == sellTicketButton) {
                 System.out.println("Selling ticket");
                 client.sendInt(1);
@@ -44,7 +37,6 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
                 sellTicketGUI.run();
                 frame.dispose();
 
-                //put logic here
             }
             if (e.getSource() == viewHistoryButton) {
                 client.sendInt(2);
