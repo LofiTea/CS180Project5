@@ -154,13 +154,14 @@ public class SellTicketGUI extends JComponent implements Runnable {
 
             if (e.getSource() == returnToMenuButton) {
                 client.sendBoolean(false);
-                SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                //sellerDashboardGUI.setLoginInfo(loginInfo);
-                sellerDashboardGUI.setClient(client);
-//                sellerDashboardGUI.setCurrentSeller(currentSeller);
-//                sellerDashboardGUI.setStores(stores);
-                sellerDashboardGUI.run();
+            
+                SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
+                //sellTicketMenuGUI.setLoginInfo(loginInfo);
+                sellTicketMenuGUI.setCurrentSeller(currentSeller);
+                sellTicketMenuGUI.setStores(stores);
+                sellTicketMenuGUI.run();
                 frame.dispose();
+            
             }
         }
     };
