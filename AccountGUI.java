@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Homework/Project X: ClassName
- * <p>
- * Describe what the assignment is about.
+ * Project 5: AccountGUI
+ *
+ * Utilizes GUI for account details such as editing email or password, deleting accounts, and more.
  *
  * @author Henry J. Lee, Lab Section L20
- * @version Month XX, 2023
+ * @version November 13, 2023
  */
 
 public class AccountGUI extends JComponent implements Runnable {
