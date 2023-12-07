@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Project 5: AccountGUI
- *
- * Utilizes GUI for account details such as editing email or password, deleting accounts, and more.
+ * Project 5: BuyerDashboardGUI
+ * 
+ * Utilizes GUI to make a menu page for buyers to buy tickets, view history, and more.
  *
  * @author Henry J. Lee, Lab Section L20
  * @version November 13, 2023
