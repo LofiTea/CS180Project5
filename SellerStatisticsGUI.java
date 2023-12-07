@@ -8,12 +8,12 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Homework/Project X: ClassName
- * <p>
- * Describe what the assignment is about.
+ * Project 5: SellerStatisticsGUI
+ *
+ * Utilizes GUI to allow a seller to view their stores' statistics.
  *
  * @author Henry J. Lee, Lab Section L20
- * @version Month XX, 2023
+ * @version November 13, 2023
  */
 
 public class SellerStatisticsGUI extends JComponent implements Runnable {
