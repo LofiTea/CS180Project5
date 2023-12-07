@@ -7,9 +7,9 @@ import java.util.Arrays;
 /**
  * Project 5: MarketplaceServer
  * 
- * Holds the server side for the marketplace.
+ * Holds the server for the marketplace.
  *
- * @author Henry J. Lee, Lab Section L20
+ * @author Shrish Mahesh, Lab Section L20
  * @version November 13, 2023
  */
 
