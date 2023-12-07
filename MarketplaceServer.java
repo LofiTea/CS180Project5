@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- 
-Program Name
-<p>
-brief description of the program
-*
-@author Shrish Mahesh, L20
-@version date
-*/
+ * Project 5: MarketplaceServer
+ * 
+ * Holds the server side for the marketplace.
+ *
+ * @author Henry J. Lee, Lab Section L20
+ * @version November 13, 2023
+ */
+
 public class MarketplaceServer {
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(8080);
