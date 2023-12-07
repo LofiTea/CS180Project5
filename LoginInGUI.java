@@ -4,12 +4,12 @@ import java.awt.event.*;
 import java.io.IOException;
 
 /**
- * Homework/Project X: ClassName
- * <p>
- * Describe what the assignment is about.
+ * Project 5: LoginInGUI
+ *
+ * Utilizes GUI to allow a user to login to the application.
  *
  * @author Henry J. Lee, Lab Section L20
- * @version Month XX, 2023
+ * @version November 13, 2023
  */
 
 public class LoginInGUI extends JComponent implements Runnable {
