@@ -19,7 +19,7 @@ List of Classes:
 - DoubleArrayList.java: This class returns a list of available tickets to buy from a seller and a list of the names of all stores.  Buyers.java and the main class utilize this class to show what sellers are available in the marketplace.
 - LoginInfo.java: This class ensures that the user logging into the marketplace is valid and has an account in the system. This prevents any unauthorized users from logging into the marketplace.
 - LoginInGUI.java:
-- Marketplace.java: This is the main class of our project.  This utilizes the other five classes to allow the user to log in to the marketplace and proceed to buy or sell tickets. It takes in methods from the Buyer and Seller classes to buy or sell tickets and any other relevant actions like viewing statistics.
+- Marketplace.java: This is the main class of our project.  This utilizes the other five classes to allow the user to log in to the marketplace and proceed to buy or sell tickets. It takes in methods from the Buyer and Seller classes to buy or sell tickets and any other relevant actions like viewing statistics. (Edit)
 - MarketplaceClient.java:
 - MarketplaceServer.java:
 - MarketplaceServerThread.java:
