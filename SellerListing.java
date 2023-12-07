@@ -1,12 +1,12 @@
 import java.util.ArrayList;
 
 /**
- * Project 4: SellerListing
+ * Project 5: SellerListing
  *
  * This class returns a list of tickets and how many quantities for all items in the store.
  *
  * @author Shrish Mahesh, Lab Section L20
- * @version October 30, 2023
+ * @version November 13, 2023
  */
 
 public class SellerListing {
