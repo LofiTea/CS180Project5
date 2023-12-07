@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Homework/Project X: ClassName
- * <p>
- * Describe what the assignment is about.
+ * Project 5: BuyTicketGUI
+ * 
+ * Utilizes GUI to allow a buyer to buy tickets from a seller.
  *
  * @author Henry J. Lee, Lab Section L20
- * @version Month XX, 2023
+ * @version November 13, 2023
  */
 
 public class BuyTicketGUI extends JComponent implements Runnable {
