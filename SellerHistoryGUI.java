@@ -4,16 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-
 /**
-* Homework/Project X: ClassName
-* <p>
-* Describe what the assignment is about.
-*
-* @author Henry J. Lee, Lab Section L20
-* @version Month XX, 2023
-*/
-
+ * Project 5: SellerHistoryGUI
+ * 
+ * Utilizes GUI to allow a seller to view a store's shopping history.
+ *
+ * @author Henry J. Lee, Lab Section L20
+ * @version November 13, 2023
+ */
 
 public class SellerHistoryGUI extends JComponent implements Runnable {
    JFrame frame;
