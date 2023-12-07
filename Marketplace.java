@@ -3,12 +3,12 @@ import java.util.ArrayList;
 import java.util.*;
 
 /**
- * Project 4: Marketplace
- *
+ * Project 5: Marketplace
+ * 
  * The main class that holds the marketplace for tickets.
  *
  * @author Shrish Mahesh, Henry Lee, Lab Section L20
- * @version October 30, 2023
+ * @version November 13, 2023
  */
 
 public class Marketplace {
