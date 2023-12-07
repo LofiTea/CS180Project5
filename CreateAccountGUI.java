@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Homework/Project X: ClassName
- * <p>
- * Describe what the assignment is about.
+ * Project 5: CreateAccountGUI
+ * 
+ * Utilizes GUI to allow a user to create an account.
  *
  * @author Henry J. Lee, Lab Section L20
- * @version Month XX, 2023
+ * @version November 13, 2023
  */
 
 public class CreateAccountGUI extends JComponent implements Runnable {
