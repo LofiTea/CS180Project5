@@ -1,12 +1,3 @@
-/**
- * Program Name
- * <p>
- * brief description of the program
- *
- * @author Shrish Mahesh, L20
- * @version date
- */
-
 import javax.swing.*;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,6 +5,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+/**
+ * Project 5: MarketplaceServerThread
+ * 
+ * Utilizes threads in the server for the marketplace.
+ *
+ * @author Shrish Mahesh, Lab Section L20
+ * @version November 13, 2023
+ */
 
 public class MarketplaceServerThread extends Thread {
     public static Object obj = new Object();
