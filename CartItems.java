@@ -1,10 +1,10 @@
 /**
- * Project 4: CartItems
+ * Project 5: CartItems
  *
  * Allows a buyer to buy more than 1 ticket and allows sellers to sell more than 1 ticket.
  *
  * @author Rahul Siddharth, Lab Section L20
- * @version October 30, 2023
+ * @version November 13, 2023
  */
 
 public class CartItems {
