@@ -5,12 +5,12 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
- * Homework/Project X: ClassName
- * <p>
- * Describe what the assignment is about.
+ * Project 5: SellerDashboardGUI
+ * 
+ * Utilizes GUI to allow a seller to sell a ticket, view their selling history, and more.
  *
  * @author Henry J. Lee, Lab Section L20
- * @version Month XX, 2023
+ * @version November 13, 2023
  */
 
 public class SellerDashboardGUI extends JComponent implements Runnable {
