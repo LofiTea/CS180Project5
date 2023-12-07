@@ -3,12 +3,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Project 4: Sellers
- *
+ * Project 5: Sellers
+ * 
  * This class allows a user to sell a ticket.
  *
  * @author Rahul Siddharth, Shrish Mahesh, Lab Section L20
- * @version October 30, 2023
+ * @version November 13, 2023
  */
 
 public class Sellers {
