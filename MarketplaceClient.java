@@ -5,13 +5,14 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 /**
- * Program Name
- * <p>
- * brief description of the program
+ * Project 5: MarketplaceClient
  *
- * @author Shrish Mahesh, L20
- * @version date
+ * Holds the client for the marketplace.
+ *
+ * @author Shrish Mahesh, Lab Section L20
+ * @version November 13, 2023
  */
+
 public class MarketplaceClient {
     public static MarketplaceClient client;
 
