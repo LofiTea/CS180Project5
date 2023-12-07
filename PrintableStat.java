@@ -1,7 +1,11 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
+/**
+ * Project 5: PrintableStat
+ * 
+ * Created to help display seller statistics.
+ *
+ * @author Shrish Mahesh, Lab Section L20
+ * @version November 13, 2023
+ */
 
 public class PrintableStat {
     private Integer buyerID;
