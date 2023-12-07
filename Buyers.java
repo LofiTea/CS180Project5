@@ -273,7 +273,7 @@ public class Buyers {
         }
     }
 
-           public String showDashboard() {
+           public String showDashboard() throws IOException {
         List<Sellers> amtSold = new ArrayList<Sellers>();
 
 
@@ -285,17 +285,23 @@ public class Buyers {
                 int numTickets = Integer.parseInt(data[5]);
 
                 boolean bool = false;
-                try (BufferedReader bufferedReader = new BufferedReader(new FileReader("TransactionInfo.txt"))) {
-                    String temp;
-                    while ((temp = bufferedReader.readLine() != null)) {
-                        String[] parts = temp.split(",");
-                        String storename = parts[3];
-                        double price = Double.parseDouble(parts[5]);
-                        soldInfo.add(new Buyers(storename, price));
+                String temp;
+
+
+                BufferedReader bufferedReader = new BufferedReader(new FileReader("TransactionInfo.txt"));
+                while ((temp = bufferedReader.readLine()) != null) {
+
+                    String[] parts = temp.split(",");
+
+                    if (parts.length >= 6) {
+                        LoginInfo storename = parts[3];
+
+                        int price = Integer.parseInt(parts[5]);
+                        amtSold.add(new Sellers(storename, price));
+                    } else {
+                        System.err.println("Invalid");
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    }
 
             Collections.sort(amtSold, Collections.reverseOrder());
 
