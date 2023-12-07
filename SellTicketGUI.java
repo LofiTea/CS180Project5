@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Homework/Project X: ClassName
- * <p>
- * Describe what the assignment is about.
+ * Project 5: SellTicketGUI
+ * 
+ * Utilizes GUI to allow a seller to sell a ticket.
  *
  * @author Henry J. Lee, Lab Section L20
- * @version Month XX, 2023
+ * @version November 13, 2023
  */
 
 public class SellTicketGUI extends JComponent implements Runnable {
