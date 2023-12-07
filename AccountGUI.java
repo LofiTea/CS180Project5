@@ -126,10 +126,10 @@ public class AccountGUI extends JComponent implements Runnable {
                     ef.printStackTrace();
                 }
                 if (role.equals("b")) {
-//                    BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
-//                    buyerDashboardGUI.setLoginInfo(loginInfo);
-//                    buyerDashboardGUI.run();
-//                    frame.dispose();
+                 BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
+                 buyerDashboardGUI.setClient(client);
+                 buyerDashboardGUI.run();
+                  frame.dispose();
                 } else {
                     SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
                     sellerDashboardGUI.setClient(client);

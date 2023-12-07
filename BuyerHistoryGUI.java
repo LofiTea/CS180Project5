@@ -21,6 +21,7 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
     JButton returnToMenuButton;
     LoginInfo loginInfo;
     MarketplaceClient client;
+    ArrayList<String> previousCart;
 
     public BuyerHistoryGUI() {
 
@@ -30,32 +31,36 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == confirmButton) {
-                String[] userInfo = loginInfo.authenticate(getLoginInfo().getEmail(),
-                        getLoginInfo().getPassword()).split(",");
-                Buyers currentBuyer = new Buyers(Integer.parseInt(userInfo[0]), loginInfo);
-                ArrayList<CartItems> previousCart = currentBuyer.retrieveShoppingCart2();
+                client.sendInt(1);
                 String selectedOption = (String) list.getSelectedItem();
 
                 int selectedIndex = Integer.parseInt(selectedOption) - 1;
-                if (selectedIndex >= 0 && selectedIndex < previousCart.size()) {
-                    Ticket ticket = previousCart.get(selectedIndex).getTicket();
-                    int qty = previousCart.get(selectedIndex).getQTY();
-                    String transactionDetails = selectedIndex + 1 + ":\nSport: " +
-                            ticket.getSportType() + "\nLocation: " + ticket.getLocation() +
-                            "\nSection: " + ticket.getSection() + "\nPrice: " + String.format("%.2f",
-                            ticket.getPrice()) + "\nQuantity: " + qty;
+                
+                String currentTicketInfo = previousCart.get(selectedIndex);
 
-                    JOptionPane.showMessageDialog(null, transactionDetails, "Selected Item",
+                String[] curTicketSplit = currentTicketInfo.split("&");
+                String[] tickInfoSplit = curTicketSplit[0].split(";");
+                
+
+
+            double transactionAction = Double.parseDouble(curTicketSplit[1]) * Double.parseDouble(tickInfoSplit[3]);
+
+        String transactionDetails = (selectedIndex + 1) + ":\nSport: " +
+        tickInfoSplit[0] + "\nLocation: " + tickInfoSplit[1] +
+        "\nSection: " + tickInfoSplit[2] + "\nPrice: $" + String.format("%.2f", Double.parseDouble(tickInfoSplit[3])) +
+        "\nQuantity: " + curTicketSplit[1] + "\nPrice of Transaction: $" + String.format("%.2f", transactionAction);
+
+                    JOptionPane.showMessageDialog(null, transactionDetails, "Ticket "+selectedOption,
                             JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "No transactions found", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+
+                client.sendInt(13);
+                
             }
 
             if (e.getSource() == returnToMenuButton) {
+                client.sendInt(2);
                 BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
-                buyerDashboardGUI.setLoginInfo(loginInfo);
+                buyerDashboardGUI.setClient(client);
                 buyerDashboardGUI.run();
                 frame.dispose();
             }
@@ -80,24 +85,7 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
         panel.add(label, gbc1);
 
         gbc1.gridy++;
-
-        String[] userInfo = loginInfo.authenticate(getLoginInfo().getEmail(),
-                getLoginInfo().getPassword()).split(",");
-        Buyers currentBuyer = new Buyers(Integer.parseInt(userInfo[0]), loginInfo);
-        ArrayList<CartItems> shoppingCart = currentBuyer.retrieveShoppingCart();
-        ArrayList<CartItems> previousCart = currentBuyer.retrieveShoppingCart2();
-
-        if (shoppingCart == null) {
-            shoppingCart = new ArrayList<>();
-        }
-        if (previousCart == null) {
-            previousCart = new ArrayList<>();
-        }
-
-        currentBuyer.setShoppingCart(shoppingCart);
-        currentBuyer.setPreviousShopped(previousCart);
-
-        previousCart = currentBuyer.retrieveShoppingCart2();
+        previousCart = client.recieveStringArrayList();
 
         if (previousCart == null) {
             JOptionPane.showMessageDialog(null, "Error! Cannot view the previous cart" +

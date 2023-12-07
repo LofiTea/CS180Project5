@@ -21,7 +21,6 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
     JButton viewStatisticsButton;
     JButton accountButton;
     JButton logOutButton;
-    LoginInfo loginInfo;
     MarketplaceClient client;
 
 
@@ -48,7 +47,6 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
             if (e.getSource() == viewStatisticsButton) {
                 client.sendInt(3);
                 SellerStatisticsGUI sellerStatisticsGUI = new SellerStatisticsGUI();
-                sellerStatisticsGUI.setLoginInfo(loginInfo);
                 sellerStatisticsGUI.run();
                 frame.dispose();
             }
@@ -57,7 +55,6 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
 
                 AccountGUI accountGUI = new AccountGUI();
                 accountGUI.setClient(client);
-                accountGUI.setLoginInfo(loginInfo);
                 accountGUI.run();
                 frame.dispose();
             }
@@ -67,6 +64,7 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
                                 "We hope to see you soon!", "Tickets@Purdue Marketplace",
                         JOptionPane.INFORMATION_MESSAGE);
                 SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose();
+                frame.dispose();
             }
         }
     };
@@ -77,9 +75,7 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
 
     }
 
-    public SellerDashboardGUI(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
+   
 
     public void run() {
         frame = new JFrame("Tickets@Purdue Seller Dashboard");
@@ -138,9 +134,7 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
 
     }
 
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
+   
 
     synchronized public void setClient(MarketplaceClient client) {
         this.client = client;

@@ -198,7 +198,7 @@ public class Buyers {
     }
 
     public ArrayList<CartItems> retrieveShoppingCart() {
-        ArrayList<String> buyerInfo = Marketplace.readFile("BuyerInfo.txt");
+        ArrayList<String> buyerInfo = MarketplaceServer.readFile("BuyerInfo.txt");
         int indexToSearch = 0;
         for (int i = 0; i < buyerInfo.size(); i++) {
             String[] line = buyerInfo.get(i).split(",");
@@ -236,7 +236,7 @@ public class Buyers {
     }
 
     public ArrayList<CartItems> retrieveShoppingCart2() {
-        ArrayList<String> buyerInfo = Marketplace.readFile("BuyerHistory.txt");
+        ArrayList<String> buyerInfo = MarketplaceServer.readFile("BuyerHistory.txt");
         int indexToSearch = 0;
         for (int i = 0; i < buyerInfo.size(); i++) {
             String[] line = buyerInfo.get(i).split(",");

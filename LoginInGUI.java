@@ -67,16 +67,17 @@ public class LoginInGUI extends JComponent implements Runnable {
                     }
 
                     if (role.equals("b")) {
-                        //System.out.println(role);
-////                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI(loginInfo);
-////                        buyerDashboardGUI.run();
-////                        frame.setVisible(false);
+                         //System.out.println(role);
+                       BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
+                      buyerDashboardGUI.run();
+                      buyerDashboardGUI.setClient(client);
+                      frame.dispose();
                     } else {
                         //System.out.println(role)
                      SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
                      sellerDashboardGUI.setClient(client);
                      sellerDashboardGUI.run();
-                     frame.setVisible(false);
+                     frame.dispose();
                     }
 
                 } else {

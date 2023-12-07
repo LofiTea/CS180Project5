@@ -253,5 +253,21 @@ public class MarketplaceServer {
 
     }
 
+    synchronized public static ArrayList<String> buildBuyerPreviousShoppingCartPackage(Buyers b)
+    {
+        ArrayList<CartItems> previousShoppingCart = b.retrieveShoppingCart2();
+                             
+                             if(previousShoppingCart == null) previousShoppingCart = new ArrayList<>();
+                             ArrayList<String> shoppingCartPackage = new ArrayList<>();
+
+                             for(CartItems e: previousShoppingCart)
+                             {
+                                String curItem = e.getTicket() + "&"+e.getQTY();
+                                shoppingCartPackage.add(curItem);
+                             }
+
+             return shoppingCartPackage;
+    }
+
 
 }

@@ -219,7 +219,7 @@ public class MarketplaceClient {
         String email = null;
         String type = null;
         try {
-            ID = (String) ois.readObject();
+            ID = (String)ois.readObject();
             email = (String) ois.readObject();
             type = (String) ois.readObject();
         } catch (Exception e) {

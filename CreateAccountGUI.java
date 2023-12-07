@@ -118,7 +118,7 @@ public class CreateAccountGUI extends JComponent implements Runnable {
                         SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
                         sellerDashboardGUI.setClient(client);
                         sellerDashboardGUI.run();
-                        frame.setVisible(false);
+                        frame.dispose();
                     }
                 }
             }

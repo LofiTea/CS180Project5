@@ -136,11 +136,112 @@ public class MarketplaceServerThread extends Thread {
             while (notLoggedOut) {
                 switch (role) {
                     case "b":
-                        //wip
+                        System.out.println("Before waiting for object");
+                        int whatDash = (int)ois.readObject();
+                        System.out.println(whatDash);
+                        switch(whatDash)
+                        {
+                            case 1:
+                             break;
+                            case 2:
+                             LoginInfo curLoginInfo = new LoginInfo(email, password);
+                             Buyers curBuyer  = new Buyers(id, curLoginInfo);
+                             ArrayList<String> shoppingCartPackage = MarketplaceServer.buildBuyerPreviousShoppingCartPackage(curBuyer);
+                             oos.writeObject(shoppingCartPackage);
+                             boolean willGoIntoMenu = (boolean)ois.readObject();
+                             
+                             for(int i = 0;willGoIntoMenu;i++)
+                             {  
+                             if(i == 0)
+                             {
+                                ArrayList<String> shoppingCartPackage2 = MarketplaceServer.buildBuyerPreviousShoppingCartPackage(curBuyer);
+                                oos.writeObject(shoppingCartPackage2);
+                             }
+                            
+                               int whatTodoNow = (int)ois.readObject();
+                                switch(whatTodoNow)
+                                {
+                                    case 1:
+                                    int currentWait = (int)ois.readObject();
+                                     break;
+                                    case 2:
+                                     willGoIntoMenu = false;
+                                     break;
+                                }
+                             }
+                             break;
+                            case 3:
+                             break;
+                            case 4:
+                             boolean notReturnedToMenu = true;
+                                while (notReturnedToMenu) {
+                                    email = MarketplaceServer.getEmailPassword(id).get(0);
+                                    password = MarketplaceServer.getEmailPassword(id).get(1);
+                                    System.out.println(email + password);
+                                    int whatEditOption = (int) ois.readObject();
+                                    System.out.println(whatEditOption);
+                                    switch (whatEditOption) {
+                                        case 1:
+                                            ArrayList<String> details = MarketplaceServer.readFile("LoginInfo.txt");
+                                            for (int i = 0; i < details.size(); i++) {
+                                                String[] arr = details.get(i).split(",");
+                                                if (email.equals(arr[1]) && password.equals(arr[2])) {
+                                                    oos.writeObject(arr[0]);
+                                                    oos.writeObject(arr[1]);
+
+
+                                                    if (arr[3].equals("b")) {
+                                                        oos.writeObject("Buyer");
+                                                    } else {
+                                                        oos.writeObject("Seller");
+                                                    }
+                                                }
+                                            }
+
+                                            break;
+                                        case 2:
+                                            String newEmail = (String) ois.readObject();
+                                            if (!newEmail.equals("")) {
+                                                MarketplaceServer.editEmail(id, newEmail);
+                                                //Thread.sleep(1000);
+//                                                email = MarketplaceServer.getEmailPassword(id).get(0);
+//                                                System.out.println(email);
+                                            }
+                                            //editing the email
+                                            break;
+                                        case 3:
+                                            String newPassword = (String) ois.readObject();
+                                            if (newPassword != null) {
+                                                MarketplaceServer.editPassword(id, newPassword);
+                                            }
+
+                                            break;
+                                        case 4:
+                                            String confirmation = (String) ois.readObject();
+                                            if (confirmation.equals("yes")) {
+                                                MarketplaceServer.deleteAccount(email, password);
+                                                notLoggedOut = false;
+                                                notReturnedToMenu = false;
+                                            }
+                                            break;
+                                        case 5:
+                                            oos.writeObject(role);
+                                            notReturnedToMenu = false;
+                                            break;
+
+                                    }
+
+                                }
+                                break;
+                            case 5:
+                            System.out.println("Thread closing");
+                            notLoggedOut = false;
+                              break;
+                        }
                         break;
                     case "s":
                         System.out.println("Before waiting for object");
-                        int whatDash = (int) ois.readObject();
+                         whatDash = (int) ois.readObject();
                         System.out.println(whatDash);
                         switch (whatDash) {
                             case 1:

@@ -22,57 +22,65 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
     JButton accountButton;
     JButton logOutButton;
     LoginInfo loginInfo;
-    ArrayList<CartItems> shoppingCart;
-    ArrayList<CartItems> previousShoppingCart;
+    ArrayList<String> shoppingCart;
+    ArrayList<String> previousShoppingCart;
     Buyers currentBuyer;
+    MarketplaceClient client;
+
+
+
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            currentBuyer = new Buyers(determineID(loginInfo.getEmail(), loginInfo.getPassword()), loginInfo);
-            shoppingCart = currentBuyer.retrieveShoppingCart();
-            previousShoppingCart = currentBuyer.retrieveShoppingCart2();
+            // currentBuyer = new Buyers(determineID(loginInfo.getEmail(), loginInfo.getPassword()), loginInfo);
+            // shoppingCart = currentBuyer.retrieveShoppingCart();
+            // previousShoppingCart = currentBuyer.retrieveShoppingCart2();
 
-            if (shoppingCart == null) shoppingCart = new ArrayList<>();
-            if (previousShoppingCart == null) previousShoppingCart = new ArrayList<>();
+            // if (shoppingCart == null) shoppingCart = new ArrayList<>();
+            // if (previousShoppingCart == null) previousShoppingCart = new ArrayList<>();
 
-            currentBuyer.setShoppingCart(shoppingCart);
-            currentBuyer.setPreviousShopped(previousShoppingCart);
+            // currentBuyer.setShoppingCart(shoppingCart);
+            // currentBuyer.setPreviousShopped(previousShoppingCart);
 
             if (e.getSource() == buyTicketButton) {
-                shoppingCart = currentBuyer.retrieveShoppingCart();
-                BuyTicketMenuGUI buyTicketMenuGUI = new BuyTicketMenuGUI();
-                buyTicketMenuGUI.setLoginInfo(loginInfo);
-                buyTicketMenuGUI.setCurrentBuyer(currentBuyer);
-                buyTicketMenuGUI.setShoppingCart(shoppingCart);
-                buyTicketMenuGUI.setPreviousShoppingCart(previousShoppingCart);
-                buyTicketMenuGUI.run();
+                client.sendInt(1);
+                // shoppingCart = currentBuyer.retrieveShoppingCart();
+                // BuyTicketMenuGUI buyTicketMenuGUI = new BuyTicketMenuGUI();
+                // buyTicketMenuGUI.setLoginInfo(loginInfo);
+                // buyTicketMenuGUI.setCurrentBuyer(currentBuyer);
+                // buyTicketMenuGUI.setShoppingCart(shoppingCart);
+                // buyTicketMenuGUI.setPreviousShoppingCart(previousShoppingCart);
+                // buyTicketMenuGUI.run();
                 frame.dispose();
             }
             if (e.getSource() == viewHistoryButton) {
-                previousShoppingCart = currentBuyer.retrieveShoppingCart2();
-                if (previousShoppingCart == null) {
+                client.sendInt(2);
+                previousShoppingCart = client.recieveStringArrayList();
+                if (previousShoppingCart == null || previousShoppingCart.isEmpty()) {
+                    client.sendBoolean(false);
                     JOptionPane.showMessageDialog(null, "Error! Cannot view the previous cart" +
                             " because it is empty!", "No Items!", JOptionPane.ERROR_MESSAGE);
                 } else {
+                    client.sendBoolean(true);
                     BuyerHistoryGUI buyerHistoryGUI = new BuyerHistoryGUI();
-                    buyerHistoryGUI.setLoginInfo(loginInfo);
-//                    buyerHistoryGUI.setCurrentBuyer(currentBuyer);
-//                    buyerHistoryGUI.setShoppingCart(shoppingCart);
-//                    buyerHistoryGUI.setPreviousShoppingCart(previousShoppingCart);
+                    buyerHistoryGUI.setClient(client);
                     buyerHistoryGUI.run();
                     frame.dispose();
                 }
             }
             if (e.getSource() == viewStatisticsButton) {
+                client.sendInt(3);
                 // put logic here
             }
             if (e.getSource() == accountButton) {
+                client.sendInt(4);
                 AccountGUI accountGUI = new AccountGUI();
-                accountGUI.setLoginInfo(loginInfo);
+                accountGUI.setClient(client);
                 accountGUI.run();
                 frame.dispose();
             }
             if (e.getSource() == logOutButton) {
+                client.sendInt(5);
                 JOptionPane.showMessageDialog(null, "Thank you for using Tickets@Purdue! " +
                                 "We hope to see you soon!", "Tickets@Purdue Marketplace",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -150,14 +158,9 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
         this.loginInfo = loginInfo;
     }
 
-    public void setShoppingCart(ArrayList<CartItems> shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
+ 
 
-    public void setPreviousShoppingCart(ArrayList<CartItems> previousShoppingCart) {
-        this.previousShoppingCart = previousShoppingCart;
-    }
-
+    
     public Buyers getCurrentBuyer() {
         return this.currentBuyer;
     }
@@ -178,6 +181,10 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
         return id;
     }
 
+    public void setClient(MarketplaceClient client)
+    {
+        this.client = client;
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new BuyerDashboardGUI());
     }
