@@ -5,12 +5,12 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
- * Homework/Project X: ClassName
- * <p>
- * Describe what the assignment is about.
+ * Project 5: BuyerDashboardGUI
+ *
+ * Utilizes GUI to make a menu page for buyers to buy tickets, view history, and more.
  *
  * @author Henry J. Lee, Lab Section L20
- * @version Month XX, 2023
+ * @version November 13, 2023
  */
 
 public class BuyerDashboardGUI extends JComponent implements Runnable {
