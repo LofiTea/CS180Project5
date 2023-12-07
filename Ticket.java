@@ -1,10 +1,10 @@
 /**
- * Project 4: Ticket
+ * Project 5: Ticket
  *
  * The ticket class describes what type of ticket is available in the marketplace.
  *
- * @author Henry Lee, Lab Section L20
- * @version October 30, 2023
+ * @author Henry J. Lee, Lab Section L20
+ * @version November 13, 2023
  */
 
 public class Ticket {
