@@ -1,10 +1,10 @@
 /**
- * Project 4: StoreNameIDCombo
+ * Project 5: StoreNameIDCombo
  *
  * Returns the id number and name of a store.
  *
  * @author Rahul Siddharth, Lab Section L20
- * @version October 30, 2023
+ * @version November 13, 2023
  */
 
 public class StoreNameIDCombo {
