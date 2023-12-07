@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Project 4: LoginInfo
+ * Project 5: LoginInfo
  *
  * This class authenticates a user to enter the marketplace.  They need a valid username and password.
  *
- * @author Henry Lee, Lab Section L20
- * @version October 30, 2023
+ * @author Henry J. Lee, Lab Section L20
+ * @version November 13, 2023
  */
 
 public class LoginInfo {
