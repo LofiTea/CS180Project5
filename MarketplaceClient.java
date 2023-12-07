@@ -9,7 +9,7 @@ import java.util.ArrayList;
  *
  * Holds the client for the marketplace.
  *
- * @author Shrish Mahesh, Lab Section L20
+ * @author Shrish Mahesh, Rahul Siddharth, Lab Section L20
  * @version November 13, 2023
  */
 
