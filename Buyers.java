@@ -4,12 +4,12 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Project 4: Buyers
- *
+ * Project 5: Buyers
+ * 
  * This class allows a user to buy a ticket.
  *
  * @author Rahul Siddharth, Shrish Mahesh, Lab Section L20
- * @version October 30, 2023
+ * @version November 13, 2023
  */
 
 public class Buyers {
