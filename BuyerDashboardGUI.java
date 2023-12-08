@@ -70,7 +70,13 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == viewStatisticsButton) {
                 client.sendInt(3);
-                // put logic here
+                BuyerStatisticsGUI buyerStatisticsGUI = new BuyerStatisticsGUI();
+                buyerStatisticsGUI.setLoginInfo(loginInfo);
+                buyerStatisticsGUI.setCurrentBuyer(currentBuyer);
+                buyerStatisticsGUI.setShoppingCart(shoppingCart);
+                buyerStatisticsGUI.setPreviousShoppingCart(previousShoppingCart);
+                buyerStatisticsGUI.run();
+                frame.dispose();
             }
             if (e.getSource() == accountButton) {
                 client.sendInt(4);
