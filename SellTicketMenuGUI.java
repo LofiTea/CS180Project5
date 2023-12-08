@@ -77,7 +77,7 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
                                 options2[i] = "<html>" + listings.get(i).replace("\n", "<br>") + "</html>";
                             }
                             String ticket = (String) JOptionPane.showInputDialog(frame,
-                                    "Which ticket would you like to edit?", "Edit Ticket",
+                                    "Which ticket would you like to delete?", "Delete Ticket",
                                     JOptionPane.PLAIN_MESSAGE, null, options2, options2[0]);
                             client.sendString(ticket);
 

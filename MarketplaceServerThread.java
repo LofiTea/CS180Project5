@@ -456,13 +456,29 @@ public class MarketplaceServerThread extends Thread {
                                                         String ticket = (String) ois.readObject();
                                                         if (ticket != null) {
                                                             int ticketIdx = (int) ois.readObject();
+                                                            System.out.println("Ticket index:" + ticketIdx);
                                                             synchronized (obj) {
                                                                 SellerListing listing1 = seller.retrieveProducts(store);
                                                                 try {
-                                                                    seller.deleteTicket(listing1.getTickets().get(ticketIdx), store);
-                                                                    oos.writeObject(true);
-                                                                } catch (Exception ex) {
-                                                                    oos.writeObject(false);
+                                                                    if(listing.getTickets().get(ticketIdx).equals(listing1.getTickets().get(ticketIdx))) {
+                                                                        seller.deleteTicket(listing1.getTickets().get(ticketIdx), store);
+                                                                        oos.writeObject(true);
+                                                                    } else {
+                                                                        oos.writeObject(false);
+                                                                    }
+                                                                } catch (Exception e) {
+                                                                    try {
+                                                                        int ticketIdx1 = ticketIdx-1;
+                                                                        System.out.println(listing1.getTickets().get(ticketIdx1));
+                                                                        if(listing.getTickets().get(ticketIdx).equals(listing1.getTickets().get(ticketIdx1))) {
+                                                                            seller.deleteTicket(listing1.getTickets().get(ticketIdx1), store);
+                                                                            oos.writeObject(true);
+                                                                        } else {
+                                                                            oos.writeObject(false);
+                                                                        }
+                                                                    } catch (Exception ex) {
+                                                                        oos.writeObject(false);
+                                                                    }
                                                                 }
                                                             }
                                                         }

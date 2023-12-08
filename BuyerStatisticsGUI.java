@@ -40,21 +40,21 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
                         switch (num1) {
                             case 0:
                                 String s = "";
-                                ArrayList<String> list = printGeneralDash(
-                                        currentBuyer.generalDashbaord(false));
-                                for (int i = 0; i < list.size(); i++) {
-                                    s += list.get(i);
-                                }
+//                                ArrayList<String> list = printGeneralDash(
+//                                        currentBuyer.generalDashbaord(false));
+//                                for (int i = 0; i < list.size(); i++) {
+//                                    s += list.get(i);
+//                                }
                                 JOptionPane.showMessageDialog(frame, s,
                                         "Raw Data Buyer Statistics", JOptionPane.INFORMATION_MESSAGE);
                                 break;
                             case 1:
                                 String s1 = "";
-                                ArrayList<String> list2 = printGeneralDash(
-                                        currentBuyer.generalDashbaord(true));
-                                for (int i = 0; i < list2.size(); i++) {
-                                    s1 += list2.get(i);
-                                }
+//                                ArrayList<String> list2 = printGeneralDash(
+//                                        currentBuyer.generalDashbaord(true));
+//                                for (int i = 0; i < list2.size(); i++) {
+//                                    s1 += list2.get(i);
+//                                }
                                 JOptionPane.showMessageDialog(frame, s1,
                                         "Raw Data Buyer Statistics", JOptionPane.INFORMATION_MESSAGE);
                                 break;
@@ -91,9 +91,9 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == returnToMenuButton) {
                 BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
-                buyerDashboardGUI.setLoginInfo(loginInfo);
-                buyerDashboardGUI.setCurrentBuyer(currentBuyer);
-                buyerDashboardGUI.setShoppingCart(shoppingCart);
+//                buyerDashboardGUI.setLoginInfo(loginInfo);
+//                buyerDashboardGUI.setCurrentBuyer(currentBuyer);
+//                buyerDashboardGUI.setShoppingCart(shoppingCart);
                 buyerDashboardGUI.run();
                 frame.dispose();
             }
