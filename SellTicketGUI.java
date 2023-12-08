@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 /**
  * Project 5: SellTicketGUI
- * 
+ *
  * Utilizes GUI to allow a seller to sell a ticket.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -49,15 +49,17 @@ public class SellTicketGUI extends JComponent implements Runnable {
                     String store = storeTextField.getText();
                     client.sendString(store);
                     if (store == null) {
-                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                        sellerDashboardGUI.setClient(client);
-                        sellerDashboardGUI.run();
+                        SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
+                        sellTicketMenuGUI.setClient(client);
+                        sellTicketMenuGUI.run();
                         return;
                     }
 
                     if (store.isEmpty() || store.equals("\n")) {
                         JOptionPane.showMessageDialog(null, "Please enter a valid store name!",
                                 "Invalid Store Name", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        storeTextField.setText("");
                     }
                 } else {
                     client.sendBoolean(true);
@@ -74,9 +76,9 @@ public class SellTicketGUI extends JComponent implements Runnable {
 
                     if(sport == null || location == null || section == null || price == null || quantity == null) {
                         client.sendBoolean(false);
-                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                        sellerDashboardGUI.setClient(client);
-                        sellerDashboardGUI.run();
+                        SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
+                        sellTicketMenuGUI.setClient(client);
+                        sellTicketMenuGUI.run();
                         return;
                     }
 
@@ -145,23 +147,15 @@ public class SellTicketGUI extends JComponent implements Runnable {
                         client.sendBoolean(invalid);
                     }
 
-
-
-//                    currentSeller.addTickets(new Ticket(sport, location, section, price), quantity,
-//                            stores.get(num));
                 }
             }
 
             if (e.getSource() == returnToMenuButton) {
                 client.sendBoolean(false);
-            
                 SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
-                //sellTicketMenuGUI.setLoginInfo(loginInfo);
-                sellTicketMenuGUI.setCurrentSeller(currentSeller);
-                sellTicketMenuGUI.setStores(stores);
+                sellTicketMenuGUI.setClient(client);
                 sellTicketMenuGUI.run();
                 frame.dispose();
-            
             }
         }
     };
@@ -198,13 +192,13 @@ public class SellTicketGUI extends JComponent implements Runnable {
 
                 client.sendString(name);
 
-                SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                sellerDashboardGUI.setClient(client);
-                sellerDashboardGUI.run();
+                SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
+                sellTicketMenuGUI.setClient(client);
+                sellTicketMenuGUI.run();
             } else {
-                SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                sellerDashboardGUI.setClient(client);
-                sellerDashboardGUI.run();
+                SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
+                sellTicketMenuGUI.setClient(client);
+                sellTicketMenuGUI.run();
             }
         } else {
             String[] options1 = {"1. Add Store\n", "2. Add Ticket"};
@@ -213,9 +207,9 @@ public class SellTicketGUI extends JComponent implements Runnable {
                     JOptionPane.PLAIN_MESSAGE, null, options1, options1[0]);
             client.sendString(ticket);
             if (ticket == null) {
-                SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                sellerDashboardGUI.setClient(client);
-                sellerDashboardGUI.run();
+                SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
+                sellTicketMenuGUI.setClient(client);
+                sellTicketMenuGUI.run();
                 return;
             }
             choiceIdx = Arrays.asList(options1).indexOf(ticket);
@@ -282,9 +276,9 @@ public class SellTicketGUI extends JComponent implements Runnable {
                 client.sendString(decision);
 
                 if (decision == null) {
-                    SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                    sellerDashboardGUI.setClient(client);
-                    sellerDashboardGUI.run();
+                    SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
+                    sellTicketMenuGUI.setClient(client);
+                    sellTicketMenuGUI.run();
                     return;
                 }
 

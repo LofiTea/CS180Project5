@@ -98,10 +98,10 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == returnToMenuButton) {
                 BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
-                buyerDashboardGUI.setLoginInfo(loginInfo);
-                buyerDashboardGUI.setCurrentBuyer(currentBuyer);
-                buyerDashboardGUI.setShoppingCart(shoppingCart);
-                buyerDashboardGUI.setPreviousShoppingCart(previousShoppingCart);
+//                buyerDashboardGUI.setLoginInfo(loginInfo);
+//                buyerDashboardGUI.setCurrentBuyer(currentBuyer);
+//                buyerDashboardGUI.setShoppingCart(shoppingCart);
+//                buyerDashboardGUI.setPreviousShoppingCart(previousShoppingCart);
                 buyerDashboardGUI.run();
                 frame.dispose();
             }

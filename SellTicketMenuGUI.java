@@ -24,31 +24,34 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
     LoginInfo loginInfo;
     Sellers currentSeller;
     ArrayList<String> stores;
+    MarketplaceClient client;
     int num;
     int number;
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            currentSeller = new Sellers(determineID(loginInfo.getEmail(), loginInfo.getPassword()));
-            stores = currentSeller.retrieveStores();
+//            currentSeller = new Sellers(determineID(loginInfo.getEmail(), loginInfo.getPassword()));
+//            stores = currentSeller.retrieveStores();
             if (e.getSource() == sellTicketButton) {
+                client.sendInt(1);
                 SellTicketGUI sellTicketGUI = new SellTicketGUI();
-                sellTicketGUI.setLoginInfo(loginInfo);
-                sellTicketGUI.setCurrentSeller(currentSeller);
-                sellTicketGUI.setStores(stores);
+//                sellTicketGUI.setLoginInfo(loginInfo);
+//                sellTicketGUI.setCurrentSeller(currentSeller);
+//                sellTicketGUI.setStores(stores);
+                sellTicketGUI.setClient(client);
                 sellTicketGUI.run();
                 frame.dispose();
             }
             if (e.getSource() == editTicketButton) {
+                client.sendInt(2);
                 SellerEditTicketGUI sellerEditTicketGUI = new SellerEditTicketGUI();
-                sellerEditTicketGUI.setLoginInfo(loginInfo);
-                sellerEditTicketGUI.setCurrentSeller(currentSeller);
-                sellerEditTicketGUI.setStores(stores);
+                sellerEditTicketGUI.setClient(client);
                 sellerEditTicketGUI.run();
                 frame.dispose();
             }
             if (e.getSource() == removeTicketButton) {
-                ArrayList<String> stores3 = currentSeller.retrieveStores();
+                client.sendInt(3);
+                ArrayList<String> stores3 = client.recieveStringArrayList();
                 if (stores3 == null) {
                     JOptionPane.showMessageDialog(null, "Error! There are no stores!",
                             "No Stores", JOptionPane.ERROR_MESSAGE);
@@ -60,35 +63,53 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
                     String decision = (String) JOptionPane.showInputDialog(frame,
                             "Which store would you like to remove a ticket in?", "Remove Ticket",
                             JOptionPane.PLAIN_MESSAGE, null, options1, options1[0]);
-                    num = Arrays.asList(options1).indexOf(decision);
-                    if (num < 0|| num > stores3.size()) {
-                        JOptionPane.showMessageDialog(frame, "Please enter a valid store!",
-                                "Invalid Store", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        ArrayList<String> listings = currentSeller.retrieveListings(stores3.get(num));
-                        SellerListing listing = currentSeller.retrieveProducts(stores3.get(num));
-                        String[] options2 = new String[listings.size()];
-                        for (int i = 0; i < listings.size(); i++) {
-                            options2[i] = listings.get(i);
-                        }
-                        String ticket = (String) JOptionPane.showInputDialog(frame,
-                                "Which ticket would you like to edit?", "Edit Ticket",
-                                JOptionPane.PLAIN_MESSAGE, null, options2, options2[0]);
-                        number = Arrays.asList(options2).indexOf(ticket);
-                        if (number < 0 || number > listings.size()) {
-                            JOptionPane.showMessageDialog(frame, "Please enter a valid ticket!",
-                                    "Invalid Ticket", JOptionPane.ERROR_MESSAGE);
+                    client.sendString(decision);
+
+                    if(decision != null) {
+                        num = Arrays.asList(options1).indexOf(decision);
+                        client.sendString(stores3.get(num));
+
+                        ArrayList<String> listings = client.recieveStringArrayList();
+
+                        if(listings != null) {
+                            String[] options2 = new String[listings.size()];
+                            for (int i = 0; i < listings.size(); i++) {
+                                options2[i] = "<html>" + listings.get(i).replace("\n", "<br>") + "</html>";
+                            }
+                            String ticket = (String) JOptionPane.showInputDialog(frame,
+                                    "Which ticket would you like to edit?", "Edit Ticket",
+                                    JOptionPane.PLAIN_MESSAGE, null, options2, options2[0]);
+                            client.sendString(ticket);
+
+                            if(ticket != null) {
+                                number = Arrays.asList(options2).indexOf(ticket);
+                                client.sendInt(number);
+                                boolean success = client.receiveBoolean();
+
+                                if(success) {
+                                    JOptionPane.showMessageDialog(frame, "Ticket deleted successfully! "
+                                            , "Edit Successful", JOptionPane.INFORMATION_MESSAGE);
+                                } else {
+                                    JOptionPane.showMessageDialog(frame, "Ticket deletion unsuccessful! "
+                                            , "Edit Unsuccessful", JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
                         } else {
-                            currentSeller.deleteTicket(listing.getTickets().
-                                    get(number - 1), stores3.get(num - 1));
+                            JOptionPane.showMessageDialog(null, "Error! There are no tickets!",
+                                    "No Tickets", JOptionPane.ERROR_MESSAGE);
                         }
+                        //SellerListing listing = currentSeller.retrieveProducts(stores3.get(num));
+
+
                     }
 
                 }
             }
             if (e.getSource() == returnToMenuButton) {
+                client.sendInt(4);
                 SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                sellerDashboardGUI.setLoginInfo(loginInfo);
+                //sellerDashboardGUI.setLoginInfo(loginInfo);
+                sellerDashboardGUI.setClient(client);
                 sellerDashboardGUI.run();
                 frame.dispose();
             }
@@ -171,6 +192,10 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
             }
         }
         return id;
+    }
+
+    synchronized public void setClient(MarketplaceClient client) {
+        this.client = client;
     }
 
     public static void main(String[] args) {

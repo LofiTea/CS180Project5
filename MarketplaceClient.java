@@ -291,5 +291,27 @@ public class MarketplaceClient {
 
     }
 
+    synchronized public void sendModTicket(String sport, String location, String section, double price) {
+        try{
+            oos.writeObject(sport);
+            oos.writeObject(location);
+            oos.writeObject(section);
+            oos.writeObject(price);
+            oos.flush();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    synchronized public boolean receiveBoolean() {
+        boolean bool = false;
+        try{
+            bool = (boolean) ois.readObject();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return bool;
+    }
+
 
 }

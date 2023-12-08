@@ -29,6 +29,8 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
     int choice;
     int number;
     int anotherOne;
+
+    MarketplaceClient client;
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -194,9 +196,10 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == returnToMenuButton) {
                 SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                sellerDashboardGUI.setLoginInfo(loginInfo);
-                sellerDashboardGUI.setCurrentSeller(currentSeller);
-                sellerDashboardGUI.setStores(stores);
+//                sellerDashboardGUI.setLoginInfo(loginInfo);
+//                sellerDashboardGUI.setCurrentSeller(currentSeller);
+//                sellerDashboardGUI.setStores(stores);
+                sellerDashboardGUI.setClient(client);
                 sellerDashboardGUI.run();
                 frame.dispose();
             }

@@ -28,12 +28,13 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == sellTicketButton) {
-                System.out.println("Selling ticket");
                 client.sendInt(1);
-                System.out.println("Entered menu");
-                SellTicketGUI sellTicketGUI = new SellTicketGUI();
-                sellTicketGUI.setClient(client);
-                sellTicketGUI.run();
+//                SellTicketGUI sellTicketGUI = new SellTicketGUI();
+//                sellTicketGUI.setClient(client);
+//                sellTicketGUI.run();
+                SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
+                sellTicketMenuGUI.setClient(client);
+                sellTicketMenuGUI.run();
                 frame.dispose();
 
             }

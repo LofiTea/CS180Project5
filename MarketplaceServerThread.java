@@ -3,12 +3,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Project 5: MarketplaceServerThread
- * 
+ * <p>
  * Utilizes threads in the server for the marketplace.
  *
  * @author Shrish Mahesh, Lab Section L20
@@ -137,43 +135,39 @@ public class MarketplaceServerThread extends Thread {
                 switch (role) {
                     case "b":
                         System.out.println("Before waiting for object");
-                        int whatDash = (int)ois.readObject();
+                        int whatDash = (int) ois.readObject();
                         System.out.println(whatDash);
-                        switch(whatDash)
-                        {
+                        switch (whatDash) {
                             case 1:
-                             break;
+                                break;
                             case 2:
-                             LoginInfo curLoginInfo = new LoginInfo(email, password);
-                             Buyers curBuyer  = new Buyers(id, curLoginInfo);
-                             ArrayList<String> shoppingCartPackage = MarketplaceServer.buildBuyerPreviousShoppingCartPackage(curBuyer);
-                             oos.writeObject(shoppingCartPackage);
-                             boolean willGoIntoMenu = (boolean)ois.readObject();
-                             
-                             for(int i = 0;willGoIntoMenu;i++)
-                             {  
-                             if(i == 0)
-                             {
-                                ArrayList<String> shoppingCartPackage2 = MarketplaceServer.buildBuyerPreviousShoppingCartPackage(curBuyer);
-                                oos.writeObject(shoppingCartPackage2);
-                             }
-                            
-                               int whatTodoNow = (int)ois.readObject();
-                                switch(whatTodoNow)
-                                {
-                                    case 1:
-                                    int currentWait = (int)ois.readObject();
-                                     break;
-                                    case 2:
-                                     willGoIntoMenu = false;
-                                     break;
+                                LoginInfo curLoginInfo = new LoginInfo(email, password);
+                                Buyers curBuyer = new Buyers(id, curLoginInfo);
+                                ArrayList<String> shoppingCartPackage = MarketplaceServer.buildBuyerPreviousShoppingCartPackage(curBuyer);
+                                oos.writeObject(shoppingCartPackage);
+                                boolean willGoIntoMenu = (boolean) ois.readObject();
+
+                                for (int i = 0; willGoIntoMenu; i++) {
+                                    if (i == 0) {
+                                        ArrayList<String> shoppingCartPackage2 = MarketplaceServer.buildBuyerPreviousShoppingCartPackage(curBuyer);
+                                        oos.writeObject(shoppingCartPackage2);
+                                    }
+
+                                    int whatTodoNow = (int) ois.readObject();
+                                    switch (whatTodoNow) {
+                                        case 1:
+                                            int currentWait = (int) ois.readObject();
+                                            break;
+                                        case 2:
+                                            willGoIntoMenu = false;
+                                            break;
+                                    }
                                 }
-                             }
-                             break;
+                                break;
                             case 3:
-                             break;
+                                break;
                             case 4:
-                             boolean notReturnedToMenu = true;
+                                boolean notReturnedToMenu = true;
                                 while (notReturnedToMenu) {
                                     email = MarketplaceServer.getEmailPassword(id).get(0);
                                     password = MarketplaceServer.getEmailPassword(id).get(1);
@@ -234,79 +228,248 @@ public class MarketplaceServerThread extends Thread {
                                 }
                                 break;
                             case 5:
-                            System.out.println("Thread closing");
-                            notLoggedOut = false;
-                              break;
+                                System.out.println("Thread closing");
+                                notLoggedOut = false;
+                                break;
                         }
                         break;
                     case "s":
                         System.out.println("Before waiting for object");
-                         whatDash = (int) ois.readObject();
+                        whatDash = (int) ois.readObject();
                         System.out.println(whatDash);
                         switch (whatDash) {
                             case 1:
-                                Sellers seller = new Sellers(id);
-                                ArrayList<String> stores1 = seller.retrieveStores();
-                                oos.writeObject(stores1);
-                                oos.flush();
-                                if(stores1 == null) {
-                                    int option = (int) ois.readObject();
-                                    if(option == JOptionPane.YES_OPTION) {
-                                        String storeName = (String) ois.readObject();
-                                        if(storeName != null) {
-                                            seller.addStore(storeName);
-                                        }
-                                    }
-                                } else {
-                                    String ticket = (String) ois.readObject();
-                                    if(ticket != null) {
-                                        int option = (int) ois.readObject();
-                                        if(option == 0) {
-                                            boolean notDone = true;
-                                            while(notDone) {
-                                                System.out.println();
-                                                notDone = (boolean) ois.readObject();
-                                                if(notDone) {
-                                                    String store = (String) ois.readObject();
-                                                    if(store != null) {
-                                                        if (store.isEmpty() || store.equals("\n")) {
-                                                        } else {
-                                                            seller.addStore(store);
-                                                        }
-                                                    } else {
-                                                        notDone = false;
+                                int sellOption = 0;
+                                while (sellOption != 4) {
+                                    System.out.println("In loop");
+                                    sellOption = (int) ois.readObject();
+                                    System.out.println(sellOption);
+                                    Sellers seller = new Sellers(id);
+                                    ArrayList<String> stores1 = seller.retrieveStores();
+                                    if (sellOption != 4) {
+                                        if (sellOption == 1) {
+                                            oos.writeObject(stores1);
+                                            oos.flush();
+                                            if (stores1 == null) {
+                                                int option = (int) ois.readObject();
+                                                if (option == JOptionPane.YES_OPTION) {
+                                                    String storeName = (String) ois.readObject();
+                                                    if (storeName != null) {
+                                                        seller.addStore(storeName);
                                                     }
                                                 }
-                                            }
-
-                                        } else {
-                                            String storeChoice = (String) ois.readObject();
-                                            if(storeChoice != null) {
-                                                boolean notDone = true;
-                                                while (notDone) {
-                                                    notDone = (boolean) ois.readObject();
-                                                    if (notDone) {
-                                                        boolean notNull = (boolean) ois.readObject();
-                                                        if (notNull) {
-                                                            boolean invalid = (boolean) ois.readObject();
-                                                            if (!invalid) {
-                                                                String sport = (String) ois.readObject();
-                                                                String location = (String) ois.readObject();
-                                                                String section = (String) ois.readObject();
-                                                                double price = (double) ois.readObject();
-                                                                int quantity = (int) ois.readObject();
+                                            } else {
+                                                String ticket = (String) ois.readObject();
+                                                if (ticket != null) {
+                                                    int option = (int) ois.readObject();
+                                                    if (option == 0) {
+                                                        boolean notDone = true;
+                                                        while (notDone) {
+                                                            notDone = (boolean) ois.readObject();
+                                                            if (notDone) {
                                                                 String store = (String) ois.readObject();
-                                                                seller.addTickets(new Ticket(sport, location, section,
-                                                                        price), quantity, store);
+                                                                System.out.println(store);
+                                                                if (store != null) {
+                                                                    if (store.isEmpty() || store.equals("\n")) {
+                                                                    } else {
+                                                                        seller.addStore(store);
+                                                                    }
+                                                                } else {
+                                                                    notDone = false;
+                                                                }
                                                             }
-                                                        } else {
-                                                            notDone = false;
+                                                        }
+
+                                                    } else {
+                                                        String storeChoice = (String) ois.readObject();
+                                                        if (storeChoice != null) {
+                                                            boolean notDone = true;
+                                                            while (notDone) {
+                                                                notDone = (boolean) ois.readObject();
+                                                                if (notDone) {
+                                                                    boolean notNull = (boolean) ois.readObject();
+                                                                    if (notNull) {
+                                                                        boolean invalid = (boolean) ois.readObject();
+                                                                        if (!invalid) {
+                                                                            String sport = (String) ois.readObject();
+                                                                            String location = (String) ois.readObject();
+                                                                            String section = (String) ois.readObject();
+                                                                            double price = (double) ois.readObject();
+                                                                            int quantity = (int) ois.readObject();
+                                                                            String store = (String) ois.readObject();
+                                                                            seller.addTickets(new Ticket(sport, location, section,
+                                                                                    price), quantity, store);
+                                                                        }
+                                                                    } else {
+                                                                        notDone = false;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        } else if (sellOption == 2) {
+                                            oos.writeObject(stores1);
+                                            oos.flush();
+                                            if (stores1 != null) {
+                                                String storeChoice = (String) ois.readObject();
+                                                if (storeChoice != null) {
+                                                    String store = (String) ois.readObject();
+                                                    ArrayList<String> listings = seller.retrieveListings(store);
+                                                    SellerListing listing = seller.retrieveProducts(store);
+                                                    oos.writeObject(listings);
+                                                    if (listings != null) {
+                                                        String oldTicket = (String) ois.readObject();
+                                                        if (oldTicket != null) {
+                                                            int ticketIdx = (int) ois.readObject();
+                                                            String editStr = (String) ois.readObject();
+                                                            if (editStr != null) {
+                                                                int editChoice = (int) ois.readObject();
+                                                                boolean notDone = true;
+                                                                while (notDone) {
+                                                                    notDone = (boolean) ois.readObject();
+                                                                    if (notDone) {
+                                                                        switch (editChoice) {
+                                                                            case 0:
+                                                                                boolean notNull =
+                                                                                        (boolean) ois.readObject();
+                                                                                if (notNull) {
+                                                                                    boolean invalid =
+                                                                                            (boolean) ois.readObject();
+                                                                                    if (!invalid) {
+                                                                                        synchronized (obj) {
+                                                                                            listing =
+                                                                                                    seller.retrieveProducts(store);
+                                                                                            String sport =
+                                                                                                    (String) ois.readObject();
+                                                                                            String location =
+                                                                                                    (String) ois.readObject();
+                                                                                            String section =
+                                                                                                    (String) ois.readObject();
+                                                                                            double price =
+                                                                                                    (double) ois.readObject();
+                                                                                            try {
+                                                                                                seller.modTicket(listing.getTickets().get(ticketIdx), new Ticket(sport,
+                                                                                                                location, section, price), store,
+                                                                                                        Integer.parseInt(listing.getQuantities().get(ticketIdx)));
+                                                                                                oos.writeObject(true);
+                                                                                                notDone = false;
+                                                                                            } catch (Exception e) {
+                                                                                                oos.writeObject(false);
+                                                                                                notDone = false;
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                } else {
+                                                                                    notDone = false;
+                                                                                }
+                                                                                break;
+                                                                            case 1:
+                                                                                boolean notNull2 =
+                                                                                        (boolean) ois.readObject();
+                                                                                if (notNull2) {
+                                                                                    boolean invalid =
+                                                                                            (boolean) ois.readObject();
+                                                                                    if (!invalid) {
+                                                                                        synchronized (obj) {
+                                                                                            listing =
+                                                                                                    seller.retrieveProducts(store);
+                                                                                            int quantity =
+                                                                                                    (int) ois.readObject();
+                                                                                            try {
+                                                                                                seller.modTicket(listing.getTickets().get(ticketIdx),
+                                                                                                        listing.getTickets().get(ticketIdx),
+                                                                                                        store, quantity);
+                                                                                                oos.writeObject(true);
+                                                                                                notDone = false;
+                                                                                            } catch (Exception e) {
+                                                                                                oos.writeObject(false);
+                                                                                                notDone = false;
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                } else {
+                                                                                    notDone = false;
+                                                                                }
+                                                                                break;
+                                                                            case 2:
+                                                                                boolean notNull3 =
+                                                                                        (boolean) ois.readObject();
+                                                                                if (notNull3) {
+                                                                                    boolean invalid =
+                                                                                            (boolean) ois.readObject();
+                                                                                    if (!invalid) {
+                                                                                        synchronized (obj) {
+                                                                                            listing =
+                                                                                                    seller.retrieveProducts(store);
+                                                                                            String sport =
+                                                                                                    (String) ois.readObject();
+                                                                                            String location =
+                                                                                                    (String) ois.readObject();
+                                                                                            String section =
+                                                                                                    (String) ois.readObject();
+                                                                                            double price =
+                                                                                                    (double) ois.readObject();
+                                                                                            int quantity =
+                                                                                                    (int) ois.readObject();
+                                                                                            try {
+                                                                                                seller.modTicket(listing.getTickets().get(ticketIdx),
+                                                                                                        new Ticket(sport,
+                                                                                                                location, section, price),
+                                                                                                        store, quantity);
+                                                                                                oos.writeObject(true);
+                                                                                                notDone = false;
+                                                                                            } catch (Exception e) {
+                                                                                                oos.writeObject(false);
+                                                                                                notDone = false;
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                } else {
+                                                                                    notDone = false;
+                                                                                }
+                                                                                break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                    }
+
+                                                }
+                                                //if(storeChoice)
+                                            }
+                                        } else if (sellOption == 3) {
+                                            oos.writeObject(stores1);
+                                            oos.flush();
+                                            if (stores1 != null) {
+                                                String storeChoice = (String) ois.readObject();
+                                                if (storeChoice != null) {
+                                                    String store = (String) ois.readObject();
+                                                    ArrayList<String> listings = seller.retrieveListings(store);
+                                                    SellerListing listing = seller.retrieveProducts(store);
+                                                    oos.writeObject(listings);
+                                                    if (listings != null) {
+                                                        String ticket = (String) ois.readObject();
+                                                        if (ticket != null) {
+                                                            int ticketIdx = (int) ois.readObject();
+                                                            synchronized (obj) {
+                                                                SellerListing listing1 = seller.retrieveProducts(store);
+                                                                try {
+                                                                    seller.deleteTicket(listing1.getTickets().get(ticketIdx), store);
+                                                                    oos.writeObject(true);
+                                                                } catch (Exception ex) {
+                                                                    oos.writeObject(false);
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-
                                     }
                                 }
                                 break;
