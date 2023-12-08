@@ -1768,7 +1768,7 @@ public class Marketplace {
         return uniqueProducts;
     }
 
-    private static void printBuyerDash(ArrayList<ArrayList<String>> dashInfo)
+    public static void printBuyerDash(ArrayList<ArrayList<String>> dashInfo)
     {
         for(ArrayList<String> thing : dashInfo)
         {
@@ -1780,7 +1780,7 @@ public class Marketplace {
         }
     }
 
-   private static void printGeneralDash(ArrayList<String> dashInfo)
+   public static void printGeneralDash(ArrayList<String> dashInfo)
    {
      
     for(String thing : dashInfo)
