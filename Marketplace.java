@@ -196,8 +196,6 @@ public class Marketplace {
                                     int howManybuy = scan.nextInt();
                                     Ticket curTickey = Buyers.buyTicket(b.getListedTicks(), whatToBuy, howManybuy,
                                             b.getHowManyTicks());
-                                    String showDash = currentBuyer.showDashboard();
-                                    System.out.println("View Dashboard:\n" + showDash);
                                     if (curTickey != null) {
                                         shoppingCart.add(new CartItems(curTickey, howManybuy));
                                         currentBuyer.setShoppingCart(shoppingCart);
@@ -454,24 +452,34 @@ public class Marketplace {
                               switch(curChoice)
                               {
                                 case "1":
-                                 System.out.println("In progress");
-                                 System.out.println("Store dashboard: ");
-                                    try (BufferedReader bufferedReader = new BufferedReader (new FileReader("TransactionInfo.txt"))) {
-                                        String line;
-                                        while ((line = bufferedReader.readLine()) != null) {
-                                            String[] parts = line.split(",");
-
-                                            for (String i : parts) {
-                                                System.out.println(i);
-                                            }
-                                        }
-                                    } catch (IOException e) {
-                                        System.out.println("Error reading data from file.");
-                                        e.printStackTrace();
+                                boolean shouldRepeat2 = true;
+                                while(shouldRepeat2)
+                                {
+                                   System.out.println("How would like to view this dashboard?\n" +
+                                       "1. Raw Data\n" +
+                                       "2. Sorted Dash\n" +
+                                       "3. Exit Dashboard");
+                                    String choice2 = scan.nextLine();
+                                    switch(choice2)
+                                    {
+                                        case "1":
+                                         printGeneralDash(currentBuyer.generalDashbaord(false));
+                                         break;
+                                        case "2":
+                                         printGeneralDash(currentBuyer.generalDashbaord(true));
+                                         break;
+                                        case "3":
+                                         shouldRepeat2 = false;
+                                         break;
+                                        default:
+                                         System.out.println("Invalid input please try again: ");
+                                         break;
                                     }
+
+                                } 
                                  break;
                                 case "2":
-                                 boolean shouldRepeat2 = true;
+                                  shouldRepeat2 = true;
                                   while(shouldRepeat2)
                                   {
                                        System.out.println("How would like to view this dashboard?\n" +
@@ -1771,5 +1779,14 @@ public class Marketplace {
             System.out.println();
         }
     }
+
+   private static void printGeneralDash(ArrayList<String> dashInfo)
+   {
+     
+    for(String thing : dashInfo)
+    {
+        System.out.println(thing);
+    }
+   }
  
 }

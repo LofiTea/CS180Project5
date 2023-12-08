@@ -273,71 +273,71 @@ public class Buyers {
         }
     }
 
-           public String showDashboard() throws IOException {
-        List<Sellers> amtSold = new ArrayList<Sellers>();
+    //        public String showDashboard() throws IOException {
+    //     List<Sellers> amtSold = new ArrayList<Sellers>();
 
 
-            ArrayList<String> soldInfo = Marketplace.readFile("TransactionInfo.txt");
-            for (String i : soldInfo) {
-                String[] data = i.split(",");
-                String store = data[4];
+    //         ArrayList<String> soldInfo = Marketplace.readFile("TransactionInfo.txt");
+    //         for (String i : soldInfo) {
+    //             String[] data = i.split(",");
+    //             String store = data[4];
 
-                int numTickets = Integer.parseInt(data[5]);
+    //             int numTickets = Integer.parseInt(data[5]);
 
-                boolean bool = false;
-                String temp;
-
-
-                BufferedReader bufferedReader = new BufferedReader(new FileReader("TransactionInfo.txt"));
-                while ((temp = bufferedReader.readLine()) != null) {
-
-                    String[] parts = temp.split(",");
-
-                    if (parts.length >= 6) {
-                        LoginInfo storename = parts[3];
-
-                        int price = Integer.parseInt(parts[5]);
-                        amtSold.add(new Sellers(storename, price));
-                    } else {
-                        System.err.println("Invalid");
-                    }
-                    }
-
-            Collections.sort(amtSold, Collections.reverseOrder());
+    //             boolean bool = false;
+    //             String temp;
 
 
-            StringBuilder ticketInfo = new StringBuilder("View Dashboard:\n ");
-            for (Sellers k : amtSold)
-            {
-                ticketInfo.append("%s: $%.2f%n", k.getSellerID(), k.getTickets());
-            }
+    //             BufferedReader bufferedReader = new BufferedReader(new FileReader("TransactionInfo.txt"));
+    //             while ((temp = bufferedReader.readLine()) != null) {
 
-            return ticketInfo.toString();
-        }
+    //                 String[] parts = temp.split(",");
 
-            return "";
-    }
+    //                 if (parts.length >= 6) {
+    //                     LoginInfo storename = parts[3];
+
+    //                     int price = Integer.parseInt(parts[5]);
+    //                     amtSold.add(new Sellers(storename, price));
+    //                 } else {
+    //                     System.err.println("Invalid");
+    //                 }
+    //                 }
+
+    //         Collections.sort(amtSold, Collections.reverseOrder());
 
 
-        public void dashboardInteraction(String marketFile)  {
-        Scanner scan = new Scanner(System.in);
+    //         StringBuilder ticketInfo = new StringBuilder("View Dashboard:\n ");
+    //         for (Sellers k : amtSold)
+    //         {
+    //             ticketInfo.append("%s: $%.2f%n", k.getSellerID(), k.getTickets());
+    //         }
 
-        ArrayList<String> product = Marketplace.readFile(marketFile);
-        if (product.isEmpty()) {
-            System.out.println("No data found in file.");
-        }
+    //         return ticketInfo.toString();
+    //     }
 
-        System.out.println("Dashboard: ");
-        System.out.println("1. Show Items");
-        System.out.println("2. Show IDs");
-        System.out.println("3. Show Prices");
+    //         return "";
+    // }
 
-        System.out.println("Enter which one (pick the number only): ");
-        int temp = scan.nextInt();
+
+    //     public void dashboardInteraction(String marketFile)  {
+    //     Scanner scan = new Scanner(System.in);
+
+    //     ArrayList<String> product = Marketplace.readFile(marketFile);
+    //     if (product.isEmpty()) {
+    //         System.out.println("No data found in file.");
+    //     }
+
+    //     System.out.println("Dashboard: ");
+    //     System.out.println("1. Show Items");
+    //     System.out.println("2. Show IDs");
+    //     System.out.println("3. Show Prices");
+
+    //     System.out.println("Enter which one (pick the number only): ");
+    //     int temp = scan.nextInt();
 
     
 
-    }
+    // }
 
     public void showItems (ArrayList<String> product) {
         System.out.println("Show Items: ");
@@ -915,5 +915,77 @@ public class Buyers {
         }
         return dashInfo;
    }
+
+
+  public ArrayList<String> generalDashbaord(boolean shouldSort)
+  {
+    ArrayList<String> dashInfo = new ArrayList<>();
+    ArrayList<String> transactionInfo = Marketplace.readFile("TransactionInfo.txt");
+    if(transactionInfo == null || transactionInfo.isEmpty())
+    {
+        return dashInfo;
+    }
+
+    for(String line : transactionInfo)
+    {
+       String[] curTransInfo = line.split(",");
+       String curStore = curTransInfo[3];
+       int curQuantity = Integer.parseInt(curTransInfo[5]);
+       
+       boolean storeExists = false;
+        
+       for(int i = 0;i<dashInfo.size();i++)
+       {
+          String curEntry = dashInfo.get(i);
+          String[] curEntryParts = curEntry.split(",");
+
+          if(curEntryParts[0].equals(curStore))
+          {
+            storeExists = true;
+            int newQuantity = curQuantity + Integer.parseInt(curEntryParts[1]);
+            String newEntry = curStore + ","+newQuantity;
+            dashInfo.set(i,newEntry);
+            break;
+          }
+       }
+
+       if(!storeExists)
+       {
+         String  newEntry = curStore + ","+ curQuantity;
+        dashInfo.add(newEntry);
+
+       }
+
+      
+    }
+
+    if(shouldSort)
+    {
+        Comparator<String> ticketComparator = new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                // Split the strings to extract ticket quantities
+                int quantity1 = Integer.parseInt(s1.split(",")[1]);
+                int quantity2 = Integer.parseInt(s2.split(",")[1]);
+
+                // Compare based on ticket quantities in descending order
+                return Integer.compare(quantity2, quantity1);
+            }
+        };
+
+        // Sort the ArrayList using the custom comparator
+        Collections.sort(dashInfo, ticketComparator);
+    }
+
+   for(int i = 0; i<dashInfo.size();i++)
+            {
+                String curEntry = dashInfo.get(i);
+                curEntry = curEntry.replace(",",": ");
+                dashInfo.set(i,curEntry);
+            }
+    
+    return dashInfo;
+  }
+
 
 }
