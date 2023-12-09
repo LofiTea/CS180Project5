@@ -808,4 +808,153 @@ public class Buyers {
         return dashInfo;
    }
 
+
+   public static ArrayList<String> viewAllListingsGeneral2() {
+    ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+    ArrayList<String[]> allListedTicks = new ArrayList<>();
+    ArrayList<String> list = new ArrayList<>();
+    String s = "";
+    int tickNumber = 1;
+    for (String eachLine : fileInfo) {
+        DoubleArrayList b = Buyers.splitStoreInfo(eachLine);
+        String curSeller = (eachLine.split(","))[1];
+        String curStoreListing = "";
+        ArrayList<String> stuffInStores = b.getStuffInStores();
+        ArrayList<String> storelist = b.getStoreList();
+
+        for (int i = 0; i < stuffInStores.size(); i++) {
+            String curItem = stuffInStores.get(i);
+            if (storelist.contains(curItem)) {
+                curStoreListing = curItem;
+            } else {
+                if (!Buyers.isNumeric(curItem)) {
+                    s += tickNumber + ": \n";
+                    tickNumber++;
+                    s += "Seller: " + curSeller + "\n";
+                    s += "Store: " + curStoreListing + "\n";
+                    String[] thing = Buyers.listTicket(curItem);
+                    s += "Sport: " + thing[0] + "\nLocation: " + thing[1] + "\nRow/Section Area: "
+                            + thing[2] + "\nPrice: " + thing[3] + "\n";
+                    String qtyNumber = stuffInStores.get(i + 1);
+                    s += "Quantity: " + qtyNumber;
+                    list.add(s);
+                    s = "";
+
+                    String[] tickInformation = new String[5];
+                    for (int j = 0; j < 4; j++) {
+                        tickInformation[j] = thing[j];
+                    }
+                    tickInformation[4] = qtyNumber;
+                    allListedTicks.add(tickInformation);
+                }
+            }
+        }
+    }
+    return list;
+}
+public static ArrayList<String> viewListingsWithConstraint2(String constraint) {
+    ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+    ArrayList<String[]> allListedTicks = new ArrayList<>();
+    ArrayList<String> list = new ArrayList<>();
+    String s = "";
+    int tickNumber = 1;
+    for (String eachLine : fileInfo) {
+
+        DoubleArrayList b = Buyers.splitStoreInfo(eachLine);
+        String curSeller = (eachLine.split(","))[1];
+        String curStoreListing = "";
+        ArrayList<String> stuffInStores = b.getStuffInStores();
+        ArrayList<String> storelist = b.getStoreList();
+
+        for (int i = 0; i < stuffInStores.size(); i++) {
+            String curItem = stuffInStores.get(i);
+            if (storelist.contains(curItem)) {
+                curStoreListing = curItem;
+            } else {
+                if (!Buyers.isNumeric(curItem)) {
+                    boolean shouldList = false;
+                    String[] thing = Buyers.listTicket(curItem);
+                    if (curStoreListing.toLowerCase().equals(constraint.toLowerCase()) || thing[0].toLowerCase().
+                            equals(constraint.toLowerCase())) {
+                        shouldList = true;
+                    }
+                    if (shouldList) {
+                        s += tickNumber + ": \n";
+                        tickNumber++;
+                        s += "Seller: " + curSeller + "\n";
+                        s += "Store: " + curStoreListing + "\n";
+                        s += "Sport: " + thing[0] + "\nLocation: " + thing[1] + "\nRow/Section Area: " +
+                                thing[2] + "\nPrice: " + thing[3] + "\n";
+                        String qtyNumber = stuffInStores.get(i + 1);
+                        s += "Quantity: " + qtyNumber;
+                        list.add(s);
+                        s = "";
+
+                        String[] tickInformation = new String[5];
+                        for (int j = 0; j < 4; j++) {
+                            tickInformation[j] = thing[j];
+                        }
+                        tickInformation[4] = qtyNumber;
+                        allListedTicks.add(tickInformation);
+                    }
+                }
+            }
+        }
+    }
+    return list;
+}
+
+public static ArrayList<String> viewAllListingsSortedByTicketQuantity2() {
+    ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+    ArrayList<String[]> allListedTicks = new ArrayList<>();
+    ArrayList<String> list = new ArrayList<>();
+    String s = "";
+    int tickNumber = 1;
+    for (String eachLine : fileInfo) {
+        DoubleArrayList b = Buyers.splitStoreInfo(eachLine);
+        String curSeller = (eachLine.split(","))[1];
+        String curStoreListing = "";
+        ArrayList<String> stuffInStores = b.getStuffInStores();
+        ArrayList<String> storelist = b.getStoreList();
+
+        for (int i = 0; i < stuffInStores.size(); i++) {
+            String curItem = stuffInStores.get(i);
+            if (storelist.contains(curItem)) {
+                curStoreListing = curItem;
+            } else {
+                if (!Buyers.isNumeric(curItem)) {
+                    String[] thing = Buyers.listTicket(curItem);
+                    String qtyNumber = stuffInStores.get(i + 1);
+                    String[] tickInformation = new String[7];
+                    for (int j = 2; j < 6; j++) {
+                        tickInformation[j] = thing[j - 2];
+                    }
+                    tickInformation[6] = qtyNumber;
+                    tickInformation[1] = curStoreListing;
+                    tickInformation[0] = curSeller;
+                    allListedTicks.add(tickInformation);
+                }
+
+            }
+        }
+
+    }
+
+    allListedTicks.sort((arr1, arr2) -> Integer.compare(Integer.parseInt(arr2[6]), Integer.parseInt(arr1[6])));
+
+    for (String[] things : allListedTicks) {
+        s += tickNumber + ": \n";
+        tickNumber++;
+        s += "Seller: " + things[0] + "\n";
+        s += "Store: " + things[1] + "\n";
+        s += "Sport: " + things[2] + "\nLocation: " + things[3] + "\nRow/Section Area: " + things[4] + "\nPrice: " +
+                things[5] + "\n";
+        s += "Quantity: " + things[6] + "\n";
+        list.add(s);
+        s = "";
+    }
+
+    return list;
+}
+
 }

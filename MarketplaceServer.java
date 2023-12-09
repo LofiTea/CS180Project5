@@ -285,37 +285,18 @@ public class MarketplaceServer {
              return shoppingCartPackage;
     }
 
-   synchronized public static ArrayList<String> buildListedTicketsPackage(ArrayList<String[]> b)
+ 
+  synchronized public static ArrayList<String> buildListedTicketsPackage3(ArrayList<String> b)
+  {
+
+   for(int i = 0; i<b.size();i++)
    {
-    ArrayList<String> ticketPackage = new ArrayList<>();
-
-
-    for(int i = 0; i<b.size();i++)
-    {
-        String ogFormat = "" + (i+1)+"."+"&";
-        String[] curTicket = b.get(i);
-        String formattedString = "Sport: " + curTicket[0] + "&Location: " + curTicket[1] +
-                "&Section: " + curTicket[2] + "&Price: " + curTicket[3] + "&Quantity: " + curTicket[4];
-        ogFormat = ogFormat + formattedString;
-        ticketPackage.add(ogFormat);
-    }
-     return ticketPackage;
+      String lol = b.get(i);
+       lol = lol.replace("\n","&");
+      b.set(i,lol);
    }
 
-    synchronized public static ArrayList<String> buildListedTicketsPackage2(ArrayList<String[]> b)
-   {
-    ArrayList<String> ticketPackage = new ArrayList<>();
+    return b;
 
-
-    for(int i = 0; i<b.size();i++)
-    {
-        String ogFormat = "" + (i+1)+"."+"&";
-        String[] curTicket = b.get(i);
-        String formattedString = "Sport: " + curTicket[2] + "&Location: " + curTicket[3] +
-                "&Section: " + curTicket[4] + "&Price: " + curTicket[5] + "&Quantity: " + curTicket[6];
-        ogFormat = ogFormat + formattedString;
-        ticketPackage.add(ogFormat);
-    }
-     return ticketPackage;
-   }
+  }
 }

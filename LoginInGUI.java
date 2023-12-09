@@ -96,6 +96,7 @@ public class LoginInGUI extends JComponent implements Runnable {
 
                 CreateAccountGUI createAccountGUI = new CreateAccountGUI();
                 createAccountGUI.run();
+                frame.dispose();
             }
         }
     };

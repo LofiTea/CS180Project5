@@ -173,10 +173,10 @@ public class MarketplaceServerThread extends Thread {
                                     switch(howList)
                                     {
                                         case 0:
-                                        TicketInfoCombo b =  Buyers.viewAllListingsGeneral();
-                                        if(!(b.getListedTicks().isEmpty() || b.getListedTicks()==null))
+                                        ArrayList<String> b =  Buyers.viewAllListingsGeneral2();
+                                        if(!(b.isEmpty() || b==null))
                                         {
-                                            ArrayList<String> ticketPackage  = MarketplaceServer.buildListedTicketsPackage(b.getListedTicks());
+                                            ArrayList<String> ticketPackage  = MarketplaceServer.buildListedTicketsPackage3(b);
                                             oos.writeObject(ticketPackage);
                                             boolean wantToBuy = (boolean)ois.readObject();
                                             if(wantToBuy)
@@ -211,10 +211,10 @@ public class MarketplaceServerThread extends Thread {
                                         if(!userCancelled)
                                         {
                                           String constraint = (String)ois.readObject();
-                                           b =  Buyers.viewListingsWithConstraint(constraint);
-                                        if(!(b.getListedTicks().isEmpty() || b.getListedTicks()==null))
+                                           b =  Buyers.viewListingsWithConstraint2(constraint);
+                                        if(!(b.isEmpty() || b==null))
                                         {
-                                            ArrayList<String> ticketPackage  = MarketplaceServer.buildListedTicketsPackage(b.getListedTicks());
+                                            ArrayList<String> ticketPackage  = MarketplaceServer.buildListedTicketsPackage3(b);
                                             oos.writeObject(ticketPackage);
                                             boolean wantToBuy = (boolean)ois.readObject();
                                             if(wantToBuy)
@@ -250,10 +250,10 @@ public class MarketplaceServerThread extends Thread {
                                         if(!userCancelled)
                                         {
                                           String constraint = (String)ois.readObject();
-                                           b =  Buyers.viewListingsWithConstraint(constraint);
-                                        if(!(b.getListedTicks().isEmpty() || b.getListedTicks()==null))
+                                           b =  Buyers.viewListingsWithConstraint2(constraint);
+                                        if(!(b.isEmpty() || b==null))
                                         {
-                                            ArrayList<String> ticketPackage  = MarketplaceServer.buildListedTicketsPackage(b.getListedTicks());
+                                            ArrayList<String> ticketPackage  = MarketplaceServer.buildListedTicketsPackage3(b);
                                             oos.writeObject(ticketPackage);
                                             boolean wantToBuy = (boolean)ois.readObject();
                                             if(wantToBuy)
@@ -285,10 +285,10 @@ public class MarketplaceServerThread extends Thread {
                                         }
                                         break;
                                         case 3:
-                                          b =  Buyers.viewAllListingsSortedByTicketQuantity();
-                                        if(!(b.getListedTicks().isEmpty() || b.getListedTicks()==null))
+                                          b =  Buyers.viewAllListingsSortedByTicketQuantity2();
+                                        if(!(b.isEmpty() || b ==null))
                                         {
-                                            ArrayList<String> ticketPackage  = MarketplaceServer.buildListedTicketsPackage2(b.getListedTicks());
+                                            ArrayList<String> ticketPackage  = MarketplaceServer.buildListedTicketsPackage3(b);
                                             oos.writeObject(ticketPackage);
                                             boolean wantToBuy = (boolean)ois.readObject();
                                             if(wantToBuy)
