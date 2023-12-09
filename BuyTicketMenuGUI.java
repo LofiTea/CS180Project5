@@ -22,6 +22,7 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
     JButton checkOutButton;
     JButton returnToMenuButton;
     LoginInfo loginInfo;
+    MarketplaceClient client;
     ArrayList<CartItems> shoppingCart;
     ArrayList<CartItems> previousShoppingCart;
     Buyers currentBuyer;
@@ -29,16 +30,19 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == buyTicketButton) {
-                shoppingCart = currentBuyer.retrieveShoppingCart();
+                client.sendInt(1);
+               // shoppingCart = currentBuyer.retrieveShoppingCart();
                 BuyTicketGUI buyTicketGUI = new BuyTicketGUI();
-                buyTicketGUI.setLoginInfo(loginInfo);
-                buyTicketGUI.setCurrentBuyer(currentBuyer);
-                buyTicketGUI.setShoppingCart(shoppingCart);
-                buyTicketGUI.setPreviousShoppingCart(previousShoppingCart);
+                buyTicketGUI.setClient(client);
+                //buyTicketGUI.setLoginInfo(loginInfo);
+                //buyTicketGUI.setCurrentBuyer(currentBuyer);
+               // buyTicketGUI.setShoppingCart(shoppingCart);
+               // buyTicketGUI.setPreviousShoppingCart(previousShoppingCart);
                 buyTicketGUI.run();
                 frame.dispose();
             }
             if (e.getSource() == viewShoppingCartButton) {
+                client.sendInt(2);
                 shoppingCart = currentBuyer.retrieveShoppingCart();
                 if (shoppingCart == null) {
                     JOptionPane.showMessageDialog(null, "Error! Cannot view shopping cart" +
@@ -58,6 +62,7 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
                 }
             }
             if (e.getSource() == removeFromShoppingCartButton) {
+                client.sendInt(3);
                 ArrayList<CartItems> shoppingCart2 = currentBuyer.retrieveShoppingCart();
                 if (shoppingCart == null || shoppingCart2 == null) {
                     JOptionPane.showMessageDialog(null, "Error! Shopping cart is empty!",
@@ -73,6 +78,7 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
                 }
             }
             if (e.getSource() == checkOutButton) {
+                client.sendInt(4);
                 shoppingCart = currentBuyer.retrieveShoppingCart();
                 if (shoppingCart == null) {
                     JOptionPane.showMessageDialog(null, "Error! Shopping cart is empty!",
@@ -97,11 +103,13 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
                 }
             }
             if (e.getSource() == returnToMenuButton) {
+                client.sendInt(5);
                 BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
 //                buyerDashboardGUI.setLoginInfo(loginInfo);
 //                buyerDashboardGUI.setCurrentBuyer(currentBuyer);
 //                buyerDashboardGUI.setShoppingCart(shoppingCart);
 //                buyerDashboardGUI.setPreviousShoppingCart(previousShoppingCart);
+               buyerDashboardGUI.setClient(client);
                 buyerDashboardGUI.run();
                 frame.dispose();
             }
@@ -170,6 +178,11 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
 
     public void setLoginInfo(LoginInfo loginInfo) {
         this.loginInfo = loginInfo;
+    }
+
+    public void setClient(MarketplaceClient client)
+    {
+        this.client = client;
     }
 
     public void setShoppingCart(ArrayList<CartItems> shoppingCart) {

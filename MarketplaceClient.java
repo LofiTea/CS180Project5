@@ -36,7 +36,7 @@ public class MarketplaceClient {
 //        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 //        Scanner scan = new Scanner(System.in);
 //
-        LoginInGUI loginInGUI = new LoginInGUI();
+          LoginInGUI loginInGUI = new LoginInGUI();
         //System.out.println("Starting new gui stack");
         loginInGUI.run();
 

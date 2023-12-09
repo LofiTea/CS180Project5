@@ -515,7 +515,7 @@ public class Buyers {
     }
 
     public static TicketInfoCombo viewAllListingsGeneral() {
-        ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
         ArrayList<String[]> allListedTicks = new ArrayList<>();
         int tickNumber = 1;
         for (String eachLine : fileInfo) {
@@ -561,7 +561,7 @@ public class Buyers {
     }
 
     public static TicketInfoCombo viewListingsWithConstraint(String constraint) {
-        ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
         ArrayList<String[]> allListedTicks = new ArrayList<>();
         int tickNumber = 1;
         for (String eachLine : fileInfo) {
@@ -618,7 +618,7 @@ public class Buyers {
     }
 
     public static TicketInfoCombo viewAllListingsSortedByTicketQuantity() {
-        ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
         ArrayList<String[]> allListedTicks = new ArrayList<>();
         int tickNumber = 1;
         for (String eachLine : fileInfo) {
@@ -676,13 +676,13 @@ public class Buyers {
 
     public static Ticket buyTicket(ArrayList<String[]> tickets, int ticketToBuy, int ticketAmount, int howManyThereAre) {
         if (ticketToBuy > howManyThereAre) {
-            System.out.println("Error enter a valid ticket number");
+            //System.out.println("Error enter a valid ticket number");
             return null;
         } else {
 
             String[] curTicketInfo = tickets.get(ticketToBuy - 1);
             if (ticketAmount > Integer.parseInt(curTicketInfo[4])) {
-                System.out.println("Error: buy a quantity that is avaliable!");
+               // System.out.println("Error: buy a quantity that is avaliable!");
                 return null;
             } else {
                 Ticket yay = new Ticket(curTicketInfo[0], curTicketInfo[1], curTicketInfo[2],

@@ -32,25 +32,18 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // currentBuyer = new Buyers(determineID(loginInfo.getEmail(), loginInfo.getPassword()), loginInfo);
-            // shoppingCart = currentBuyer.retrieveShoppingCart();
-            // previousShoppingCart = currentBuyer.retrieveShoppingCart2();
-
-            // if (shoppingCart == null) shoppingCart = new ArrayList<>();
-            // if (previousShoppingCart == null) previousShoppingCart = new ArrayList<>();
-
-            // currentBuyer.setShoppingCart(shoppingCart);
-            // currentBuyer.setPreviousShopped(previousShoppingCart);
 
             if (e.getSource() == buyTicketButton) {
                 client.sendInt(1);
+                 
                 // shoppingCart = currentBuyer.retrieveShoppingCart();
-                // BuyTicketMenuGUI buyTicketMenuGUI = new BuyTicketMenuGUI();
+                BuyTicketMenuGUI buyTicketMenuGUI = new BuyTicketMenuGUI();
                 // buyTicketMenuGUI.setLoginInfo(loginInfo);
                 // buyTicketMenuGUI.setCurrentBuyer(currentBuyer);
                 // buyTicketMenuGUI.setShoppingCart(shoppingCart);
                 // buyTicketMenuGUI.setPreviousShoppingCart(previousShoppingCart);
-                // buyTicketMenuGUI.run();
+                buyTicketMenuGUI.setClient(client);
+                buyTicketMenuGUI.run();
                 frame.dispose();
             }
             if (e.getSource() == viewHistoryButton) {

@@ -25,205 +25,406 @@ public class BuyTicketGUI extends JComponent implements Runnable {
     String[] optionChoices = {"1. View All Listings", "2. View Listings By Store", "3. View Listings By Sport",
             "4. View Listings By Quantity Available"};
     ArrayList<CartItems> shoppingCart;
+    ArrayList<String> realShoppingCart;
     ArrayList<CartItems> previousShoppingCart;
+    MarketplaceClient client;
     Buyers currentBuyer;
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == confirmButton) {
                 int option = list.getSelectedIndex();
-                shoppingCart = currentBuyer.retrieveShoppingCart();
+                list.removeAllItems();
+                client.sendInt(option);
+               // System.out.println("able to reach");
+                realShoppingCart = client.recieveStringArrayList();
+                //System.out.println("Unable to reach");
+
                 switch (option) {
                     case 0 -> {
-                        TicketInfoCombo b = Buyers.viewAllListingsGeneral();
-                        if (!b.getListedTicks().isEmpty()) {
-                            String[] options = new String[viewAllListingsGeneral().size()];
+                        ArrayList<String> allTicks = client.recieveStringArrayList();
+                        
+                        if (!allTicks.get(0).equals("Lebron James")) {
+                            String[] options = new String[allTicks.size()];
                             for (int i = 0; i < options.length; i++) {
-                                options[i] = viewAllListingsGeneral().get(i);
+                                String curTicket = allTicks.get(i);
+                                curTicket = curTicket.replace("&","<br>");
+                                options[i] = "<html>" + curTicket + "</html>";
                             }
                             String ticket = (String) JOptionPane.showInputDialog(frame,
                                     "What type of ticket would you like to buy?", "View All Listings",
                                     JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                            
+                            boolean wantToPurchase = true;
+                            int whatToBuy = -123;
+                            int howMany = -1;
                             if (ticket == null) {
-                                for (String optionChoice : optionChoices) {
-                                    list.addItem(optionChoice);
-                                }
-                                list.setSelectedIndex(0);
-                                return;
+                                wantToPurchase = false;
+                               //client.sendInt(1);
+                                
                             }
-                            int whatToBuy = Arrays.asList(options).indexOf(ticket);
-
-                            String num = JOptionPane.showInputDialog(frame, "How many would " +
+                            else
+                            {
+                               whatToBuy = Arrays.asList(options).indexOf(ticket);
+                                boolean isValidNum = false;
+                               
+                            do{
+                              String num = JOptionPane.showInputDialog(frame, "How many would " +
                                     "you like to buy?", "View All Listings", JOptionPane.QUESTION_MESSAGE);
                             if (num == null) {
-                                for (String optionChoice : optionChoices) {
-                                    list.addItem(optionChoice);
-                                }
-                                list.setSelectedIndex(0);
-                                return;
+                                wantToPurchase = false;
+                                isValidNum = true;
                             }
-                            int howMany = Integer.parseInt(num);
-                            Ticket currentTicket = Buyers.buyTicket(b.getListedTicks(), whatToBuy, howMany,
-                                    b.getHowManyTicks());
-                            if (currentTicket != null) {
-                                shoppingCart.add(new CartItems(currentTicket, howMany));
-                                currentBuyer.setShoppingCart(shoppingCart);
-                                try {
-                                    currentBuyer.updateShoppingCart();
-                                    JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
+                            else  {
+                                 try{
+                                 howMany = Integer.parseInt(num);
+                                 if(howMany <= 0)
+                                 {
+                                    JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
+                        "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
+                          
+                                 }
+                                else{
+                                    isValidNum = true;
+                                }
+                            }
+                            catch(NumberFormatException nf)
+                            {
+                                   JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
+                        "Invalid Quantity", JOptionPane.ERROR_MESSAGE); 
+                            }
+                       }
+                           
+                         }
+                        while(!isValidNum);//endofcopy
+                     }
+                            
+
+                            if(wantToPurchase)
+                            {
+                              client.sendBoolean(true);
+                              client.sendInt(whatToBuy+1);
+                            client.sendInt(howMany);
+                            boolean wasTicketPurchaseSuccesful = client.receiveBoolean();
+                            if(wasTicketPurchaseSuccesful)
+                            {
+                                JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
                                             JOptionPane.INFORMATION_MESSAGE);
-                                } catch (IOException ex) {
-                                    ex.printStackTrace();
-                                }
+                                            client.sendInt(1);
                             }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(frame, "Ticket purchase failed!", "Failed Purchase",
+                    JOptionPane.ERROR_MESSAGE);
+                               client.sendInt(1);
+                            }
+                            }
+                            else{
+                               client.sendBoolean(false);
+                               client.sendInt(1);
+                            }
+                            
+                            
+                          
+                        }
+                        else{
+                           JOptionPane.showMessageDialog(frame, "There are no listings", "No Listings",
+                    JOptionPane.ERROR_MESSAGE);
+                        client.sendInt(1);
                         }
                     }
                     case 1 -> {
                         String curStore = JOptionPane.showInputDialog(frame, "What store would "
                                 + "you like to buy from?", "View Listings By Store", JOptionPane.QUESTION_MESSAGE);
                         if (curStore == null) {
-                            for (String optionChoice : optionChoices) {
-                                list.addItem(optionChoice);
+                           client.sendBoolean(true);
+                           client.sendInt(1);
+                        }
+                        else{
+                          client.sendBoolean(false);
+                          client.sendString(curStore);
+                         ArrayList<String> allTicks = client.recieveStringArrayList();
+                        if (!allTicks.get(0).equals("Lebron James")) {
+                            String[] options = new String[allTicks.size()];
+                            for (int i = 0; i < options.length; i++) {
+                                String curTicket = allTicks.get(i);
+                                curTicket = curTicket.replace("&","<br>");
+                                options[i] = "<html>" + curTicket + "</html>";
                             }
-                            list.setSelectedIndex(0);
-                            return;
-                        }
-                        String[] options = new String[viewListingsWithConstraint(curStore).size()];
-                        for (int i = 0; i < options.length; i++) {
-                            options[i] = viewListingsWithConstraint(curStore).get(i);
-                        }
-                        TicketInfoCombo c = Buyers.viewListingsWithConstraint(curStore);
-                        if (!c.getListedTicks().isEmpty()) {
                             String ticket = (String) JOptionPane.showInputDialog(frame,
-                                    "What type of ticket would you like to buy?", "View Listings By " +
-                                            "Store", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                                    "What type of ticket would you like to buy?", "View All Listings",
+                                    JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                            
+                            boolean wantToPurchase = true;
+                            int whatToBuy = -123;
+                            int howMany = -1;
                             if (ticket == null) {
-                                for (String optionChoice : optionChoices) {
-                                    list.addItem(optionChoice);
-                                }
-                                list.setSelectedIndex(0);
-                                return;
+                                wantToPurchase = false;
+                               //client.sendInt(1);
+                                
                             }
-                            int whatToBuy2 = Arrays.asList(options).indexOf(ticket);
-                            String num = JOptionPane.showInputDialog(frame, "How many would " +
-                                    "you like to buy?", "View Listings By Store", JOptionPane.QUESTION_MESSAGE);
+                            else
+                            {
+                               whatToBuy = Arrays.asList(options).indexOf(ticket);
+                                boolean isValidNum = false;
+                               
+                            do{
+                              String num = JOptionPane.showInputDialog(frame, "How many would " +
+                                    "you like to buy?", "View All Listings", JOptionPane.QUESTION_MESSAGE);
                             if (num == null) {
-                                for (String optionChoice : optionChoices) {
-                                    list.addItem(optionChoice);
-                                }
-                                list.setSelectedIndex(0);
-                                return;
+                                wantToPurchase = false;
+                                isValidNum = true;
                             }
-                            int howMany2 = Integer.parseInt(num);
-                            Ticket currentTicket = Buyers.buyTicket(c.getListedTicks(), whatToBuy2, howMany2,
-                                    c.getHowManyTicks());
-                            if (currentTicket != null) {
-                                shoppingCart.add(new CartItems(currentTicket, howMany2));
-                                currentBuyer.setShoppingCart(shoppingCart);
-                                try {
-                                    currentBuyer.updateShoppingCart();
-                                    JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
+                            else  {
+                                 try{
+                                 howMany = Integer.parseInt(num);
+                                 if(howMany <= 0)
+                                 {
+                                    JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
+                        "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
+                          
+                                 }
+                                else{
+                                    isValidNum = true;
+                                }
+                            }
+                            catch(NumberFormatException nf)
+                            {
+                                   JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
+                        "Invalid Quantity", JOptionPane.ERROR_MESSAGE); 
+                            }
+                       }
+                           
+                         }
+                        while(!isValidNum);//endofcopy
+                     }
+                            
+
+                            if(wantToPurchase)
+                            {
+                              client.sendBoolean(true);
+                              client.sendInt(whatToBuy+1);
+                            client.sendInt(howMany);
+                            boolean wasTicketPurchaseSuccesful = client.receiveBoolean();
+                            if(wasTicketPurchaseSuccesful)
+                            {
+                                JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
                                             JOptionPane.INFORMATION_MESSAGE);
-                                } catch (IOException ex) {
-                                    ex.printStackTrace();
-                                }
+                                            client.sendInt(1);
                             }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(frame, "Ticket purchase failed!", "Failed Purchase",
+                    JOptionPane.ERROR_MESSAGE);
+                               client.sendInt(1);
+                            }
+                            }
+                            else{
+                               client.sendBoolean(false);
+                               client.sendInt(1);
+                            }
+                            
+                            
+                          
+                        }
+                        else{
+                           JOptionPane.showMessageDialog(frame, "There are no listings", "No Listings",
+                    JOptionPane.ERROR_MESSAGE);
+                     client.sendInt(1);
+                        }
                         }
                     }
                     case 2 -> {
-                        String curSport = JOptionPane.showInputDialog(frame, "What sport " +
-                                        "would you want to buy tickets for?", " View Listings By Sport",
-                                JOptionPane.QUESTION_MESSAGE);
-                        if (curSport == null) {
-                            for (String optionChoice : optionChoices) {
-                                list.addItem(optionChoice);
+                        String curStore = JOptionPane.showInputDialog(frame, "What Sport would "
+                                + "you like to buy tickets for?", "View Listings By Store", JOptionPane.QUESTION_MESSAGE);
+                        if (curStore == null) {
+                           client.sendBoolean(true);
+                           client.sendInt(1);
+                        }
+                        else{
+                          client.sendBoolean(false);
+                          client.sendString(curStore);
+                         ArrayList<String> allTicks = client.recieveStringArrayList();
+                        if (!allTicks.get(0).equals("Lebron James")) {
+                            String[] options = new String[allTicks.size()];
+                            for (int i = 0; i < options.length; i++) {
+                                String curTicket = allTicks.get(i);
+                                curTicket = curTicket.replace("&","<br>");
+                                options[i] = "<html>" + curTicket + "</html>";
                             }
-                            list.setSelectedIndex(0);
-                            return;
-                        }
-                        String[] options1 = new String[viewListingsWithConstraint(curSport).size()];
-                        for (int i = 0; i < options1.length; i++) {
-                            options1[i] = viewListingsWithConstraint(curSport).get(i);
-                        }
-                        TicketInfoCombo d = Buyers.viewListingsWithConstraint(curSport);
-                        if (!d.getListedTicks().isEmpty()) {
                             String ticket = (String) JOptionPane.showInputDialog(frame,
-                                    "What type of ticket would you like to buy?", "View Listings By " +
-                                            "Store", JOptionPane.PLAIN_MESSAGE, null, options1, options1[0]);
+                                    "What type of ticket would you like to buy?", "View All Listings",
+                                    JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                            
+                            boolean wantToPurchase = true;
+                            int whatToBuy = -123;
+                            int howMany = -1;
                             if (ticket == null) {
-                                for (String optionChoice : optionChoices) {
-                                    list.addItem(optionChoice);
-                                }
-                                list.setSelectedIndex(0);
-                                return;
+                                wantToPurchase = false;
+                               //client.sendInt(1);
+                                
                             }
-                            int whatToBuy3 = Arrays.asList(options1).indexOf(ticket);
-                            String num = JOptionPane.showInputDialog(frame, "How many would " +
-                                    "you like to buy?", "View Listings By Store", JOptionPane.QUESTION_MESSAGE);
+                            else
+                            {
+                               whatToBuy = Arrays.asList(options).indexOf(ticket);
+                                boolean isValidNum = false;
+                               
+                            do{
+                              String num = JOptionPane.showInputDialog(frame, "How many would " +
+                                    "you like to buy?", "View All Listings", JOptionPane.QUESTION_MESSAGE);
                             if (num == null) {
-                                for (String optionChoice : optionChoices) {
-                                    list.addItem(optionChoice);
-                                }
-                                list.setSelectedIndex(0);
-                                return;
+                                wantToPurchase = false;
+                                isValidNum = true;
                             }
-                            int howMany3 = Integer.parseInt(num);
-                            Ticket currentTicket = Buyers.buyTicket(d.getListedTicks(), whatToBuy3, howMany3,
-                                    d.getHowManyTicks());
-                            if (currentTicket != null) {
-                                shoppingCart.add(new CartItems(currentTicket, howMany3));
-                                currentBuyer.setShoppingCart(shoppingCart);
-                                try {
-                                    currentBuyer.updateShoppingCart();
-                                    JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
+                            else  {
+                                 try{
+                                 howMany = Integer.parseInt(num);
+                                 if(howMany <= 0)
+                                 {
+                                    JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
+                        "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
+                          
+                                 }
+                                else{
+                                    isValidNum = true;
+                                }
+                            }
+                            catch(NumberFormatException nf)
+                            {
+                                   JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
+                        "Invalid Quantity", JOptionPane.ERROR_MESSAGE); 
+                            }
+                       }
+                           
+                         }
+                        while(!isValidNum);//endofcopy
+                     }
+                            
+
+                            if(wantToPurchase)
+                            {
+                              client.sendBoolean(true);
+                              client.sendInt(whatToBuy+1);
+                            client.sendInt(howMany);
+                            boolean wasTicketPurchaseSuccesful = client.receiveBoolean();
+                            if(wasTicketPurchaseSuccesful)
+                            {
+                                JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
                                             JOptionPane.INFORMATION_MESSAGE);
-                                } catch (IOException ex) {
-                                    ex.printStackTrace();
-                                }
+                                            client.sendInt(1);
                             }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(frame, "Ticket purchase failed!", "Failed Purchase",
+                    JOptionPane.ERROR_MESSAGE);
+                               client.sendInt(1);
+                            }
+                            }
+                            else{
+                               client.sendBoolean(false);
+                               client.sendInt(1);
+                            }
+                            
+                            
+                          
+                        }
+                        else{
+                           JOptionPane.showMessageDialog(frame, "There are no listings", "No Listings",
+                    JOptionPane.ERROR_MESSAGE);
+                     client.sendInt(1);
+                        }
                         }
                     }
                     case 3 -> {
-                        String[] options2 = new String[viewAllListingsSortedByTicketQuantity().size()];
-                        for (int i = 0; i < options2.length; i++) {
-                            options2[i] = viewAllListingsSortedByTicketQuantity().get(i);
-                        }
-                        TicketInfoCombo ee = Buyers.viewAllListingsSortedByTicketQuantity();
-                        if (!ee.getListedTicks().isEmpty()) {
+                        ArrayList<String> allTicks = client.recieveStringArrayList();
+                        
+                        if (!allTicks.get(0).equals("Lebron James")) {
+                            String[] options = new String[allTicks.size()];
+                            for (int i = 0; i < options.length; i++) {
+                                String curTicket = allTicks.get(i);
+                                curTicket = curTicket.replace("&","<br>");
+                                options[i] = "<html>" + curTicket + "</html>";
+                            }
                             String ticket = (String) JOptionPane.showInputDialog(frame,
-                                    "What type of ticket would you like to buy?", "View Listings By " +
-                                            "Quantity", JOptionPane.PLAIN_MESSAGE, null, options2, options2[0]);
+                                    "What type of ticket would you like to buy?", "View All Listings",
+                                    JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                            
+                            boolean wantToPurchase = true;
+                            int whatToBuy = -123;
+                            int howMany = -1;
                             if (ticket == null) {
-                                for (String optionChoice : optionChoices) {
-                                    list.addItem(optionChoice);
-                                }
-                                list.setSelectedIndex(0);
-                                return;
+                                wantToPurchase = false;
+                               //client.sendInt(1);
+                                
                             }
-                            int whatToBuy4 = Arrays.asList(options2).indexOf(ticket);
-                            String num = JOptionPane.showInputDialog(frame, "How many would " +
-                                    "you like to buy?", "View Listings By Quantity", JOptionPane.QUESTION_MESSAGE);
+                            else
+                            {
+                               whatToBuy = Arrays.asList(options).indexOf(ticket);
+                                boolean isValidNum = false;
+                               
+                            do{
+                              String num = JOptionPane.showInputDialog(frame, "How many would " +
+                                    "you like to buy?", "View All Listings", JOptionPane.QUESTION_MESSAGE);
                             if (num == null) {
-                                for (String optionChoice : optionChoices) {
-                                    list.addItem(optionChoice);
-                                }
-                                list.setSelectedIndex(0);
-                                return;
+                                wantToPurchase = false;
+                                isValidNum = true;
                             }
-                            int howMany4 = Integer.parseInt(num);
-                            Ticket currentTicket = Buyers.buyTicket2(ee.getListedTicks(), whatToBuy4, howMany4,
-                                    ee.getHowManyTicks());
-                            if (currentTicket != null) {
-                                shoppingCart.add(new CartItems(currentTicket, howMany4));
-                                currentBuyer.setShoppingCart(shoppingCart);
-                                try {
-                                    currentBuyer.updateShoppingCart();
-                                    JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
+                            else  {
+                                 try{
+                                 howMany = Integer.parseInt(num);
+                                 if(howMany <= 0)
+                                 {
+                                    JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
+                        "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
+                          
+                                 }
+                                else{
+                                    isValidNum = true;
+                                }
+                            }
+                            catch(NumberFormatException nf)
+                            {
+                                   JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
+                        "Invalid Quantity", JOptionPane.ERROR_MESSAGE); 
+                            }
+                       }
+                           
+                         }
+                        while(!isValidNum);//endofcopy
+                     }
+                            
+
+                            if(wantToPurchase)
+                            {
+                              client.sendBoolean(true);
+                              client.sendInt(whatToBuy+1);
+                            client.sendInt(howMany);
+                            boolean wasTicketPurchaseSuccesful = client.receiveBoolean();
+                            if(wasTicketPurchaseSuccesful)
+                            {
+                                JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
                                             JOptionPane.INFORMATION_MESSAGE);
-                                } catch (IOException ex) {
-                                    ex.printStackTrace();
-                                }
+                                            client.sendInt(1);
                             }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(frame, "Ticket purchase failed!", "Failed Purchase",
+                    JOptionPane.ERROR_MESSAGE);
+                               client.sendInt(1);
+                            }
+                            }
+                            else{
+                               client.sendBoolean(false);
+                               client.sendInt(1);
+                            }
+                            
+                            
+                          
+                        }
+                        else{
+                           JOptionPane.showMessageDialog(frame, "There are no listings", "No Listings",
+                    JOptionPane.ERROR_MESSAGE);
+                        client.sendInt(1);
                         }
                     }
                 }
@@ -233,8 +434,10 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                 list.setSelectedIndex(0);
             }
             if (e.getSource() == returnToMenuButton) {
+                client.sendInt(-3);
                 BuyTicketMenuGUI buyTicketMenuGUI = new BuyTicketMenuGUI();
                 buyTicketMenuGUI.setLoginInfo(loginInfo);
+                buyTicketMenuGUI.setClient(client);
                 buyTicketMenuGUI.setShoppingCart(shoppingCart);
                 buyTicketMenuGUI.setCurrentBuyer(currentBuyer);
                 buyTicketMenuGUI.setPreviousShoppingCart(previousShoppingCart);
@@ -448,6 +651,11 @@ public class BuyTicketGUI extends JComponent implements Runnable {
 
     public void setLoginInfo(LoginInfo loginInfo) {
         this.loginInfo = loginInfo;
+    }
+
+    public void setClient(MarketplaceClient client)
+    {
+        this.client = client;
     }
 
     public void setShoppingCart(ArrayList<CartItems> shoppingCart) {
