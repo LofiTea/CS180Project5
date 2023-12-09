@@ -116,7 +116,7 @@ public class MarketplaceServer {
                         }
                     }
                     buyerInfo2.set(j, newLine);
-                    writeFile(buyerInfo, "BuyerInfo.txt");
+                    writeFile(buyerInfo2, "BuyerInfo.txt");
                     break;
                 }
             }

@@ -25,6 +25,7 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
     MarketplaceClient client;
     ArrayList<CartItems> shoppingCart;
     ArrayList<CartItems> previousShoppingCart;
+    ArrayList<String> realShoppingCart;
     Buyers currentBuyer;
     ActionListener actionListener = new ActionListener() {
         @Override
@@ -43,22 +44,23 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == viewShoppingCartButton) {
                 client.sendInt(2);
-                shoppingCart = currentBuyer.retrieveShoppingCart();
-                if (shoppingCart == null) {
+                realShoppingCart = client.recieveStringArrayList();
+                if (realShoppingCart == null || realShoppingCart.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Error! Cannot view shopping cart" +
                             " because it is empty!", "No Items!", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Your Shopping Cart:",
-                            "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
-                    for (int i = 0; i < shoppingCart.size(); i++) {
-                        Ticket ticket = shoppingCart.get(i).getTicket();
-                        int qty = shoppingCart.get(i).getQTY();
-                        String s = i + 1 + ":\n" + "Sport: " + ticket.getSportType() + "\nLocation: " +
-                                ticket.getLocation() + "\nSection: " + ticket.getSection() + "\nPrice: " +
-                                String.format("%.2f", ticket.getPrice()) + "\nQuantity: " + qty;
-                        JOptionPane.showMessageDialog(null, s,
-                                "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                    String[] options = new String[realShoppingCart.size()];
+                            for (int i = 0; i < options.length; i++) {
+                                String curTicket = realShoppingCart.get(i);
+                                curTicket = curTicket.replace(";","<br>");
+                                curTicket = curTicket.replace("&","<br>");
+                                options[i] = "<html>" + curTicket + "</html>";
+                        }
+                    JOptionPane.showInputDialog(frame,
+                        "Current Shopping Cart", "Current Shopping Cart",
+                        JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+                        
+                    
                 }
             }
             if (e.getSource() == removeFromShoppingCartButton) {
@@ -79,26 +81,29 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == checkOutButton) {
                 client.sendInt(4);
-                shoppingCart = currentBuyer.retrieveShoppingCart();
-                if (shoppingCart == null) {
+                realShoppingCart = client.recieveStringArrayList();
+                if (realShoppingCart == null || realShoppingCart.isEmpty()) {
+                    client.sendBoolean(false);
                     JOptionPane.showMessageDialog(null, "Error! Shopping cart is empty!",
                             "Empty Shopping Cart", JOptionPane.ERROR_MESSAGE);
                 } else {
                     int num = JOptionPane.showConfirmDialog(null, "Are you sure you want " +
                             "to checkout?", "Checkout", JOptionPane.YES_NO_OPTION);
                     if (num == JOptionPane.YES_OPTION) {
-                        String s = "Here is a receipt of your checked out items:\n\n";
-
-                        currentBuyer.checkoutCart();
-                        for (int i = 0; i < shoppingCart.size(); i++) {
-                            Ticket ticket = shoppingCart.get(i).getTicket();
-                            int qty = shoppingCart.get(i).getQTY();
-                            s += i + 1 + ":\n" + "Sport: " + ticket.getSportType() + "\nLocation: " +
-                                    ticket.getLocation() + "\nSection: " + ticket.getSection() + "\nPrice: " +
-                                    String.format("%.2f", ticket.getPrice()) + "\nQuantity: " + qty + "\n\n";
-                        }
-                        JOptionPane.showMessageDialog(null, s,
-                                "Shopping Cart", JOptionPane.INFORMATION_MESSAGE);
+                       client.sendBoolean(true);
+                       boolean succesfulCheckout = client.receiveBoolean();
+                       if(succesfulCheckout)
+                       {
+                         JOptionPane.showMessageDialog(null, "Checkout Succesful!",
+                                "Checkout Status", JOptionPane.INFORMATION_MESSAGE);
+                       }
+                       else{
+                         JOptionPane.showMessageDialog(null, "Checkout Failed!",
+                            "Checkout Status", JOptionPane.ERROR_MESSAGE);
+                       }
+                    }
+                    else{
+                        client.sendBoolean(false);
                     }
                 }
             }

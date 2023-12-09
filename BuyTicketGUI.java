@@ -21,14 +21,10 @@ public class BuyTicketGUI extends JComponent implements Runnable {
     JComboBox<String> list;
     JButton confirmButton;
     JButton returnToMenuButton;
-    LoginInfo loginInfo;
     String[] optionChoices = {"1. View All Listings", "2. View Listings By Store", "3. View Listings By Sport",
             "4. View Listings By Quantity Available"};
-    ArrayList<CartItems> shoppingCart;
     ArrayList<String> realShoppingCart;
-    ArrayList<CartItems> previousShoppingCart;
     MarketplaceClient client;
-    Buyers currentBuyer;
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -436,11 +432,7 @@ public class BuyTicketGUI extends JComponent implements Runnable {
             if (e.getSource() == returnToMenuButton) {
                 client.sendInt(-3);
                 BuyTicketMenuGUI buyTicketMenuGUI = new BuyTicketMenuGUI();
-                buyTicketMenuGUI.setLoginInfo(loginInfo);
                 buyTicketMenuGUI.setClient(client);
-                buyTicketMenuGUI.setShoppingCart(shoppingCart);
-                buyTicketMenuGUI.setCurrentBuyer(currentBuyer);
-                buyTicketMenuGUI.setPreviousShoppingCart(previousShoppingCart);
                 buyTicketMenuGUI.run();
                 frame.dispose();
             }
@@ -649,43 +641,12 @@ public class BuyTicketGUI extends JComponent implements Runnable {
         return list;
     }
 
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
-
     public void setClient(MarketplaceClient client)
     {
         this.client = client;
     }
 
-    public void setShoppingCart(ArrayList<CartItems> shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
-    public void setPreviousShoppingCart(ArrayList<CartItems> previousShoppingCart) {
-        this.previousShoppingCart = previousShoppingCart;
-    }
-    public void setCurrentBuyer(Buyers currentBuyer) {
-        this.currentBuyer = currentBuyer;
-    }
-
-    private void processTicketPurchaseResult(Ticket ticket, int quantity) {
-        if (ticket != null) {
-            shoppingCart.add(new CartItems(ticket, quantity));
-            currentBuyer.setShoppingCart(shoppingCart);
-            try {
-                currentBuyer.updateShoppingCart();
-                JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            JOptionPane.showMessageDialog(frame, "Ticket purchase failed!", "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
+       
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new BuyTicketGUI());
     }

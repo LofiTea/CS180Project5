@@ -137,11 +137,12 @@ public class Buyers {
         shoppingCart.remove(new CartItems(b, qty));
     }
 
-    public void checkoutCart() {
+    public boolean checkoutCart() {
         try {
             int transID;
-            ArrayList<String> fileInfo = Marketplace.readFile("TransactionInfo.txt");
+            ArrayList<String> fileInfo = MarketplaceServer.readFile("TransactionInfo.txt");
             ArrayList<CartItems> shoppingCartClear = (ArrayList<CartItems>) shoppingCart.clone();
+            if(shoppingCart.isEmpty()) return false;
             for (CartItems b : shoppingCart) {
                 if (fileInfo.isEmpty()) transID = 1;
                 else {
@@ -172,10 +173,12 @@ public class Buyers {
             }
             shoppingCart = shoppingCartClear;
             updateShoppingCart();
-            Marketplace.writeFile(fileInfo, "TransactionInfo.txt");
+            MarketplaceServer.writeFile(fileInfo, "TransactionInfo.txt");
             createBuyerHistory();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 

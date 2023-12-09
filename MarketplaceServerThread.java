@@ -324,10 +324,57 @@ public class MarketplaceServerThread extends Thread {
                                     }
                                     break;
                                     case 2:
+                                    currentShoppingCart = curBuyer.retrieveShoppingCart();
+                                    previousShoppingCart = curBuyer.retrieveShoppingCart2();
+                                    if(currentShoppingCart == null) currentShoppingCart = new ArrayList<>();
+                                    if(previousShoppingCart == null) previousShoppingCart = new ArrayList<>();
+                                    synchronized(obj)
+                                    {
+                                     curBuyer.setShoppingCart(currentShoppingCart);
+                                     curBuyer.setPreviousShopped(previousShoppingCart);
+                                     currentShoppingPackage = MarketplaceServer.buildBuyerCurrentShoppingCartPackage(curBuyer);
+                                     for (int i = 0; i < currentShoppingPackage.size(); i++) {
+                                        String originalString = currentShoppingPackage.get(i);
+                                        String[] parts = originalString.split(";");
+                                        String sport = parts[0];
+                                        String location = parts[1];
+                                        String section = parts[2];
+                                        String[] priceAndQuantity = parts[3].split("&");
+                                        String price = priceAndQuantity[0];
+                                        String quantity = priceAndQuantity[1];
+                            
+                                        // Format the string without spaces after semicolons
+                                        String formattedString = String.format("Sport:%s;Location:%s;Section:%s;Price:%s;Quantity:%s",
+                                                sport, location, section, price, quantity);
+                            
+                                        // Replace the original string in the ArrayList
+                                        currentShoppingPackage.set(i, formattedString);
+                                    }
+                                     oos.writeObject(currentShoppingPackage);
+                                    }
                                     break;
                                     case 3:
                                     break;
                                     case 4:
+                                    currentShoppingCart = curBuyer.retrieveShoppingCart();
+                                    previousShoppingCart = curBuyer.retrieveShoppingCart2();
+                                    if(currentShoppingCart == null) currentShoppingCart = new ArrayList<>();
+                                    if(previousShoppingCart == null) previousShoppingCart = new ArrayList<>();
+                                    synchronized(obj){
+                                    curBuyer.setShoppingCart(currentShoppingCart);
+                                    curBuyer.setPreviousShopped(previousShoppingCart);
+                                    currentShoppingPackage = MarketplaceServer.buildBuyerCurrentShoppingCartPackage(curBuyer);
+                                      oos.writeObject(currentShoppingPackage);
+                                      boolean wantToCheckout = (boolean)ois.readObject();
+                                      if(wantToCheckout)
+                                      {
+                                         boolean succesfulCheckout = curBuyer.checkoutCart();
+                                         oos.writeObject(succesfulCheckout);
+                                      }
+                                      else{
+
+                                      }
+                                    }
                                     break;
                                     case 5:
                                     whileInMenu = false; 
@@ -339,7 +386,6 @@ public class MarketplaceServerThread extends Thread {
                                
                               
                             }
-                             
                                 break;
                             case 2:
                                  curLoginInfo = new LoginInfo(email, password);
