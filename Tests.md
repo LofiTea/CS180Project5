@@ -1,47 +1,53 @@
-Test Case 1:
-Launch Application (Create New Tickets)
-Select Account Type: Buyers
-Enter Email: henryleebuyer@gmail.com
-Select Password: HelloWorld7!
-Select Create Account
-Result: Goes to Log in screen
-Enter Email: henryleebuyer@gmail.com
-Enter Password: HelloWorld7!
-Select Login
-Welcome! What would you like to do?
+# Test Case 1: Create Buyer Account
 
-Test Case 2:
-Launch Application (Log in)
-Enter email: rahulsidd@gmail.com
-Enter Password: Java2023
-Select Login
-Welcome! What would you like to do?
+Steps:
+1. The user launches the application
+2. The user hits the create a new account button
+3. The user selects the account type: Buyers
+4. The user enters their email: ticketbuyer@gmail.com
+5. The user enters a password: HelloWorld7!
+6. The user re-enters their password
+7. The user creates a new account
 
-Test Case 3:
-Launch Application (Create new tickets)
-Select Account Type: Sellers
-Enter Email: shrishm2023@gmail.com
-Enter Password: Class2027
-Select Create Account
+Expected Result: The application creates a new buyer account with the entered email and password and loads the buyer dashboard.
 
-Enter Email: shrishm2023@gmail.com
-Enter Password: Class2027
-Select Login
-Welcome! What would you like to do?
+Test Status: Passed
 
+# Test Case 2: Create Seller Account
 
-Test Case 4: 
-Launch Application (Log in)
-Enter email: ruhaans2027@yahoo.com
-Enter Password: market_45
-Select Login
-Welcome! What would you like to do?
+Steps:
+1. The user launches the application
+2. The user hits the create a new account button
+3. The user selects the account type: Sellers
+4. The user enters their email: shrishm2023@gmail.com
+5. The user enters a password: Class2027!
+6. The user re-enters their password
+7. The user creates a new account
 
+Expected Result: The application creates a new seller account with the entered email and password and loads the seller dashboard.
 
-Test Case 5:
-Launch Applciation (Log in)
-Enter email: henry24@outlook.com
-Enter Password: henry2027
-Select Login
-Welcome! What would you like to do?
+Test Status: Passed
 
+# Test Case 3: Buyer User Login
+
+Steps: 
+1. The user launches the application
+2. The user enters their email: rasidd2005@gmail.com
+3. The user enters their password: basketball!
+4. The user logins in
+
+Expected Result: The application logs in with the login information and loads the buyer dashboard.
+
+Test Status: Passed
+
+# Test Case 4: Seller User Login
+
+Steps: 
+1. The user launches the application
+2. The user enters their email: shrishmahesh11@gmail.com
+3. The user enters their password: CS180Project4!
+4. The user logins in
+
+Expected Result: The application logs in with the login information and loads the seller dashboard.
+
+Test Status: Passed
