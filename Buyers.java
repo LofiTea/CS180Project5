@@ -136,7 +136,7 @@ public class Buyers {
 
     public static StoreNameIDCombo getSellerID(String searchFor) {
         try {
-            ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+            ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
             if (fileInfo.isEmpty()) new StoreNameIDCombo("n/a", -1);
             for (String eachLine : fileInfo) {
                 DoubleArrayList storeThing = splitStoreInfo(eachLine);
@@ -395,7 +395,7 @@ public class Buyers {
     }
 
     public static ArrayList<String> viewAllListingsGeneral2() {
-        ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
         ArrayList<String[]> allListedTicks = new ArrayList<>();
         ArrayList<String> list = new ArrayList<>();
         String s = "";
@@ -437,7 +437,7 @@ public class Buyers {
     }
 
     public static ArrayList<String> viewListingsWithConstraint2(String constraint) {
-        ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
         ArrayList<String[]> allListedTicks = new ArrayList<>();
         ArrayList<String> list = new ArrayList<>();
         String s = "";
@@ -487,7 +487,7 @@ public class Buyers {
     }
 
     public static ArrayList<String> viewAllListingsSortedByTicketQuantity2() {
-        ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
         ArrayList<String[]> allListedTicks = new ArrayList<>();
         ArrayList<String> list = new ArrayList<>();
         String s = "";
@@ -563,7 +563,7 @@ public class Buyers {
     }
 
     public void updateShoppingCart() throws IOException {
-        ArrayList<String> buyerInfo = Marketplace.readFile("BuyerInfo.txt");
+        ArrayList<String> buyerInfo = MarketplaceServer.readFile("BuyerInfo.txt");
         int indexToChange = 0;
         for (int i = 0; i < buyerInfo.size(); i++) {
             String[] line = buyerInfo.get(i).split(",");
@@ -573,11 +573,11 @@ public class Buyers {
             }
         }
         buyerInfo.set(indexToChange, this.buyerID + "," + this.loginInfo.getEmail() + "," + formatShoppingCart());
-        Marketplace.writeFile(buyerInfo, "BuyerInfo.txt");
+        MarketplaceServer.writeFile(buyerInfo, "BuyerInfo.txt");
     }
 
     public void updateShoppingCart2() throws IOException {
-        ArrayList<String> buyerInfo = Marketplace.readFile("BuyerHistory.txt");
+        ArrayList<String> buyerInfo = MarketplaceServer.readFile("BuyerHistory.txt");
         int indexToChange = 0;
         for (int i = 0; i < buyerInfo.size(); i++) {
             String[] line = buyerInfo.get(i).split(",");
@@ -587,11 +587,11 @@ public class Buyers {
             }
         }
         buyerInfo.set(indexToChange, this.buyerID + "," + this.loginInfo.getEmail() + "," + formatShoppingCart2());
-        Marketplace.writeFile(buyerInfo, "BuyerHistory.txt");
+        MarketplaceServer.writeFile(buyerInfo, "BuyerHistory.txt");
     }
 
     public void clearShoppingCart() throws IOException {
-        ArrayList<String> buyerInfo = Marketplace.readFile("BuyerInfo.txt");
+        ArrayList<String> buyerInfo = MarketplaceServer.readFile("BuyerInfo.txt");
         int indexToChange = 0;
         for (int i = 0; i < buyerInfo.size(); i++) {
             String[] line = buyerInfo.get(i).split(",");
@@ -601,7 +601,7 @@ public class Buyers {
             }
         }
         buyerInfo.set(indexToChange, this.buyerID + "," + this.loginInfo.getEmail() + ",");
-        Marketplace.writeFile(buyerInfo, "BuyerInfo.txt");
+        MarketplaceServer.writeFile(buyerInfo, "BuyerInfo.txt");
     }
 
     public String formatShoppingCart() {
@@ -800,7 +800,7 @@ public class Buyers {
     public void updateBuyerHistoryAgain(int id, LoginInfo loginInfo) {
         String idNumber = Integer.toString(id);
         String email = loginInfo.getEmail();
-        ArrayList<String> list = Marketplace.readFile("BuyerHistory.txt");
+        ArrayList<String> list = MarketplaceServer.readFile("BuyerHistory.txt");
         boolean hadToMakeNewEntry = true;
         for (int i = 0; i < list.size(); i++) {
             String[] arr = list.get(i).split(",");
@@ -824,7 +824,7 @@ public class Buyers {
     }
 
     public boolean checkIfEmpty(int buyerId) {
-        ArrayList<String> list = Marketplace.readFile("BuyerHistory.txt");
+        ArrayList<String> list = MarketplaceServer.readFile("BuyerHistory.txt");
         if (list.size() == 0) return true;
         for (int i = 0; i < list.size(); i++) {
             String[] arr = list.get(i).split(",");
@@ -838,7 +838,7 @@ public class Buyers {
 
     public ArrayList<String> generalDashbaord(boolean shouldSort) {
         ArrayList<String> dashInfo = new ArrayList<>();
-        ArrayList<String> transactionInfo = Marketplace.readFile("TransactionInfo.txt");
+        ArrayList<String> transactionInfo = MarketplaceServer.readFile("TransactionInfo.txt");
         if (transactionInfo == null || transactionInfo.isEmpty()) {
             return dashInfo;
         }
@@ -901,7 +901,7 @@ public class Buyers {
 
     public ArrayList<ArrayList<String>> listCustomerSpecificDashboard(boolean shouldSort) {
         ArrayList<ArrayList<String>> dashInfo = new ArrayList<>();
-        ArrayList<String> transFileInfo = Marketplace.readFile("TransactionInfo.txt");
+        ArrayList<String> transFileInfo = MarketplaceServer.readFile("TransactionInfo.txt");
 
         for (String b : transFileInfo) {
             String[] splits = b.split(",");
