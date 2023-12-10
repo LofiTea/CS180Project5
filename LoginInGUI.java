@@ -58,13 +58,9 @@ public class LoginInGUI extends JComponent implements Runnable {
 
                 if(loginSuccess) {
                     String role;
-                    try {
-                        role = client.getString();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    }
+
+                    role = client.getString();
+
 
                     if (role.equals("b")) {
                          //System.out.println(role);

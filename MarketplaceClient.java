@@ -230,8 +230,13 @@ public class MarketplaceClient {
         return "ID: " + ID + "\nEmail: " + email + "\nAccount Type: " + type;
     }
 
-    synchronized public String getString() throws IOException, ClassNotFoundException {
-        return (String) ois.readObject();
+    synchronized public String getString() {
+        try {
+            return (String) ois.readObject();
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

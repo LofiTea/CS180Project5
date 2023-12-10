@@ -38,10 +38,6 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
                  
                 // shoppingCart = currentBuyer.retrieveShoppingCart();
                 BuyTicketMenuGUI buyTicketMenuGUI = new BuyTicketMenuGUI();
-                // buyTicketMenuGUI.setLoginInfo(loginInfo);
-                // buyTicketMenuGUI.setCurrentBuyer(currentBuyer);
-                // buyTicketMenuGUI.setShoppingCart(shoppingCart);
-                // buyTicketMenuGUI.setPreviousShoppingCart(previousShoppingCart);
                 buyTicketMenuGUI.setClient(client);
                 buyTicketMenuGUI.run();
                 frame.dispose();
@@ -64,10 +60,7 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
             if (e.getSource() == viewStatisticsButton) {
                 client.sendInt(3);
                 BuyerStatisticsGUI buyerStatisticsGUI = new BuyerStatisticsGUI();
-//                buyerStatisticsGUI.setLoginInfo(loginInfo);
-//                buyerStatisticsGUI.setCurrentBuyer(currentBuyer);
-//                buyerStatisticsGUI.setShoppingCart(shoppingCart);
-//                buyerStatisticsGUI.setPreviousShoppingCart(previousShoppingCart);
+                buyerStatisticsGUI.setClient(client);
                 buyerStatisticsGUI.run();
                 frame.dispose();
             }

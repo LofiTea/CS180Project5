@@ -36,8 +36,7 @@ public class SellerHistoryGUI extends JComponent implements Runnable {
        @Override
        public void actionPerformed(ActionEvent e) {
            if (e.getSource() == confirmButton) {
-          
-              client.sendInt(1);
+               client.sendInt(1);
                String selectedStores = (String)list.getSelectedItem();
                int selectedStoreNumber = Integer.parseInt(selectedStores.split("\\.")[0]);
                client.sendInt(selectedStoreNumber);
@@ -45,38 +44,35 @@ public class SellerHistoryGUI extends JComponent implements Runnable {
 
                ArrayList<String> salesList = (ArrayList<String>)client.recieveStringArrayList();
 
-               if(salesList.isEmpty())
-               {
+               if(salesList.isEmpty()) {
                  JOptionPane.showMessageDialog(null, "This Store has no Sales!",
                    "No Stores!", JOptionPane.ERROR_MESSAGE);
-               }
-               else{
+               } else {
                 StringBuilder salesInfo = new StringBuilder();
-
                 for (int i = 0; i < salesList.size()-1; i++) {
-                    salesInfo.append(i + 1).append(".\n").append(salesList.get(i)).append("\n\n");
+                   salesInfo.append(i + 1).append(".\n").append(salesList.get(i)).append("\n\n");
                 }
                 salesInfo.append(salesList.get(salesList.size()-1));
-            
+
                 JTextArea textArea = new JTextArea(salesInfo.toString());
                 textArea.setEditable(false);
                 textArea.setLineWrap(true);
                 textArea.setWrapStyleWord(true);
-            
+
                 JScrollPane scrollPane = new JScrollPane(textArea);
-            
+
 
                 JFrame salesFrame = new JFrame("Transaction Information");
-        
+
                 salesFrame.setContentPane(scrollPane);
-            
+
                 // Set frame properties
-                int frameWidth = Math.min(800, textArea.getPreferredSize().width + 50); 
-                int frameHeight = Math.min(600, textArea.getPreferredSize().height + 50); 
+                int frameWidth = Math.min(800, textArea.getPreferredSize().width + 50);
+                int frameHeight = Math.min(600, textArea.getPreferredSize().height + 50);
                 salesFrame.setSize(frameWidth, frameHeight);
-                salesFrame.setLocationRelativeTo(null); 
+                salesFrame.setLocationRelativeTo(null);
                 salesFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            
+
                 // Make the frame visible
                 salesFrame.setVisible(true);
                }
@@ -131,7 +127,7 @@ public class SellerHistoryGUI extends JComponent implements Runnable {
          SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
          sellerDashboardGUI.setClient(client);
          sellerDashboardGUI.run();
-        
+        return;
            
        } else {
          client.sendBoolean(false);

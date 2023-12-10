@@ -3,10 +3,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Project 5: MarketplaceServer
- *
+ * <p>
  * Holds the server for the marketplace.
  *
  * @author Shrish Mahesh, Rahul Siddharth, Lab Section L20
@@ -62,7 +64,7 @@ public class MarketplaceServer {
         return role;
     }
 
-   synchronized public static void editEmail(int id, String newEmail) {
+    synchronized public static void editEmail(int id, String newEmail) {
         ArrayList<String> loginInfo = readFile("LoginInfo.txt");
         int indexToChange = 0;
         String password = "";
@@ -166,8 +168,83 @@ public class MarketplaceServer {
         writeFile(loginInfo, "LoginInfo.txt");
     }
 
+    public static ArrayList<String> uniqueProducts(String store, int sellerID) {
+        ArrayList<String> transactions = readFile("TransactionInfo.txt");
+        ArrayList<String> products = new ArrayList<>();
+        ArrayList<String> unique = new ArrayList<>();
+        ArrayList<String> returnList = new ArrayList<>();
 
-   synchronized public static void deleteAccount(String email, String password) {
+        for (int i = 0; i < transactions.size(); i++) {
+            String[] arr = transactions.get(i).split(",");
+            if (arr[3].equals(store) && Integer.parseInt(arr[2]) == sellerID) {
+                products.add(arr[5] + ";" + arr[6]);
+            }
+        }
+        for (int j = 0; j < products.size(); j++) {
+            String[] product = products.get(j).split(";");
+
+            if (unique.contains(product[1] + ";" + product[2] + ";" + product[3])) {
+                for (int i = 0; i < unique.size(); i++) {
+                    if (unique.get(i).equals(product[1] + ";" + product[2] + ";" + product[3])) {
+                        String tempStr = returnList.get(i);
+                        int qty = Integer.parseInt(tempStr.substring(0, tempStr.indexOf(";")));
+                        tempStr = tempStr.substring(tempStr.indexOf(";") + 1);
+                        returnList.set(i, (qty + Integer.parseInt(product[0]) + ";" + tempStr));
+                    }
+                }
+            } else {
+                unique.add(product[1] + ";" + product[2] + ";" + product[3]);
+                returnList.add(product[0] + ";" + product[1] + ";" + product[2] + ";" + product[3]);
+            }
+        }
+        return returnList;
+    }
+
+    public static ArrayList<String> uniqueProductsBySport(String storeName, int sellerID) {
+        ArrayList<String> uniqueProducts = uniqueProducts(storeName, sellerID);
+        ArrayList<String> sortBySport = new ArrayList<>();
+        Collections.sort(uniqueProducts, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] arr1 = o1.split(";");
+                String[] arr2 = o2.split(";");
+                return arr1[1].compareTo(arr2[1]);
+            }
+        });
+        return uniqueProducts;
+    }
+
+    public static ArrayList<String> uniqueProductsByLocation(String storeName, int sellerID) {
+        ArrayList<String> uniqueProducts = uniqueProducts(storeName, sellerID);
+
+        Collections.sort(uniqueProducts, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] arr1 = o1.split(";");
+                String[] arr2 = o2.split(";");
+                return arr1[2].compareTo(arr2[2]);
+            }
+        });
+        return uniqueProducts;
+    }
+
+    public static ArrayList<String> uniqueProductsBySales(String storeName, int sellerID) {
+        ArrayList<String> uniqueProducts = uniqueProducts(storeName, sellerID);
+        ArrayList<String> sortBySales = new ArrayList<String>();
+
+        Collections.sort(uniqueProducts, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] arr1 = o1.split(";");
+                String[] arr2 = o2.split(";");
+                return Integer.compare(Integer.parseInt(arr1[0]), Integer.parseInt(arr2[0]));
+            }
+        });
+        return uniqueProducts;
+    }
+
+
+    synchronized public static void deleteAccount(String email, String password) {
         ArrayList<String> loginInfo = readFile("LoginInfo.txt");
         String role = "";
         int id = 0;
@@ -253,50 +330,64 @@ public class MarketplaceServer {
 
     }
 
-    synchronized public static ArrayList<String> buildBuyerPreviousShoppingCartPackage(Buyers b)
-    {
+    synchronized public static ArrayList<String> buildBuyerPreviousShoppingCartPackage(Buyers b) {
         ArrayList<CartItems> previousShoppingCart = b.retrieveShoppingCart2();
-                             
-                             if(previousShoppingCart == null) previousShoppingCart = new ArrayList<>();
-                             ArrayList<String> shoppingCartPackage = new ArrayList<>();
 
-                             for(CartItems e: previousShoppingCart)
-                             {
-                                String curItem = e.getTicket() + "&"+e.getQTY();
-                                shoppingCartPackage.add(curItem);
-                             }
+        if (previousShoppingCart == null) previousShoppingCart = new ArrayList<>();
+        ArrayList<String> shoppingCartPackage = new ArrayList<>();
 
-             return shoppingCartPackage;
+        for (CartItems e : previousShoppingCart) {
+            String curItem = e.getTicket() + "&" + e.getQTY();
+            shoppingCartPackage.add(curItem);
+        }
+
+        return shoppingCartPackage;
     }
 
-    synchronized public static ArrayList<String> buildBuyerCurrentShoppingCartPackage(Buyers b)
-    {
-             ArrayList<CartItems> currentShoppingCart = b.retrieveShoppingCart();
-                             
-                             if(currentShoppingCart == null) currentShoppingCart= new ArrayList<>();
-                             ArrayList<String> shoppingCartPackage = new ArrayList<>();
+    synchronized public static ArrayList<String> buildBuyerCurrentShoppingCartPackage(Buyers b) {
+        ArrayList<CartItems> currentShoppingCart = b.retrieveShoppingCart();
 
-                             for(CartItems e: currentShoppingCart)
-                             {
-                                String curItem = e.getTicket() + "&"+e.getQTY();
-                                shoppingCartPackage.add(curItem);
-                             }
+        if (currentShoppingCart == null) currentShoppingCart = new ArrayList<>();
+        ArrayList<String> shoppingCartPackage = new ArrayList<>();
 
-             return shoppingCartPackage;
+        for (CartItems e : currentShoppingCart) {
+            String curItem = e.getTicket() + "&" + e.getQTY();
+            shoppingCartPackage.add(curItem);
+        }
+
+        return shoppingCartPackage;
     }
 
- 
-  synchronized public static ArrayList<String> buildListedTicketsPackage3(ArrayList<String> b)
-  {
 
-   for(int i = 0; i<b.size();i++)
-   {
-      String lol = b.get(i);
-       lol = lol.replace("\n","&");
-      b.set(i,lol);
-   }
+    synchronized public static ArrayList<String> buildListedTicketsPackage3(ArrayList<String> b) {
 
-    return b;
+        for (int i = 0; i < b.size(); i++) {
+            String lol = b.get(i);
+            lol = lol.replace("\n", "&");
+            b.set(i, lol);
+        }
 
-  }
+        return b;
+
+    }
+
+    public static ArrayList<String> printBuyerDash(ArrayList<ArrayList<String>> dashInfo) {
+        ArrayList<String> list = new ArrayList<String>();
+        for (ArrayList<String> thing : dashInfo) {
+            for (String b : thing) {
+                list.add(b + "\n");
+            }
+            list.add("\n");
+
+        }
+        return list;
+    }
+
+    public static ArrayList<String> printGeneralDash(ArrayList<String> dashInfo) {
+        ArrayList<String> list = new ArrayList<String>();
+        for (String thing : dashInfo) {
+            list.add(thing + " ");
+        }
+        return list;
+    }
 }

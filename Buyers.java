@@ -1,11 +1,12 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
 /**
  * Project 5: Buyers
- *
+ * <p>
  * This class allows a user to buy a ticket.
  *
  * @author Rahul Siddharth, Shrish Mahesh, Lab Section L20
@@ -13,8 +14,8 @@ import java.util.Comparator;
  */
 
 public class Buyers {
+    private final LoginInfo loginInfo;
     private int buyerID;
-    private LoginInfo loginInfo;
     private ArrayList<CartItems> shoppingCart;
     private ArrayList<CartItems> previousShopped;
 
@@ -27,19 +28,517 @@ public class Buyers {
         this.previousShopped = new ArrayList<>();
     }
 
+    public static void updateTicketQuantity(String filePath, int userId, String ticketDescription,
+                                            int purchasedQuantity) {
+        try {
+            File inputFile = new File(filePath);
+            File tempFile = new File(filePath + ".temp");
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+                 BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+                String currentLine;
+
+                while ((currentLine = reader.readLine()) != null) {
+                    String[] parts = currentLine.split(",");
+                    if (parts.length > 0 && Integer.parseInt(parts[0]) == userId) {
+                        // Update the quantity for the specified ticket
+                        for (int i = 2; i < parts.length; i++) {
+                            if (parts[i].contains(ticketDescription)) {
+                                String[] storeParts = parts[i].split(":");
+                                boolean didGetDeleted = false;
+                                int typeOfDeletion = -1;
+                                for (int j = 0; j < storeParts.length; j++) {
+                                    boolean havetoClose = false;
+                                    if (storeParts[j].contains(ticketDescription)) {
+                                        // Extract the product description and quantity
+                                        String[] descriptionAndQty = storeParts[j].split("\\|");
+                                        // Update the quantity
+                                        if (descriptionAndQty[1].length() >= 2 && descriptionAndQty[1].contains("}")) {
+
+                                            descriptionAndQty[1] = descriptionAndQty[1].substring(0,
+                                                    descriptionAndQty[1].indexOf("}"));
+                                            if ((j + 1 == storeParts.length)) havetoClose = true;
+                                        }
+                                        int currentQuantity = Integer.parseInt(descriptionAndQty[1]);
+                                        int updatedQuantity = currentQuantity - purchasedQuantity;
+                                        if (updatedQuantity <= 0) {
+                                            if (storeParts[j].contains("{")) {
+                                                int openBraceIndex = storeParts[j].indexOf("{");
+                                                String updatedWithout = storeParts[j].substring(0, openBraceIndex + 1);
+                                                storeParts[j] = updatedWithout;
+                                                didGetDeleted = true;
+                                                typeOfDeletion = 1;
+                                            } else if (storeParts[j].contains("}")) {
+                                                storeParts[j] = "}";
+                                                didGetDeleted = true;
+                                                typeOfDeletion = 2;
+                                            } else {
+                                                storeParts[j] = "";
+                                                didGetDeleted = true;
+                                                typeOfDeletion = 3;
+                                            }
+                                        } else {
+                                            if (havetoClose) {
+                                                descriptionAndQty[1] = updatedQuantity + "}";
+                                            } else {
+                                                descriptionAndQty[1] = Integer.toString(updatedQuantity);
+                                            }
+
+                                            storeParts[j] = String.join("|", descriptionAndQty);
+                                        }
+
+                                    }
+                                }
+
+                                parts[i] = String.join(":", storeParts);
+                                if (didGetDeleted) {
+                                    switch (typeOfDeletion) {
+                                        case 1:
+                                            parts[i] = parts[i].replaceFirst(":", "");
+                                            break;
+                                        case 2:
+                                            String curEnd = parts[i];
+                                            int indexOfCloseBrace = curEnd.indexOf("}");
+                                            String newEdit = "";
+                                            for (int k = 0; k < curEnd.length(); k++) {
+                                                if (k == indexOfCloseBrace - 1) {
+                                                    int x3232 = 3; //newEdit += "";
+                                                } else {
+                                                    newEdit += curEnd.charAt(k);
+                                                }
+                                            }
+                                            parts[i] = newEdit;
+                                            break;
+                                        case 3:
+                                            parts[i] = parts[i].replaceAll("::", ":");
+                                            break;
+                                    }
+                                    if (parts[i].indexOf('}') == -1) {
+                                        parts[i] = parts[i] + "}";
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                    writer.write(String.join(",", parts) + System.lineSeparator());
+                }
+            }
+
+            ArrayList<String> tempContents = MarketplaceServer.readFile(String.valueOf(tempFile));
+            MarketplaceServer.writeFile(tempContents, String.valueOf(inputFile));
+            tempFile.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static StoreNameIDCombo getSellerID(String searchFor) {
+        try {
+            ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+            if (fileInfo.isEmpty()) new StoreNameIDCombo("n/a", -1);
+            for (String eachLine : fileInfo) {
+                DoubleArrayList storeThing = splitStoreInfo(eachLine);
+                String mostRecentStoreSeen = "";
+                for (String b : storeThing.getStuffInStores()) {
+
+                    if (storeThing.getStoreList().contains(b)) mostRecentStoreSeen = b;
+
+                    if (b.equals(searchFor)) {
+                        String foundStore = mostRecentStoreSeen;
+                        String[] curLine = eachLine.split(",");
+                        return new StoreNameIDCombo(foundStore, Integer.parseInt(curLine[0]));
+                    }
+                }
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new StoreNameIDCombo("n/a", -1);
+
+
+    }
+
+    public static DoubleArrayList splitStoreInfo(String s) {
+        ArrayList<String> stufInStores = new ArrayList<>();
+        String[] splitStore = s.split(",");
+        ArrayList<String> storeInfo = new ArrayList<>();
+        ArrayList<String> allStores = new ArrayList<>();
+
+        storeInfo.addAll(Arrays.asList(splitStore).subList(2, splitStore.length));
+
+        for (String b : storeInfo) {
+            b = b.replace('{', ',');
+            b = b.replace('}', ',');
+            b = b.replace('|', ',');
+            b = b.replace(":", ",");
+            String[] curStringSplit = b.split(",");
+            allStores.add(curStringSplit[0]);
+            Collections.addAll(stufInStores, curStringSplit);
+
+        }
+
+
+        return (new DoubleArrayList(stufInStores, allStores));
+
+    }
+
+    public static boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            // It's not a number
+            return false;
+        }
+    }
+
+    public static String[] listTicket(String s) {
+        String[] thing = s.split(";");
+        return thing;
+    }
+
+    public static TicketInfoCombo viewAllListingsGeneral() {
+        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
+        ArrayList<String[]> allListedTicks = new ArrayList<>();
+        int tickNumber = 1;
+        for (String eachLine : fileInfo) {
+
+            DoubleArrayList b = splitStoreInfo(eachLine);
+            String curSeller = (eachLine.split(","))[1];
+            String curStoreListing = "";
+            ArrayList<String> stuffInStores = b.getStuffInStores();
+            ArrayList<String> storelist = b.getStoreList();
+
+            for (int i = 0; i < stuffInStores.size(); i++) {
+                String curItem = stuffInStores.get(i);
+                if (storelist.contains(curItem)) {
+                    curStoreListing = curItem;
+                } else {
+                    if (!isNumeric(curItem)) {
+                        System.out.println(tickNumber + ": ");
+                        tickNumber++;
+                        System.out.println("Seller: " + curSeller);
+                        System.out.println("Store: " + curStoreListing);
+                        String[] thing = listTicket(curItem);
+                        String lmao = "Sport: " + thing[0] + "\nLocation: " + thing[1] + "\nRow/Section Area: "
+                                + thing[2] + "\nPrice: " + thing[3] + "\n";
+                        System.out.print(lmao);
+                        String qtyNumber = stuffInStores.get(i + 1);
+                        System.out.print("Quantity: " + qtyNumber);
+
+                        String[] tickInformation = new String[5];
+                        System.arraycopy(thing, 0, tickInformation, 0, 4);
+                        tickInformation[4] = qtyNumber;
+                        allListedTicks.add(tickInformation);
+                    }
+                }
+                System.out.println();
+            }
+
+
+        }
+        return new TicketInfoCombo(allListedTicks, tickNumber - 1);
+
+    }
+
+    public static TicketInfoCombo viewListingsWithConstraint(String constraint) {
+        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
+        ArrayList<String[]> allListedTicks = new ArrayList<>();
+        int tickNumber = 1;
+        for (String eachLine : fileInfo) {
+
+            DoubleArrayList b = splitStoreInfo(eachLine);
+            String curSeller = (eachLine.split(","))[1];
+            String curStoreListing = "";
+            ArrayList<String> stuffInStores = b.getStuffInStores();
+            ArrayList<String> storelist = b.getStoreList();
+
+            for (int i = 0; i < stuffInStores.size(); i++) {
+                String curItem = stuffInStores.get(i);
+                if (storelist.contains(curItem)) {
+                    curStoreListing = curItem;
+                } else {
+                    if (!isNumeric(curItem)) {
+                        boolean shouldList = false;
+                        String[] thing = listTicket(curItem);
+                        if (curStoreListing.equalsIgnoreCase(constraint) || thing[0].
+                                equalsIgnoreCase(constraint)) {
+                            shouldList = true;
+                        }
+
+                        if (shouldList) {
+                            System.out.println(tickNumber + ": ");
+                            tickNumber++;
+                            System.out.println("Seller: " + curSeller);
+                            System.out.println("Store: " + curStoreListing);
+
+                            String lmao = "Sport: " + thing[0] + "\nLocation: " + thing[1] + "\nRow/Section Area: " +
+                                    thing[2] + "\nPrice: " + thing[3] + "\n";
+                            System.out.print(lmao);
+                            String qtyNumber = stuffInStores.get(i + 1);
+                            System.out.print("Quantity: " + qtyNumber);
+
+                            String[] tickInformation = new String[5];
+                            System.arraycopy(thing, 0, tickInformation, 0, 4);
+                            tickInformation[4] = qtyNumber;
+                            allListedTicks.add(tickInformation);
+                        }
+                        System.out.println();
+                    }
+                }
+                System.out.println();
+
+            }
+
+
+        }
+        return new TicketInfoCombo(allListedTicks, tickNumber - 1);
+
+    }
+
+    public static TicketInfoCombo viewAllListingsSortedByTicketQuantity() {
+        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
+        ArrayList<String[]> allListedTicks = new ArrayList<>();
+        int tickNumber = 1;
+        for (String eachLine : fileInfo) {
+
+            DoubleArrayList b = splitStoreInfo(eachLine);
+            String curSeller = (eachLine.split(","))[1];
+            String curStoreListing = "";
+            ArrayList<String> stuffInStores = b.getStuffInStores();
+            ArrayList<String> storelist = b.getStoreList();
+
+            for (int i = 0; i < stuffInStores.size(); i++) {
+                String curItem = stuffInStores.get(i);
+                if (storelist.contains(curItem)) {
+                    curStoreListing = curItem;
+                } else {
+                    if (!isNumeric(curItem)) {
+                        String[] thing = listTicket(curItem);
+                        String qtyNumber = stuffInStores.get(i + 1);
+                        String[] tickInformation = new String[7];
+                        System.arraycopy(thing, 0, tickInformation, 2, 4);
+                        tickInformation[6] = qtyNumber;
+                        tickInformation[1] = curStoreListing;
+                        tickInformation[0] = curSeller;
+                        allListedTicks.add(tickInformation);
+                    }
+
+                }
+            }
+
+        }
+
+
+        allListedTicks.sort((arr1, arr2) -> Integer.compare(Integer.parseInt(arr2[6]), Integer.parseInt(arr1[6])));
+
+
+        for (String[] things : allListedTicks) {
+            System.out.println(tickNumber + ": ");
+            tickNumber++;
+            System.out.println("Seller: " + things[0]);
+            System.out.println("Store: " + things[1]);
+
+            String lmao = "Sport: " + things[2] + "\nLocation: " + things[3] + "\nRow/Section Area: " + things[4] + "\nPrice: " +
+                    things[5] + "\n";
+            System.out.print(lmao);
+            System.out.println("Quantity: " + things[6]);
+            System.out.println();
+        }
+
+        return new TicketInfoCombo(allListedTicks, tickNumber - 1);
+
+    }
+
+    public static Ticket buyTicket(ArrayList<String[]> tickets, int ticketToBuy, int ticketAmount, int howManyThereAre) {
+        if (ticketToBuy > howManyThereAre) {
+            //System.out.println("Error enter a valid ticket number");
+            return null;
+        } else {
+
+            String[] curTicketInfo = tickets.get(ticketToBuy - 1);
+            if (ticketAmount > Integer.parseInt(curTicketInfo[4])) {
+                // System.out.println("Error: buy a quantity that is avaliable!");
+                return null;
+            } else {
+                Ticket yay = new Ticket(curTicketInfo[0], curTicketInfo[1], curTicketInfo[2],
+                        Double.parseDouble(curTicketInfo[3]));
+                updateTicketQuantity("SellerInfo.txt", getSellerID(yay.toString()).getSellerID(),
+                        yay.toString(), ticketAmount);
+                return yay;
+            }
+        }
+    }
+
+    public static Ticket buyTicket2(ArrayList<String[]> tickets, int ticketToBuy, int ticketAmount, int howManyThereAre) {
+        if (ticketToBuy > howManyThereAre) {
+            System.out.println("Error enter a valid ticket number");
+            return null;
+        } else {
+
+            String[] curTicketInfo = tickets.get(ticketToBuy - 1);
+            if (ticketAmount > Integer.parseInt(curTicketInfo[6])) {
+                System.out.println("Error: buy a quantity that is avaliable!");
+                return null;
+            } else {
+                Ticket yay = new Ticket(curTicketInfo[2], curTicketInfo[3], curTicketInfo[4],
+                        Double.parseDouble(curTicketInfo[5]));
+                updateTicketQuantity("SellerInfo.txt", getSellerID(yay.toString()).getSellerID(),
+                        yay.toString(), ticketAmount);
+                return yay;
+            }
+        }
+    }
+
+    public static ArrayList<String> viewAllListingsGeneral2() {
+        ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String[]> allListedTicks = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
+        String s = "";
+        int tickNumber = 1;
+        for (String eachLine : fileInfo) {
+            DoubleArrayList b = Buyers.splitStoreInfo(eachLine);
+            String curSeller = (eachLine.split(","))[1];
+            String curStoreListing = "";
+            ArrayList<String> stuffInStores = b.getStuffInStores();
+            ArrayList<String> storelist = b.getStoreList();
+
+            for (int i = 0; i < stuffInStores.size(); i++) {
+                String curItem = stuffInStores.get(i);
+                if (storelist.contains(curItem)) {
+                    curStoreListing = curItem;
+                } else {
+                    if (!Buyers.isNumeric(curItem)) {
+                        s += tickNumber + ": \n";
+                        tickNumber++;
+                        s += "Seller: " + curSeller + "\n";
+                        s += "Store: " + curStoreListing + "\n";
+                        String[] thing = Buyers.listTicket(curItem);
+                        s += "Sport: " + thing[0] + "\nLocation: " + thing[1] + "\nRow/Section Area: "
+                                + thing[2] + "\nPrice: " + thing[3] + "\n";
+                        String qtyNumber = stuffInStores.get(i + 1);
+                        s += "Quantity: " + qtyNumber;
+                        list.add(s);
+                        s = "";
+
+                        String[] tickInformation = new String[5];
+                        System.arraycopy(thing, 0, tickInformation, 0, 4);
+                        tickInformation[4] = qtyNumber;
+                        allListedTicks.add(tickInformation);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public static ArrayList<String> viewListingsWithConstraint2(String constraint) {
+        ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String[]> allListedTicks = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
+        String s = "";
+        int tickNumber = 1;
+        for (String eachLine : fileInfo) {
+
+            DoubleArrayList b = Buyers.splitStoreInfo(eachLine);
+            String curSeller = (eachLine.split(","))[1];
+            String curStoreListing = "";
+            ArrayList<String> stuffInStores = b.getStuffInStores();
+            ArrayList<String> storelist = b.getStoreList();
+
+            for (int i = 0; i < stuffInStores.size(); i++) {
+                String curItem = stuffInStores.get(i);
+                if (storelist.contains(curItem)) {
+                    curStoreListing = curItem;
+                } else {
+                    if (!Buyers.isNumeric(curItem)) {
+                        boolean shouldList = false;
+                        String[] thing = Buyers.listTicket(curItem);
+                        if (curStoreListing.equalsIgnoreCase(constraint) || thing[0].
+                                equalsIgnoreCase(constraint)) {
+                            shouldList = true;
+                        }
+                        if (shouldList) {
+                            s += tickNumber + ": \n";
+                            tickNumber++;
+                            s += "Seller: " + curSeller + "\n";
+                            s += "Store: " + curStoreListing + "\n";
+                            s += "Sport: " + thing[0] + "\nLocation: " + thing[1] + "\nRow/Section Area: " +
+                                    thing[2] + "\nPrice: " + thing[3] + "\n";
+                            String qtyNumber = stuffInStores.get(i + 1);
+                            s += "Quantity: " + qtyNumber;
+                            list.add(s);
+                            s = "";
+
+                            String[] tickInformation = new String[5];
+                            System.arraycopy(thing, 0, tickInformation, 0, 4);
+                            tickInformation[4] = qtyNumber;
+                            allListedTicks.add(tickInformation);
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public static ArrayList<String> viewAllListingsSortedByTicketQuantity2() {
+        ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String[]> allListedTicks = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
+        String s = "";
+        int tickNumber = 1;
+        for (String eachLine : fileInfo) {
+            DoubleArrayList b = Buyers.splitStoreInfo(eachLine);
+            String curSeller = (eachLine.split(","))[1];
+            String curStoreListing = "";
+            ArrayList<String> stuffInStores = b.getStuffInStores();
+            ArrayList<String> storelist = b.getStoreList();
+
+            for (int i = 0; i < stuffInStores.size(); i++) {
+                String curItem = stuffInStores.get(i);
+                if (storelist.contains(curItem)) {
+                    curStoreListing = curItem;
+                } else {
+                    if (!Buyers.isNumeric(curItem)) {
+                        String[] thing = Buyers.listTicket(curItem);
+                        String qtyNumber = stuffInStores.get(i + 1);
+                        String[] tickInformation = new String[7];
+                        System.arraycopy(thing, 0, tickInformation, 2, 4);
+                        tickInformation[6] = qtyNumber;
+                        tickInformation[1] = curStoreListing;
+                        tickInformation[0] = curSeller;
+                        allListedTicks.add(tickInformation);
+                    }
+
+                }
+            }
+
+        }
+
+        allListedTicks.sort((arr1, arr2) -> Integer.compare(Integer.parseInt(arr2[6]), Integer.parseInt(arr1[6])));
+
+        for (String[] things : allListedTicks) {
+            s += tickNumber + ": \n";
+            tickNumber++;
+            s += "Seller: " + things[0] + "\n";
+            s += "Store: " + things[1] + "\n";
+            s += "Sport: " + things[2] + "\nLocation: " + things[3] + "\nRow/Section Area: " + things[4] + "\nPrice: " +
+                    things[5] + "\n";
+            s += "Quantity: " + things[6] + "\n";
+            list.add(s);
+            s = "";
+        }
+
+        return list;
+    }
 
     public int getBuyerID() {
         return buyerID;
-    }
-
-
-    public ArrayList<CartItems> getShoppingCart() {
-        return shoppingCart;
-    }
-
-
-    public ArrayList<CartItems> getPreviousShopped() {
-        return previousShopped;
     }
 
     //for data restoration purposes
@@ -47,16 +546,21 @@ public class Buyers {
         this.buyerID = buyerID;
     }
 
+    public ArrayList<CartItems> getShoppingCart() {
+        return shoppingCart;
+    }
 
     public void setShoppingCart(ArrayList<CartItems> shoppingCart) {
         this.shoppingCart = shoppingCart;
     }
 
+    public ArrayList<CartItems> getPreviousShopped() {
+        return previousShopped;
+    }
 
     public void setPreviousShopped(ArrayList<CartItems> previousShopped) {
         this.previousShopped = previousShopped;
     }
-
 
     public void updateShoppingCart() throws IOException {
         ArrayList<String> buyerInfo = Marketplace.readFile("BuyerInfo.txt");
@@ -86,7 +590,6 @@ public class Buyers {
         Marketplace.writeFile(buyerInfo, "BuyerHistory.txt");
     }
 
-
     public void clearShoppingCart() throws IOException {
         ArrayList<String> buyerInfo = Marketplace.readFile("BuyerInfo.txt");
         int indexToChange = 0;
@@ -100,7 +603,6 @@ public class Buyers {
         buyerInfo.set(indexToChange, this.buyerID + "," + this.loginInfo.getEmail() + ",");
         Marketplace.writeFile(buyerInfo, "BuyerInfo.txt");
     }
-
 
     public String formatShoppingCart() {
         String returnStr = "";
@@ -132,7 +634,6 @@ public class Buyers {
         shoppingCart.add(new CartItems(b, qty));
     }
 
-
     public void removeToShoppingCart(Ticket b, int qty) {
         shoppingCart.remove(new CartItems(b, qty));
     }
@@ -142,7 +643,7 @@ public class Buyers {
             int transID;
             ArrayList<String> fileInfo = MarketplaceServer.readFile("TransactionInfo.txt");
             ArrayList<CartItems> shoppingCartClear = (ArrayList<CartItems>) shoppingCart.clone();
-            if(shoppingCart.isEmpty()) return false;
+            if (shoppingCart.isEmpty()) return false;
             for (CartItems b : shoppingCart) {
                 if (fileInfo.isEmpty()) transID = 1;
                 else {
@@ -182,7 +683,6 @@ public class Buyers {
         }
     }
 
-
     public void createBuyerHistory() {
 
 
@@ -213,7 +713,6 @@ public class Buyers {
         ArrayList<CartItems> returnSC = new ArrayList<>();
         String currentLine = buyerInfo.get(indexToSearch);
         String[] elements = currentLine.split(",");
-
 
         if (elements.length <= 2) {
             return null;
@@ -281,174 +780,10 @@ public class Buyers {
         // do different operations to view dashBoard and sort it
     }
 
-
-    public static void updateTicketQuantity(String filePath, int userId, String ticketDescription,
-                                            int purchasedQuantity) {
-        try {
-            File inputFile = new File(filePath);
-            File tempFile = new File(filePath + ".temp");
-
-            try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-                 BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
-                String currentLine;
-
-                while ((currentLine = reader.readLine()) != null) {
-                    String[] parts = currentLine.split(",");
-                    if (parts.length > 0 && Integer.parseInt(parts[0]) == userId) {
-                        // Update the quantity for the specified ticket
-                        for (int i = 2; i < parts.length; i++) {
-                            if (parts[i].contains(ticketDescription)) {
-                                String[] storeParts = parts[i].split(":");
-                                boolean didGetDeleted = false;
-                                int typeOfDeletion = -1;
-                                for (int j = 0; j < storeParts.length; j++) {
-                                    boolean havetoClose = false;
-                                    if (storeParts[j].contains(ticketDescription)) {
-                                        // Extract the product description and quantity
-                                        String[] descriptionAndQty = storeParts[j].split("\\|");
-                                        // Update the quantity
-                                        if (descriptionAndQty[1].length() >= 2 && descriptionAndQty[1].contains("}")) {
-
-                                            descriptionAndQty[1] = descriptionAndQty[1].substring(0,
-                                                    descriptionAndQty[1].indexOf("}"));
-                                            if ((j + 1 == storeParts.length)) havetoClose = true;
-                                        }
-                                        int currentQuantity = Integer.parseInt(descriptionAndQty[1]);
-                                        int updatedQuantity = currentQuantity - purchasedQuantity;
-                                        if (updatedQuantity <= 0) {
-                                            if (storeParts[j].contains("{")) {
-                                                int openBraceIndex = storeParts[j].indexOf("{");
-                                                String updatedWithout = storeParts[j].substring(0, openBraceIndex + 1);
-                                                storeParts[j] = updatedWithout;
-                                                didGetDeleted = true;
-                                                typeOfDeletion = 1;
-                                            } else if (storeParts[j].contains("}")) {
-                                                storeParts[j] = "}";
-                                                didGetDeleted = true;
-                                                typeOfDeletion = 2;
-                                            } else {
-                                                storeParts[j] = "";
-                                                didGetDeleted = true;
-                                                typeOfDeletion = 3;
-                                            }
-                                        } else {
-                                            if (havetoClose) {
-                                                descriptionAndQty[1] = Integer.toString(updatedQuantity) + "}";
-                                            } else {
-                                                descriptionAndQty[1] = Integer.toString(updatedQuantity);
-                                            }
-
-                                            storeParts[j] = String.join("|", descriptionAndQty);
-                                        }
-
-                                    }
-                                }
-
-                                parts[i] = String.join(":", storeParts);
-                                if (didGetDeleted) {
-                                    switch (typeOfDeletion) {
-                                        case 1:
-                                            parts[i] = parts[i].replaceFirst(":", "");
-                                            break;
-                                        case 2:
-                                            String curEnd = parts[i];
-                                            int indexOfCloseBrace = curEnd.indexOf("}");
-                                            String newEdit = "";
-                                            for (int k = 0; k < curEnd.length(); k++) {
-                                                if (k == indexOfCloseBrace - 1) {
-                                                    int x3232 = 3; //newEdit += "";
-                                                } else {
-                                                    newEdit += curEnd.charAt(k);
-                                                }
-                                            }
-                                            parts[i] = newEdit;
-                                            break;
-                                        case 3:
-                                            parts[i] = parts[i].replaceAll("::", ":");
-                                            break;
-                                    }
-                                    if (parts[i].indexOf('}') == -1) {
-                                        parts[i] = parts[i] + "}";
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                    writer.write(String.join(",", parts) + System.lineSeparator());
-                }
-            }
-
-            ArrayList<String> tempContents = Marketplace.readFile(String.valueOf(tempFile));
-            Marketplace.writeFile(tempContents, String.valueOf(inputFile));
-            tempFile.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public static StoreNameIDCombo getSellerID(String searchFor) {
-        try {
-            ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
-            if (fileInfo.isEmpty()) new StoreNameIDCombo("n/a", -1);
-            for (String eachLine : fileInfo) {
-                DoubleArrayList storeThing = splitStoreInfo(eachLine);
-                String mostRecentStoreSeen = "";
-                for (String b : storeThing.getStuffInStores()) {
-
-                    if (storeThing.getStoreList().contains(b)) mostRecentStoreSeen = b;
-
-                    if (b.equals(searchFor)) {
-                        String foundStore = mostRecentStoreSeen;
-                        String[] curLine = eachLine.split(",");
-                        return new StoreNameIDCombo(foundStore, Integer.parseInt(curLine[0]));
-                    }
-                }
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new StoreNameIDCombo("n/a", -1);
-
-
-    }
-
-    public static DoubleArrayList splitStoreInfo(String s) {
-        ArrayList<String> stufInStores = new ArrayList<>();
-        String[] splitStore = s.split(",");
-        ArrayList<String> storeInfo = new ArrayList<>();
-        ArrayList<String> allStores = new ArrayList<>();
-
-        for (int i = 2; i < splitStore.length; i++) {
-            storeInfo.add(splitStore[i]);
-        }
-
-        for (String b : storeInfo) {
-            b = b.replace('{', ',');
-            b = b.replace('}', ',');
-            b = b.replace('|', ',');
-            b = b.replace(":", ",");
-            String[] curStringSplit = b.split(",");
-            allStores.add(curStringSplit[0]);
-            for (String thing : curStringSplit) {
-                stufInStores.add(thing);
-            }
-
-        }
-
-
-        return (new DoubleArrayList(stufInStores, allStores));
-
-    }
-
     public void addPreviousShoppedItems(CartItems cartItems) {
         previousShopped.add(cartItems);
     }
-
+//^^^^^ this is the buy ticket you should use when the user wants to buy when the listings are sorted buy ticket qty
 
     public void updateBuyerHistory() {
         try (PrintWriter pw = new PrintWriter(new FileOutputStream("BuyerHistory.txt", false))) {
@@ -461,7 +796,6 @@ public class Buyers {
             e.printStackTrace();
         }
     }
-
 
     public void updateBuyerHistoryAgain(int id, LoginInfo loginInfo) {
         String idNumber = Integer.toString(id);
@@ -502,280 +836,118 @@ public class Buyers {
         return true;
     }
 
-    public static boolean isNumeric(String str) {
-        try {
-            Integer.parseInt(str);
-            return true;
-        } catch (NumberFormatException e) {
-            // It's not a number
-            return false;
+    public ArrayList<String> generalDashbaord(boolean shouldSort) {
+        ArrayList<String> dashInfo = new ArrayList<>();
+        ArrayList<String> transactionInfo = Marketplace.readFile("TransactionInfo.txt");
+        if (transactionInfo == null || transactionInfo.isEmpty()) {
+            return dashInfo;
         }
-    }
 
-    public static String[] listTicket(String s) {
-        String[] thing = s.split(";");
-        return thing;
-    }
+        for (String line : transactionInfo) {
+            String[] curTransInfo = line.split(",");
+            String curStore = curTransInfo[3];
+            int curQuantity = Integer.parseInt(curTransInfo[5]);
 
-    public static TicketInfoCombo viewAllListingsGeneral() {
-        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
-        ArrayList<String[]> allListedTicks = new ArrayList<>();
-        int tickNumber = 1;
-        for (String eachLine : fileInfo) {
+            boolean storeExists = false;
 
-            DoubleArrayList b = splitStoreInfo(eachLine);
-            String curSeller = (eachLine.split(","))[1];
-            String curStoreListing = "";
-            ArrayList<String> stuffInStores = b.getStuffInStores();
-            ArrayList<String> storelist = b.getStoreList();
+            for (int i = 0; i < dashInfo.size(); i++) {
+                String curEntry = dashInfo.get(i);
+                String[] curEntryParts = curEntry.split(",");
 
-            for (int i = 0; i < stuffInStores.size(); i++) {
-                String curItem = stuffInStores.get(i);
-                if (storelist.contains(curItem)) {
-                    curStoreListing = curItem;
-                } else {
-                    if (!isNumeric(curItem)) {
-                        System.out.println(tickNumber + ": ");
-                        tickNumber++;
-                        System.out.println("Seller: " + curSeller);
-                        System.out.println("Store: " + curStoreListing);
-                        String[] thing = listTicket(curItem);
-                        String lmao = "Sport: " + thing[0] + "\nLocation: " + thing[1] + "\nRow/Section Area: "
-                                + thing[2] + "\nPrice: " + thing[3] + "\n";
-                        System.out.print(lmao);
-                        String qtyNumber = stuffInStores.get(i + 1);
-                        System.out.print("Quantity: " + qtyNumber);
-
-                        String[] tickInformation = new String[5];
-                        for (int j = 0; j < 4; j++) {
-                            tickInformation[j] = thing[j];
-                        }
-                        tickInformation[4] = qtyNumber;
-                        allListedTicks.add(tickInformation);
-                    }
-                }
-                System.out.println();
-            }
-
-
-        }
-        return new TicketInfoCombo(allListedTicks, tickNumber - 1);
-
-    }
-
-    public static TicketInfoCombo viewListingsWithConstraint(String constraint) {
-        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
-        ArrayList<String[]> allListedTicks = new ArrayList<>();
-        int tickNumber = 1;
-        for (String eachLine : fileInfo) {
-
-            DoubleArrayList b = splitStoreInfo(eachLine);
-            String curSeller = (eachLine.split(","))[1];
-            String curStoreListing = "";
-            ArrayList<String> stuffInStores = b.getStuffInStores();
-            ArrayList<String> storelist = b.getStoreList();
-
-            for (int i = 0; i < stuffInStores.size(); i++) {
-                String curItem = stuffInStores.get(i);
-                if (storelist.contains(curItem)) {
-                    curStoreListing = curItem;
-                } else {
-                    if (!isNumeric(curItem)) {
-                        boolean shouldList = false;
-                        String[] thing = listTicket(curItem);
-                        if (curStoreListing.toLowerCase().equals(constraint.toLowerCase()) || thing[0].toLowerCase().
-                                equals(constraint.toLowerCase())) {
-                            shouldList = true;
-                        }
-
-                        if (shouldList) {
-                            System.out.println(tickNumber + ": ");
-                            tickNumber++;
-                            System.out.println("Seller: " + curSeller);
-                            System.out.println("Store: " + curStoreListing);
-
-                            String lmao = "Sport: " + thing[0] + "\nLocation: " + thing[1] + "\nRow/Section Area: " +
-                                    thing[2] + "\nPrice: " + thing[3] + "\n";
-                            System.out.print(lmao);
-                            String qtyNumber = stuffInStores.get(i + 1);
-                            System.out.print("Quantity: " + qtyNumber);
-
-                            String[] tickInformation = new String[5];
-                            for (int j = 0; j < 4; j++) {
-                                tickInformation[j] = thing[j];
-                            }
-                            tickInformation[4] = qtyNumber;
-                            allListedTicks.add(tickInformation);
-                        }
-                        System.out.println();
-                    }
-                }
-                System.out.println();
-
-            }
-
-
-        }
-        return new TicketInfoCombo(allListedTicks, tickNumber - 1);
-
-    }
-
-    public static TicketInfoCombo viewAllListingsSortedByTicketQuantity() {
-        ArrayList<String> fileInfo = MarketplaceServer.readFile("SellerInfo.txt");
-        ArrayList<String[]> allListedTicks = new ArrayList<>();
-        int tickNumber = 1;
-        for (String eachLine : fileInfo) {
-
-            DoubleArrayList b = splitStoreInfo(eachLine);
-            String curSeller = (eachLine.split(","))[1];
-            String curStoreListing = "";
-            ArrayList<String> stuffInStores = b.getStuffInStores();
-            ArrayList<String> storelist = b.getStoreList();
-
-            for (int i = 0; i < stuffInStores.size(); i++) {
-                String curItem = stuffInStores.get(i);
-                if (storelist.contains(curItem)) {
-                    curStoreListing = curItem;
-                } else {
-                    if (!isNumeric(curItem)) {
-                        String[] thing = listTicket(curItem);
-                        String qtyNumber = stuffInStores.get(i + 1);
-                        String[] tickInformation = new String[7];
-                        for (int j = 2; j < 6; j++) {
-                            tickInformation[j] = thing[j - 2];
-                        }
-                        tickInformation[6] = qtyNumber;
-                        tickInformation[1] = curStoreListing;
-                        tickInformation[0] = curSeller;
-                        allListedTicks.add(tickInformation);
-                    }
-
+                if (curEntryParts[0].equals(curStore)) {
+                    storeExists = true;
+                    int newQuantity = curQuantity + Integer.parseInt(curEntryParts[1]);
+                    String newEntry = curStore + "," + newQuantity;
+                    dashInfo.set(i, newEntry);
+                    break;
                 }
             }
 
-        }
+            if (!storeExists) {
+                String newEntry = curStore + "," + curQuantity;
+                dashInfo.add(newEntry);
 
-
-        allListedTicks.sort((arr1, arr2) -> Integer.compare(Integer.parseInt(arr2[6]), Integer.parseInt(arr1[6])));
-
-
-        for (String[] things : allListedTicks) {
-            System.out.println(tickNumber + ": ");
-            tickNumber++;
-            System.out.println("Seller: " + things[0]);
-            System.out.println("Store: " + things[1]);
-
-            String lmao = "Sport: " + things[2] + "\nLocation: " + things[3] + "\nRow/Section Area: " + things[4] + "\nPrice: " +
-                    things[5] + "\n";
-            System.out.print(lmao);
-            System.out.println("Quantity: " + things[6]);
-            System.out.println();
-        }
-
-        return new TicketInfoCombo(allListedTicks, tickNumber - 1);
-
-    }
-
-
-    public static Ticket buyTicket(ArrayList<String[]> tickets, int ticketToBuy, int ticketAmount, int howManyThereAre) {
-        if (ticketToBuy > howManyThereAre) {
-            //System.out.println("Error enter a valid ticket number");
-            return null;
-        } else {
-
-            String[] curTicketInfo = tickets.get(ticketToBuy - 1);
-            if (ticketAmount > Integer.parseInt(curTicketInfo[4])) {
-               // System.out.println("Error: buy a quantity that is avaliable!");
-                return null;
-            } else {
-                Ticket yay = new Ticket(curTicketInfo[0], curTicketInfo[1], curTicketInfo[2],
-                        Double.parseDouble(curTicketInfo[3]));
-                updateTicketQuantity("SellerInfo.txt", getSellerID(yay.toString()).getSellerID(),
-                        yay.toString(), ticketAmount);
-                return yay;
             }
+
+
         }
+
+        if (shouldSort) {
+            Comparator<String> ticketComparator = new Comparator<String>() {
+                @Override
+                public int compare(String s1, String s2) {
+                    // Split the strings to extract ticket quantities
+                    int quantity1 = Integer.parseInt(s1.split(",")[1]);
+                    int quantity2 = Integer.parseInt(s2.split(",")[1]);
+
+                    // Compare based on ticket quantities in descending order
+                    return Integer.compare(quantity2, quantity1);
+                }
+            };
+
+            // Sort the ArrayList using the custom comparator
+            Collections.sort(dashInfo, ticketComparator);
+        }
+
+        for (int i = 0; i < dashInfo.size(); i++) {
+            String curEntry = dashInfo.get(i);
+            curEntry = curEntry.replace(",", ": ");
+            dashInfo.set(i, curEntry);
+        }
+
+        return dashInfo;
     }
 
-    public static Ticket buyTicket2(ArrayList<String[]> tickets, int ticketToBuy, int ticketAmount, int howManyThereAre) {
-        if (ticketToBuy > howManyThereAre) {
-            System.out.println("Error enter a valid ticket number");
-            return null;
-        } else {
 
-            String[] curTicketInfo = tickets.get(ticketToBuy - 1);
-            if (ticketAmount > Integer.parseInt(curTicketInfo[6])) {
-                System.out.println("Error: buy a quantity that is avaliable!");
-                return null;
-            } else {
-                Ticket yay = new Ticket(curTicketInfo[2], curTicketInfo[3], curTicketInfo[4],
-                        Double.parseDouble(curTicketInfo[5]));
-                updateTicketQuantity("SellerInfo.txt", getSellerID(yay.toString()).getSellerID(),
-                        yay.toString(), ticketAmount);
-                return yay;
-            }
-        }
-    }
-//^^^^^ this is the buy ticket you should use when the user wants to buy when the listings are sorted buy ticket qty
-
-
-  public ArrayList<ArrayList<String>> listCustomerSpecificDashboard(boolean shouldSort)
-   {
+    public ArrayList<ArrayList<String>> listCustomerSpecificDashboard(boolean shouldSort) {
         ArrayList<ArrayList<String>> dashInfo = new ArrayList<>();
         ArrayList<String> transFileInfo = Marketplace.readFile("TransactionInfo.txt");
 
-        for(String b: transFileInfo)
-        {
+        for (String b : transFileInfo) {
             String[] splits = b.split(",");
             String curSport = splits[6].split(";")[0];
             String curStore = splits[3];
             int curQty = Integer.parseInt(splits[5]);
 
-            if(Integer.parseInt(splits[1]) == buyerID) {
+            if (Integer.parseInt(splits[1]) == buyerID) {
                 boolean isSportThere = false;
-                for(ArrayList<String> cd : dashInfo)
-                {
-                   if(cd.get(0).equals(curSport+":"))
-                   {
-                      isSportThere = true;
-                      boolean isStoreThere = false;
-                      for(int i = 1;i<cd.size();i++)
-                      {
-                        String[] curSplits = cd.get(i).split(",");
-                        if(curStore.equals(curSplits[0]))
-                        {
-                            isStoreThere = true;
-                            curSplits[1] = String.valueOf(Integer.parseInt(curSplits[1])+ curQty);
-                            String updatedEntry  = String.join(",",curSplits);
-                            cd.set(i,updatedEntry);
+                for (ArrayList<String> cd : dashInfo) {
+                    if (cd.get(0).equals(curSport + ":")) {
+                        isSportThere = true;
+                        boolean isStoreThere = false;
+                        for (int i = 1; i < cd.size(); i++) {
+                            String[] curSplits = cd.get(i).split(",");
+                            if (curStore.equals(curSplits[0])) {
+                                isStoreThere = true;
+                                curSplits[1] = String.valueOf(Integer.parseInt(curSplits[1]) + curQty);
+                                String updatedEntry = String.join(",", curSplits);
+                                cd.set(i, updatedEntry);
+                            }
+
                         }
 
-                      }
-
-                       if(!isStoreThere)
-                        {
-                            String newENtryString = curStore +","+curQty;
+                        if (!isStoreThere) {
+                            String newENtryString = curStore + "," + curQty;
                             cd.add(newENtryString);
                         }
-                    
-                   } 
-                 
+
+                    }
+
                 }
-              
-                if(!isSportThere)
-                {
+
+                if (!isSportThere) {
                     ArrayList<String> newEntry = new ArrayList<>();
-                    newEntry.add(curSport+":");
-                    String newEntryString = curStore+","+curQty;
+                    newEntry.add(curSport + ":");
+                    String newEntryString = curStore + "," + curQty;
                     newEntry.add(newEntryString);
                     dashInfo.add(newEntry);
                 }
-                
+
             }
-          
-        }  
-        if(shouldSort){
-             class TicketComparator implements Comparator<String> {
+
+        }
+        if (shouldSort) {
+            class TicketComparator implements Comparator<String> {
                 @Override
                 public int compare(String ticket1, String ticket2) {
                     int tickets1 = Integer.parseInt(ticket1.split(",")[1]);
@@ -783,181 +955,29 @@ public class Buyers {
                     return Integer.compare(tickets2, tickets1);
                 }
             }
-         
-         for(int i = 0; i<dashInfo.size();i++)
-         {
-            ArrayList<String> thing = dashInfo.get(i);
-            ArrayList<String> subsetList = new ArrayList<>(thing.subList(1, thing.size()));
-            Collections.sort(subsetList, new TicketComparator());
-            ArrayList<String> newEntryList = new ArrayList<>();
-            newEntryList.add(thing.get(0));
-            newEntryList.addAll(subsetList);
-            dashInfo.set(i,newEntryList);
-            
 
-         }
-         
+            for (int i = 0; i < dashInfo.size(); i++) {
+                ArrayList<String> thing = dashInfo.get(i);
+                ArrayList<String> subsetList = new ArrayList<>(thing.subList(1, thing.size()));
+                Collections.sort(subsetList, new TicketComparator());
+                ArrayList<String> newEntryList = new ArrayList<>();
+                newEntryList.add(thing.get(0));
+                newEntryList.addAll(subsetList);
+                dashInfo.set(i, newEntryList);
+
+
+            }
+
         }
-        
-        for(ArrayList<String> thing : dashInfo)
-        {
-            for(int i = 1; i<thing.size();i++)
-            {
+
+        for (ArrayList<String> thing : dashInfo) {
+            for (int i = 1; i < thing.size(); i++) {
                 String curEntry = thing.get(i);
-                curEntry = curEntry.replace(",",": ");
-                thing.set(i,curEntry);
+                curEntry = curEntry.replace(",", ": ");
+                thing.set(i, curEntry);
             }
         }
         return dashInfo;
-   }
-
-
-   public static ArrayList<String> viewAllListingsGeneral2() {
-    ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
-    ArrayList<String[]> allListedTicks = new ArrayList<>();
-    ArrayList<String> list = new ArrayList<>();
-    String s = "";
-    int tickNumber = 1;
-    for (String eachLine : fileInfo) {
-        DoubleArrayList b = Buyers.splitStoreInfo(eachLine);
-        String curSeller = (eachLine.split(","))[1];
-        String curStoreListing = "";
-        ArrayList<String> stuffInStores = b.getStuffInStores();
-        ArrayList<String> storelist = b.getStoreList();
-
-        for (int i = 0; i < stuffInStores.size(); i++) {
-            String curItem = stuffInStores.get(i);
-            if (storelist.contains(curItem)) {
-                curStoreListing = curItem;
-            } else {
-                if (!Buyers.isNumeric(curItem)) {
-                    s += tickNumber + ": \n";
-                    tickNumber++;
-                    s += "Seller: " + curSeller + "\n";
-                    s += "Store: " + curStoreListing + "\n";
-                    String[] thing = Buyers.listTicket(curItem);
-                    s += "Sport: " + thing[0] + "\nLocation: " + thing[1] + "\nRow/Section Area: "
-                            + thing[2] + "\nPrice: " + thing[3] + "\n";
-                    String qtyNumber = stuffInStores.get(i + 1);
-                    s += "Quantity: " + qtyNumber;
-                    list.add(s);
-                    s = "";
-
-                    String[] tickInformation = new String[5];
-                    for (int j = 0; j < 4; j++) {
-                        tickInformation[j] = thing[j];
-                    }
-                    tickInformation[4] = qtyNumber;
-                    allListedTicks.add(tickInformation);
-                }
-            }
-        }
     }
-    return list;
-}
-public static ArrayList<String> viewListingsWithConstraint2(String constraint) {
-    ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
-    ArrayList<String[]> allListedTicks = new ArrayList<>();
-    ArrayList<String> list = new ArrayList<>();
-    String s = "";
-    int tickNumber = 1;
-    for (String eachLine : fileInfo) {
-
-        DoubleArrayList b = Buyers.splitStoreInfo(eachLine);
-        String curSeller = (eachLine.split(","))[1];
-        String curStoreListing = "";
-        ArrayList<String> stuffInStores = b.getStuffInStores();
-        ArrayList<String> storelist = b.getStoreList();
-
-        for (int i = 0; i < stuffInStores.size(); i++) {
-            String curItem = stuffInStores.get(i);
-            if (storelist.contains(curItem)) {
-                curStoreListing = curItem;
-            } else {
-                if (!Buyers.isNumeric(curItem)) {
-                    boolean shouldList = false;
-                    String[] thing = Buyers.listTicket(curItem);
-                    if (curStoreListing.toLowerCase().equals(constraint.toLowerCase()) || thing[0].toLowerCase().
-                            equals(constraint.toLowerCase())) {
-                        shouldList = true;
-                    }
-                    if (shouldList) {
-                        s += tickNumber + ": \n";
-                        tickNumber++;
-                        s += "Seller: " + curSeller + "\n";
-                        s += "Store: " + curStoreListing + "\n";
-                        s += "Sport: " + thing[0] + "\nLocation: " + thing[1] + "\nRow/Section Area: " +
-                                thing[2] + "\nPrice: " + thing[3] + "\n";
-                        String qtyNumber = stuffInStores.get(i + 1);
-                        s += "Quantity: " + qtyNumber;
-                        list.add(s);
-                        s = "";
-
-                        String[] tickInformation = new String[5];
-                        for (int j = 0; j < 4; j++) {
-                            tickInformation[j] = thing[j];
-                        }
-                        tickInformation[4] = qtyNumber;
-                        allListedTicks.add(tickInformation);
-                    }
-                }
-            }
-        }
-    }
-    return list;
-}
-
-public static ArrayList<String> viewAllListingsSortedByTicketQuantity2() {
-    ArrayList<String> fileInfo = Marketplace.readFile("SellerInfo.txt");
-    ArrayList<String[]> allListedTicks = new ArrayList<>();
-    ArrayList<String> list = new ArrayList<>();
-    String s = "";
-    int tickNumber = 1;
-    for (String eachLine : fileInfo) {
-        DoubleArrayList b = Buyers.splitStoreInfo(eachLine);
-        String curSeller = (eachLine.split(","))[1];
-        String curStoreListing = "";
-        ArrayList<String> stuffInStores = b.getStuffInStores();
-        ArrayList<String> storelist = b.getStoreList();
-
-        for (int i = 0; i < stuffInStores.size(); i++) {
-            String curItem = stuffInStores.get(i);
-            if (storelist.contains(curItem)) {
-                curStoreListing = curItem;
-            } else {
-                if (!Buyers.isNumeric(curItem)) {
-                    String[] thing = Buyers.listTicket(curItem);
-                    String qtyNumber = stuffInStores.get(i + 1);
-                    String[] tickInformation = new String[7];
-                    for (int j = 2; j < 6; j++) {
-                        tickInformation[j] = thing[j - 2];
-                    }
-                    tickInformation[6] = qtyNumber;
-                    tickInformation[1] = curStoreListing;
-                    tickInformation[0] = curSeller;
-                    allListedTicks.add(tickInformation);
-                }
-
-            }
-        }
-
-    }
-
-    allListedTicks.sort((arr1, arr2) -> Integer.compare(Integer.parseInt(arr2[6]), Integer.parseInt(arr1[6])));
-
-    for (String[] things : allListedTicks) {
-        s += tickNumber + ": \n";
-        tickNumber++;
-        s += "Seller: " + things[0] + "\n";
-        s += "Store: " + things[1] + "\n";
-        s += "Sport: " + things[2] + "\nLocation: " + things[3] + "\nRow/Section Area: " + things[4] + "\nPrice: " +
-                things[5] + "\n";
-        s += "Quantity: " + things[6] + "\n";
-        list.add(s);
-        s = "";
-    }
-
-    return list;
-}
 
 }

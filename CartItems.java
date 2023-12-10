@@ -36,4 +36,21 @@ public class CartItems {
 
         return String.format("%s|%d", ticket.toString(), qty);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        } else {
+            if(obj instanceof CartItems) {
+                if(this.getTicket().equals(((CartItems) obj).getTicket()) && this.getQTY()==((CartItems) obj).getQTY()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+    }
 }

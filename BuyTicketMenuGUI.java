@@ -65,20 +65,19 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
             }
             if (e.getSource() == removeFromShoppingCartButton) {
                 client.sendInt(3);
-                ArrayList<CartItems> shoppingCart2 = currentBuyer.retrieveShoppingCart();
-                if (shoppingCart == null || shoppingCart2 == null) {
+                realShoppingCart = client.recieveStringArrayList();
+                if (realShoppingCart == null || realShoppingCart.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Error! Shopping cart is empty!",
                             "Empty Shopping Cart", JOptionPane.ERROR_MESSAGE);
                 } else {
                     RemoveTicketGUI removeTicketGUI = new RemoveTicketGUI();
-                    removeTicketGUI.setLoginInfo(loginInfo);
-                    removeTicketGUI.setCurrentBuyer(currentBuyer);
-                    removeTicketGUI.setShoppingCart(shoppingCart);
-                    removeTicketGUI.setPreviousShoppingCart(previousShoppingCart);
+                    removeTicketGUI.setClient(client);
+                    removeTicketGUI.setRealShoppingCart(realShoppingCart);
                     removeTicketGUI.run();
                     frame.dispose();
                 }
             }
+
             if (e.getSource() == checkOutButton) {
                 client.sendInt(4);
                 realShoppingCart = client.recieveStringArrayList();

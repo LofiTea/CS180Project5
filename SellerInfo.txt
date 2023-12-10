@@ -1,6 +1,6 @@
 3,mahesh49@purdue,Mackay{Basketball;Mackay Arena;Back row;6.00|5:Basketball;Mackay Arena;Middle;21.00|12}
 6,shrishmahesh11@gmail.com,RossAde{Basketball;Mackay Arena; Back row;10.00|2},Mackay{Basketball;Mackey Arena;Nosebleeds;4.00|5},CryptoArena{},Corec{}
 7,henrylee@gmail.com
-8,ruhaans123@gmail.com,Mackay{Basketball;Mackay Arena;VIP;575.00|16:Basketball;Mackay Arena;Box;6.00|30:Basketball;Mackay Arena;Courtside;100.00|15},Ross Ade{Football;Ross Ade;General;6.00|10:Football;Ross Ade;Student;15.00|60},Aquatics Center{},Ford Field{Soccer;Ford Field;Pitchside;70.00|16},CoRec{}
+8,ruhaans123@gmail.com,Mackay{Basketball;Mackay Arena;VIP;700.00|16:Basketball;Mackay Arena;Box;6.00|30:Basketball;Mackay Arena;Courtside;100.00|15},Ross Ade{Football;Ross Ade;Student;15.00|60},Aquatics Center{},Ford Field{Soccer;Ford Field;Pitchside;70.00|16},CoRec{}
 9,miles3005@gmail.com,Mackey{},Ross Ade{}
 11,henryleeseller@gmail.com

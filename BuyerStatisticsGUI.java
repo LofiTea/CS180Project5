@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 /**
  * Project 5: BuyerStatisticsGUI
- *
+ * <p>
  * Utilizes GUI to allow a buyer to see their statistics.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -23,77 +23,175 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
     LoginInfo loginInfo;
     ArrayList<CartItems> shoppingCart;
     ArrayList<CartItems> previousShoppingCart;
+    MarketplaceClient client;
     Buyers currentBuyer;
 
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == confirmButton) {
+                client.sendBoolean(true);
                 int choice = list.getSelectedIndex();
+                client.sendInt(choice);
                 String[] options = {"1. Raw Data", "2. Sorted Dashboard"};
                 switch (choice) {
                     case 0:
                         String decision1 = (String) JOptionPane.showInputDialog(frame,
                                 "How would you like to view the dashboard?", "View Buyer Statistics",
                                 JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-                        int num1 = Arrays.asList(options).indexOf(decision1);
-                        switch (num1) {
-                            case 0:
-                                String s = "";
-//                                ArrayList<String> list = printGeneralDash(
-//                                        currentBuyer.generalDashbaord(false));
-//                                for (int i = 0; i < list.size(); i++) {
-//                                    s += list.get(i);
-//                                }
-                                JOptionPane.showMessageDialog(frame, s,
-                                        "Raw Data Buyer Statistics", JOptionPane.INFORMATION_MESSAGE);
-                                break;
-                            case 1:
-                                String s1 = "";
-//                                ArrayList<String> list2 = printGeneralDash(
-//                                        currentBuyer.generalDashbaord(true));
-//                                for (int i = 0; i < list2.size(); i++) {
-//                                    s1 += list2.get(i);
-//                                }
-                                JOptionPane.showMessageDialog(frame, s1,
-                                        "Raw Data Buyer Statistics", JOptionPane.INFORMATION_MESSAGE);
-                                break;
+                        client.sendString(decision1);
+                        if (decision1 != null) {
+                            int num1 = Arrays.asList(options).indexOf(decision1);
+                            client.sendInt(num1);
+                            switch (num1) {
+                                case 0:
+                                    String s = client.getString();
+
+                                    if(s.isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "No statistics available",
+                                                "Raw Data Buyer Statistics", JOptionPane.ERROR_MESSAGE);
+                                    } else  {
+                                        JTextArea textArea = new JTextArea(s);
+                                        textArea.setEditable(false);
+                                        textArea.setLineWrap(true);
+                                        textArea.setWrapStyleWord(true);
+
+                                        JScrollPane scrollPane = new JScrollPane(textArea);
+
+
+                                        JFrame statsFrame = new JFrame("Buyer Statistics");
+
+                                        statsFrame.setContentPane(scrollPane);
+
+                                        // Set frame properties
+                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
+                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                        statsFrame.setSize(frameWidth, frameHeight);
+                                        statsFrame.setLocationRelativeTo(null);
+                                        statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                                        // Make the frame visible
+                                        statsFrame.setVisible(true);
+                                    }
+
+                                    break;
+                                case 1:
+                                    String s1 = client.getString();
+
+                                    if(!s1.isEmpty()) {
+                                        JTextArea textArea = new JTextArea(s1);
+                                        textArea.setEditable(false);
+                                        textArea.setLineWrap(true);
+                                        textArea.setWrapStyleWord(true);
+
+                                        JScrollPane scrollPane = new JScrollPane(textArea);
+
+
+                                        JFrame statsFrame = new JFrame("Buyer Statistics");
+
+                                        statsFrame.setContentPane(scrollPane);
+
+                                        // Set frame properties
+                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
+                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                        statsFrame.setSize(frameWidth, frameHeight);
+                                        statsFrame.setLocationRelativeTo(null);
+                                        statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                                        // Make the frame visible
+                                        statsFrame.setVisible(true);
+
+                                    } else {
+                                        JOptionPane.showMessageDialog(frame, "No statistics available",
+                                                "Raw Data Buyer Statistics", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                    break;
+                            }
                         }
+                        break;
                     case 1:
                         String decision2 = (String) JOptionPane.showInputDialog(frame,
                                 "How would you like to view the dashboard?", "View Buyer Statistics",
                                 JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-                        int num2 = Arrays.asList(options).indexOf(decision2);
-                        switch (num2) {
-                            case 0:
-                                String s = "";
-                                ArrayList<String> list = printBuyerDash(
-                                        currentBuyer.listCustomerSpecificDashboard(false));
-                                for (int i = 0; i < list.size(); i++) {
-                                    s += list.get(i);
-                                }
-                                JOptionPane.showMessageDialog(frame, s,
-                                        "Raw Data Buyer Statistics", JOptionPane.INFORMATION_MESSAGE);
-                                break;
-                            case 1:
-                                String s1 = "";
-                                ArrayList<String> list2 = printBuyerDash(
-                                        currentBuyer.listCustomerSpecificDashboard(true));
-                                for (int i = 0; i < list2.size(); i++) {
-                                    s1 += list2.get(i);
-                                }
-                                JOptionPane.showMessageDialog(frame, s1,
-                                        "Raw Data Buyer Statistics", JOptionPane.INFORMATION_MESSAGE);
-                                break;
+                        client.sendString(decision2);
+                        if(decision2 != null) {
+                            int num2 = Arrays.asList(options).indexOf(decision2);
+                            client.sendInt(num2);
+                            switch (num2) {
+                                case 0:
+                                    String s = client.getString();
 
+                                    if(s.isEmpty()) {
+                                        JOptionPane.showMessageDialog(frame, "No statistics available",
+                                                "Raw Data Buyer Statistics", JOptionPane.ERROR_MESSAGE);
+                                    } else  {
+                                        JTextArea textArea = new JTextArea(s);
+                                        textArea.setEditable(false);
+                                        textArea.setLineWrap(true);
+                                        textArea.setWrapStyleWord(true);
+
+                                        JScrollPane scrollPane = new JScrollPane(textArea);
+
+
+                                        JFrame statsFrame = new JFrame("Buyer Statistics");
+
+                                        statsFrame.setContentPane(scrollPane);
+
+                                        // Set frame properties
+                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
+                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                        statsFrame.setSize(frameWidth, frameHeight);
+                                        statsFrame.setLocationRelativeTo(null);
+                                        statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                                        // Make the frame visible
+                                        statsFrame.setVisible(true);
+                                    }
+                                    break;
+                                case 1:
+                                    String s1 = client.getString();
+
+                                    if(!s1.isEmpty()) {
+                                        JTextArea textArea = new JTextArea(s1);
+                                        textArea.setEditable(false);
+                                        textArea.setLineWrap(true);
+                                        textArea.setWrapStyleWord(true);
+
+                                        JScrollPane scrollPane = new JScrollPane(textArea);
+
+
+                                        JFrame statsFrame = new JFrame("Buyer Statistics");
+
+                                        statsFrame.setContentPane(scrollPane);
+
+                                        // Set frame properties
+                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
+                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                        statsFrame.setSize(frameWidth, frameHeight);
+                                        statsFrame.setLocationRelativeTo(null);
+                                        statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                                        // Make the frame visible
+                                        statsFrame.setVisible(true);
+
+                                    } else {
+                                        JOptionPane.showMessageDialog(frame, "No statistics available",
+                                                "Raw Data Buyer Statistics", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                    break;
+
+                            }
                         }
+                        break;
                 }
             }
             if (e.getSource() == returnToMenuButton) {
+                client.sendBoolean(false);
                 BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
 //                buyerDashboardGUI.setLoginInfo(loginInfo);
 //                buyerDashboardGUI.setCurrentBuyer(currentBuyer);
 //                buyerDashboardGUI.setShoppingCart(shoppingCart);
+                buyerDashboardGUI.setClient(client);
                 buyerDashboardGUI.run();
                 frame.dispose();
             }
@@ -102,6 +200,10 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
 
     public BuyerStatisticsGUI() {
 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new BuyerStatisticsGUI());
     }
 
     public void run() {
@@ -162,6 +264,10 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
         this.previousShoppingCart = previousShoppingCart;
     }
 
+    synchronized public void setClient(MarketplaceClient client) {
+        this.client = client;
+    }
+
     public void setCurrentBuyer(Buyers currentBuyer) {
         this.currentBuyer = currentBuyer;
     }
@@ -182,9 +288,5 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
             list.add(thing + " ");
         }
         return list;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new BuyerStatisticsGUI());
     }
 }

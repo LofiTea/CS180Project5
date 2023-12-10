@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Project 5: SellerStatisticsGUI
@@ -35,170 +33,140 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == confirmButton) {
+                client.sendBoolean(true);
                 ArrayList<String> allTransactions2 = Marketplace.readFile("TransactionInfo.txt");
                 num = list.getSelectedIndex();
-                if (num < 0 || num > stores.size()) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a valid store!",
-                            "Invalid Store", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    String[] options2 = {"1. List of customers and items purchased",
-                            "2. List of products and number of sales"};
-                    String decision2 = (String) JOptionPane.showInputDialog(frame,
-                            "How would you like to view the statistics?", "View Seller Statistics",
-                            JOptionPane.PLAIN_MESSAGE, null, options2, options2[0]);
+
+                String[] options2 = {"1. List of customers and items purchased",
+                        "2. List of products and number of sales"};
+                String decision2 = (String) JOptionPane.showInputDialog(frame,
+                        "How would you like to view the statistics?", "View Seller Statistics",
+                        JOptionPane.PLAIN_MESSAGE, null, options2, options2[0]);
+                client.sendString(decision2);
+
+                if (decision2 != null) {
+                    client.sendInt(num);
+
                     choice = Arrays.asList(options2).indexOf(decision2);
-                    if (choice < 0) {
-                        JOptionPane.showMessageDialog(frame, "Please enter a valid choice!",
-                                "Invalid Choice", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        ArrayList<String> buyerIDList = new ArrayList<>();
-                        ArrayList<PrintableStat> toPrint = new ArrayList<>();
-                        switch (choice) {
-                            case 0:
-                                for (int i = 0; i < allTransactions2.size(); i++) {
-                                    String[] transactionLine = allTransactions2.get(i).split(",");
-                                    if (Integer.parseInt(transactionLine[2]) == currentSeller.getSellerID() &&
-                                            transactionLine[3].equals(stores.get(num))) {
-                                        if (buyerIDList.isEmpty()) {
-                                            buyerIDList.add(transactionLine[1]);
-                                        } else {
-                                            if (!buyerIDList.contains(transactionLine[1])) {
-                                                buyerIDList.add(transactionLine[1]);
-                                            }
-                                        }
-                                    }
-                                }
+                    client.sendInt(choice);
 
-                                ArrayList<Integer> quantities = new ArrayList<>();
 
-                                for (int i = 0; i < buyerIDList.size(); i++) {
-                                    ArrayList<String> uniqueItems = new ArrayList<>();
-                                    int qty = 0;
-                                    for (int j = 0; j < allTransactions2.size(); j++) {
-                                        String[] transactionLine = allTransactions2.get(j).split(",");
-                                        if (Integer.parseInt(transactionLine[2]) == currentSeller.getSellerID() &&
-                                                transactionLine[1].equals(buyerIDList.get(i)) &&
-                                                transactionLine[3].equals(stores.get(num))) {
-                                            String[] ticketInfo = transactionLine[6].split(";");
-                                            qty += Integer.parseInt(transactionLine[5]);
-                                            if (uniqueItems.isEmpty()) {
-                                                uniqueItems.add(ticketInfo[0] + ";" + ticketInfo[1] + ";" +
-                                                        ticketInfo[3]);
-                                            } else {
-                                                if (!uniqueItems.contains(ticketInfo[0] + ";" + ticketInfo[1] + ";"
-                                                        + ticketInfo[3])) {
-                                                    uniqueItems.add(ticketInfo[0] + ";" + ticketInfo[1] + ";"
-                                                            + ticketInfo[3]);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    quantities.add(qty);
-
-                                    String buyerEmail = "";
-
-                                    ArrayList<String> buyers = Marketplace.readFile("BuyerHistory.txt");
-                                    for (int j = 0; j < buyers.size(); j++) {
-                                        String[] buyerInfo = buyers.get(j).split(",");
-                                        if (buyerInfo[0].equals(buyerIDList.get(i))) {
-                                            buyerEmail = buyerInfo[1];
-                                            break;
-                                        }
-                                    }
-
-                                    toPrint.add(new PrintableStat(Integer.parseInt(buyerIDList.get(i)), buyerEmail,
-                                            quantities.get(i),
-                                            uniqueItems.size()));
-                                }
-                                String[] options3 = {"1. Default (Buyer ID)", "2. Customer Email (Alphabetical Order",
-                                        "3. Number of Items Purchased"};
-                                String decision3 = (String) JOptionPane.showInputDialog(frame,
-                                        "How would you to sort the data?", "View Seller Statistics",
-                                        JOptionPane.PLAIN_MESSAGE, null, options3, options3[0]);
+                    switch (choice) {
+                        case 0:
+                            String[] options3 = {"1. Default (Buyer ID)", "2. Customer Email (Alphabetical Order)",
+                                    "3. Number of Items Purchased"};
+                            String decision3 = (String) JOptionPane.showInputDialog(frame,
+                                    "How would you to sort the data?", "View Seller Statistics",
+                                    JOptionPane.PLAIN_MESSAGE, null, options3, options3[0]);
+                            client.sendString(decision3);
+                            if (decision3 != null) {
                                 number = Arrays.asList(options3).indexOf(decision3);
-                                if (number < 0) {
-                                    JOptionPane.showMessageDialog(frame, "Please enter a valid choice!",
-                                            "Invalid Choice", JOptionPane.ERROR_MESSAGE);
+                                client.sendInt(number);
+
+
+                                ArrayList<String> listToPrint = client.recieveStringArrayList();
+                                StringBuilder stats = new StringBuilder();
+
+                                if(!listToPrint.isEmpty()) {
+                                    for (int i = 0; i < listToPrint.size() - 1; i++) {
+                                        stats.append("Customer ").append(i + 1).append("\n").append(listToPrint.get(i)).append("\n\n");
+                                    }
+
+                                    stats.append("Customer ").append(listToPrint.size()).append("\n").append(listToPrint.get(listToPrint.size() - 1));
+
+                                    JTextArea textArea = new JTextArea(stats.toString());
+                                    textArea.setEditable(false);
+                                    textArea.setLineWrap(true);
+                                    textArea.setWrapStyleWord(true);
+
+                                    JScrollPane scrollPane = new JScrollPane(textArea);
+
+
+                                    JFrame statsFrame = new JFrame("Seller Statistics");
+
+                                    statsFrame.setContentPane(scrollPane);
+
+                                    // Set frame properties
+                                    int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
+                                    int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                    statsFrame.setSize(frameWidth, frameHeight);
+                                    statsFrame.setLocationRelativeTo(null);
+                                    statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                                    // Make the frame visible
+                                    statsFrame.setVisible(true);
                                 } else {
-
-                                    switch (number) {
-                                        case 0:
-                                            Collections.sort(toPrint,
-                                                    Comparator.comparing(PrintableStat::getBuyerID));
-                                            break;
-                                        case 1:
-                                            Collections.sort(toPrint,
-                                                    Comparator.comparing(PrintableStat::getBuyerEmail));
-                                            break;
-                                        case 2:
-                                            Collections.sort(toPrint,
-                                                    Comparator.comparing(PrintableStat::getTotalItems));
-                                            break;
-                                    }
-
-                                    for (int i = 0; i < toPrint.size(); i++) {
-                                        String s = "Customer " + (i + 1) + "\n";
-                                        JOptionPane.showMessageDialog(frame, s + "\n" +
-                                                        toPrint.get(i).toString() + "\n", "View Seller Statistics",
-                                                JOptionPane.INFORMATION_MESSAGE);
-                                    }
-                                    break;
+                                    JOptionPane.showMessageDialog(null, "No transactions for this store", "No " +
+                                            "transactions", JOptionPane.ERROR_MESSAGE);
                                 }
-                            case 1:
-                                String[] options4 = {"1. Location", "2. Sport", "3. Number of Sales"};
-                                String decision4 = (String) JOptionPane.showInputDialog(frame,
-                                        "How would you to sort the data?", "View Seller Statistics",
-                                        JOptionPane.PLAIN_MESSAGE, null, options4, options4[0]);
+                            }
+                            break;
+                        case 1:
+                            String[] options4 = {"1. Location", "2. Sport", "3. Number of Sales"};
+                            String decision4 = (String) JOptionPane.showInputDialog(frame,
+                                    "How would you to sort the data?", "View Seller Statistics",
+                                    JOptionPane.PLAIN_MESSAGE, null, options4, options4[0]);
+                            client.sendString(decision4);
+
+                            if(decision4 != null) {
                                 anotherOne = Arrays.asList(options4).indexOf(decision4);
-                                switch (anotherOne) {
-                                    case 0:
-                                        ArrayList<String> list1 = Marketplace.uniqueProductsByLocation(stores.get(num),
-                                                currentSeller.getSellerID());
-                                        for (int i = 0; i < list1.size(); i++) {
-                                            String[] listItem = list1.get(i).split(";");
-                                            String s = "Product " + (i + 1) + "\n";
-                                            JOptionPane.showMessageDialog(frame, s + "\n" +
-                                                            "Product Info - \nSport: " + listItem[1] + "\nLocation: " +
-                                                            listItem[2] + "\nSection: " + listItem[3] + "\nSales: " +
-                                                            listItem[0], "View Seller Statistics",
-                                                    JOptionPane.INFORMATION_MESSAGE);
-                                        }
-                                        break;
-                                    case 1:
-                                        ArrayList<String> list2 = Marketplace.uniqueProductsBySport(stores.get(num),
-                                                currentSeller.getSellerID());
-                                        for (int i = 0; i < list2.size(); i++) {
-                                            String[] listItem = list2.get(i).split(";");
-                                            String s = "Product " + (i + 1) + "\n";
-                                            JOptionPane.showMessageDialog(frame, s + "\n" +
-                                                            "Product Info - \nSport: " + listItem[1] + "\nLocation: " +
-                                                            listItem[2] + "\nSection: " + listItem[3] + "\nSales: " +
-                                                            listItem[0], "View Seller Statistics",
-                                                    JOptionPane.INFORMATION_MESSAGE);
-                                        }
-                                        break;
-                                    case 2:
-                                        ArrayList<String> list3 = Marketplace.uniqueProductsBySales(stores.get(num),
-                                                currentSeller.getSellerID());
-                                        for (int i = 0; i < list3.size(); i++) {
-                                            String[] listItem = list3.get(i).split(";");
-                                            String s = "Product " + (i + 1) + "\n";
-                                            JOptionPane.showMessageDialog(frame, s + "\n" +
-                                                            "Product Info - \nSport: " + listItem[1] + "\nLocation: " +
-                                                            listItem[2] + "\nSection: " + listItem[3] + "\nSales: " +
-                                                            listItem[0], "View Seller Statistics",
-                                                    JOptionPane.INFORMATION_MESSAGE);
-                                        }
+                                client.sendInt(anotherOne);
+
+                                ArrayList<String> listToPrint = client.recieveStringArrayList();
+
+                                if(!listToPrint.isEmpty()) {
+                                    StringBuilder stats = new StringBuilder();
+
+                                    for (int i = 0; i < listToPrint.size()-1; i++) {
+                                        String[] listItem = listToPrint.get(i).split(";");
+
+                                        stats.append("Product ").append(i + 1).append("\n").append("Product Info - \nSport: ").append(listItem[1]).append("\nLocation: ").append(listItem[2]).append("\nSection: ").append(listItem[3]).append("\nSales: ").append(listItem[0]).append("\n\n");
+
+                                    }
+
+                                    String[] listItem = listToPrint.get(listToPrint.size()-1).split(";");
+                                    stats.append("Product ").append(listToPrint.size()).append("\n").append("Product Info" +
+                                            " - " +
+                                            "\nSport: ").append(listItem[1]).append("\nLocation: ").append(listItem[2]).append("\nSection: ").append(listItem[3]).append("\nSales: ").append(listItem[0]);
+
+                                    JTextArea textArea = new JTextArea(stats.toString());
+                                    textArea.setEditable(false);
+                                    textArea.setLineWrap(true);
+                                    textArea.setWrapStyleWord(true);
+
+                                    JScrollPane scrollPane = new JScrollPane(textArea);
+
+
+                                    JFrame statsFrame = new JFrame("Seller Statistics");
+
+                                    statsFrame.setContentPane(scrollPane);
+
+                                    // Set frame properties
+                                    int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
+                                    int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                    statsFrame.setSize(frameWidth, frameHeight);
+                                    statsFrame.setLocationRelativeTo(null);
+                                    statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                                    // Make the frame visible
+                                    statsFrame.setVisible(true);
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "No transactions for this store", "No " +
+                                            "transactions", JOptionPane.ERROR_MESSAGE);
                                 }
-                        }
+
+
+                            }
                     }
                 }
+
+
             }
+
+
             if (e.getSource() == returnToMenuButton) {
+                client.sendBoolean(false);
                 SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-//                sellerDashboardGUI.setLoginInfo(loginInfo);
-//                sellerDashboardGUI.setCurrentSeller(currentSeller);
-//                sellerDashboardGUI.setStores(stores);
                 sellerDashboardGUI.setClient(client);
                 sellerDashboardGUI.run();
                 frame.dispose();
@@ -220,7 +188,7 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
         gbc1.insets = new Insets(5, 10, 5, 10);
         gbc1.anchor = GridBagConstraints.CENTER;
 
-        stores = currentSeller.retrieveStores();
+        stores = client.recieveStringArrayList();
 
         if (stores == null) {
             JOptionPane.showMessageDialog(null, "Error! There are no stores!",
@@ -265,8 +233,10 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-
-    public void setLoginInfo(LoginInfo loginInfo) {
+        synchronized public void setClient(MarketplaceClient client) {
+        this.client = client;
+    }
+        public void setLoginInfo(LoginInfo loginInfo) {
             this.loginInfo = loginInfo;
         }
 
