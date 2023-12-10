@@ -20,3 +20,5 @@
 20,5,6,RossAde,10.00,2,Basketball;Mackay Arena; Back row;10.00
 21,5,6,Mackay,4.00,3,Basketball;Mackey Arena;Nosebleeds;4.00
 22,5,8,Mackay,6.00,5,Basketball;Mackay Arena;Box;6.00
+23,4,6,RossAde,10.00,7,Basketball;Mackay Arena; Back row;10.00
+24,4,6,Mackay,4.00,4,Basketball;Mackey Arena;Nosebleeds;4.00

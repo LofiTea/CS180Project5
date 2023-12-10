@@ -31,8 +31,6 @@ public class SellTicketGUI extends JComponent implements Runnable {
     JTextField quantityTextField;
     JButton confirmButton;
     JButton returnToMenuButton;
-    LoginInfo loginInfo;
-    Sellers currentSeller;
     ArrayList<String> stores;
 
     MarketplaceClient client;
@@ -377,13 +375,7 @@ public class SellTicketGUI extends JComponent implements Runnable {
         }
     }
 
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
-
-    public void setCurrentSeller(Sellers currentSeller) {
-        this.currentSeller = currentSeller;
-    }
+   
 
     public void setStores(ArrayList<String> stores) {
         this.stores = stores;

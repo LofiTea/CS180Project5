@@ -21,8 +21,6 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
     JButton editTicketButton;
     JButton removeTicketButton;
     JButton returnToMenuButton;
-    LoginInfo loginInfo;
-    Sellers currentSeller;
     ArrayList<String> stores;
     MarketplaceClient client;
     int num;
@@ -170,13 +168,7 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
-
-    public void setCurrentSeller(Sellers currentSeller) {
-        this.currentSeller = currentSeller;
-    }
+    
 
     public void setStores(ArrayList<String> stores) {
         this.stores = stores;

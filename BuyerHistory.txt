@@ -1,3 +1,3 @@
-4,rasidd2005@gmail.com,Basketball;Mackay Arena; Back row;10.00|10:Basketball;Mackay Arena;Middle;21.00|4:Football;Ross Ade;Middle;25.00|4:Soccer;Ford Field;Pitchside;70.00|10
+4,rasidd2005@gmail.com,Basketball;Mackay Arena; Back row;10.00|10:Basketball;Mackay Arena;Middle;21.00|4:Football;Ross Ade;Middle;25.00|4:Soccer;Ford Field;Pitchside;70.00|10:Basketball;Mackay Arena; Back row;10.00|7:Basketball;Mackey Arena;Nosebleeds;4.00|4
 5,nikhilsidd2010@gmail.com,Basketball;Mackay Arena; Back row;10.00|2:Basketball;Mackay Arena;Box;6.00|4:Basketball;Mackay Arena; Back row;10.00|2:Basketball;Mackay Arena;VIP;700.00|5:Basketball;Mackay Arena; Back row;10.00|4:Basketball;Mackay Arena; Back row;10.00|2:Basketball;Mackey Arena;Nosebleeds;4.00|3:Basketball;Mackay Arena;Box;6.00|5
 10,henryleebuyer@gmail.com,Football;Ross Ade;Student;15.00|10

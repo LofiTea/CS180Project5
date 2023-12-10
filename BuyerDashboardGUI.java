@@ -21,10 +21,8 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
     JButton viewStatisticsButton;
     JButton accountButton;
     JButton logOutButton;
-    LoginInfo loginInfo;
     ArrayList<String> shoppingCart;
     ArrayList<String> previousShoppingCart;
-    Buyers currentBuyer;
     MarketplaceClient client;
 
 
@@ -85,9 +83,7 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
 
     }
 
-    public BuyerDashboardGUI(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
+   
 
     @Override
     public void run() {
@@ -146,20 +142,7 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
-
  
-
-    
-    public Buyers getCurrentBuyer() {
-        return this.currentBuyer;
-    }
-
-    public void setCurrentBuyer(Buyers currentBuyer) {
-        this.currentBuyer = currentBuyer;
-    }
 
     public static int determineID(String email, String password) {
         ArrayList<String> arrayList = Marketplace.readFile("LoginInfo.txt");

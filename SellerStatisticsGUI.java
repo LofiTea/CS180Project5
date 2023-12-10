@@ -20,8 +20,6 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
     JComboBox<String> list;
     JButton confirmButton;
     JButton returnToMenuButton;
-    LoginInfo loginInfo;
-    Sellers currentSeller;
     ArrayList<String> stores;
     int num;
     int choice;
@@ -236,14 +234,7 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
         synchronized public void setClient(MarketplaceClient client) {
         this.client = client;
     }
-        public void setLoginInfo(LoginInfo loginInfo) {
-            this.loginInfo = loginInfo;
-        }
-
-        public void setCurrentSeller(Sellers currentSeller) {
-            this.currentSeller = currentSeller;
-        }
-
+        
         public void setStores(ArrayList<String> stores) {
             this.stores = stores;
         }

@@ -19,7 +19,6 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
     JComboBox<String> list;
     JButton confirmButton;
     JButton returnToMenuButton;
-    LoginInfo loginInfo;
     MarketplaceClient client;
     ArrayList<String> previousCart;
 
@@ -125,13 +124,7 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-    public LoginInfo getLoginInfo() {
-        return this.loginInfo;
-    }
-
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
+   
 
 
     public void setClient(MarketplaceClient client)

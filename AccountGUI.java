@@ -22,7 +22,6 @@ public class AccountGUI extends JComponent implements Runnable {
     JButton editPasswordButton;
     JButton deleteAccountButton;
     JButton returnToMenuButton;
-    LoginInfo loginInfo;
     MarketplaceClient client;
     ActionListener actionListener = new ActionListener() {
         int count = 0;
@@ -221,9 +220,7 @@ public class AccountGUI extends JComponent implements Runnable {
         this.client = client;
     }
 
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
+  
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new AccountGUI());

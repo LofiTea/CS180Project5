@@ -20,9 +20,6 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
     JComboBox<String> list;
     JButton confirmButton;
     JButton returnToMenuButton;
-    LoginInfo loginInfo;
-    ArrayList<CartItems> shoppingCart;
-    ArrayList<CartItems> previousShoppingCart;
     MarketplaceClient client;
     Buyers currentBuyer;
 
@@ -251,19 +248,6 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
-
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
-
-    public void setShoppingCart(ArrayList<CartItems> shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
-    public void setPreviousShoppingCart(ArrayList<CartItems> previousShoppingCart) {
-        this.previousShoppingCart = previousShoppingCart;
-    }
-
     synchronized public void setClient(MarketplaceClient client) {
         this.client = client;
     }

@@ -31,7 +31,6 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
     JTextField priceTextField;
     JTextField quantityTextField;
     JButton confirmButton;
-    LoginInfo loginInfo;
     JButton returnToMenuButton;
     int num;
     int choice;
@@ -575,9 +574,7 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
         }
     }
 
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
+    
 
     public void setCurrentSeller(Sellers currentSeller) {
         this.currentSeller = currentSeller;

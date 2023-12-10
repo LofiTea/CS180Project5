@@ -19,11 +19,7 @@ public class RemoveTicketGUI extends JComponent implements Runnable {
     JComboBox<String> list;
     JButton confirmButton;
     JButton returnToMenuButton;
-    LoginInfo loginInfo;
-    ArrayList<CartItems> shoppingCart;
-    ArrayList<CartItems> previousShoppingCart;
     ArrayList<String> realShoppingCart;
-    Buyers currentBuyer;
     MarketplaceClient client;
     ActionListener actionListener = new ActionListener() {
         @Override
@@ -147,23 +143,6 @@ public class RemoveTicketGUI extends JComponent implements Runnable {
 
     synchronized public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-
-
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
-
-    public void setShoppingCart(ArrayList<CartItems> shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
-    public void setPreviousShoppingCart(ArrayList<CartItems> previousShoppingCart) {
-        this.previousShoppingCart = previousShoppingCart;
-    }
-
-    public void setCurrentBuyer(Buyers currentBuyer) {
-        this.currentBuyer = currentBuyer;
     }
 
     public void setRealShoppingCart(ArrayList<String> realShoppingCart) {

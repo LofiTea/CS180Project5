@@ -21,12 +21,8 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
     JButton removeFromShoppingCartButton;
     JButton checkOutButton;
     JButton returnToMenuButton;
-    LoginInfo loginInfo;
     MarketplaceClient client;
-    ArrayList<CartItems> shoppingCart;
-    ArrayList<CartItems> previousShoppingCart;
     ArrayList<String> realShoppingCart;
-    Buyers currentBuyer;
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -180,30 +176,13 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-    public void setLoginInfo(LoginInfo loginInfo) {
-        this.loginInfo = loginInfo;
-    }
-
+  
     public void setClient(MarketplaceClient client)
     {
         this.client = client;
     }
 
-    public void setShoppingCart(ArrayList<CartItems> shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
-    public void setPreviousShoppingCart(ArrayList<CartItems> previousShoppingCart) {
-        this.previousShoppingCart = previousShoppingCart;
-    }
-
-    public Buyers getCurrentBuyer() {
-        return this.currentBuyer;
-    }
-
-    public void setCurrentBuyer(Buyers currentBuyer) {
-        this.currentBuyer = currentBuyer;
-    }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new BuyTicketMenuGUI());
