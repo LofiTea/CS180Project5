@@ -1,10 +1,10 @@
 /**
- * Project 4: Ticket
+ * Project 5: Ticket
  *
  * The ticket class describes what type of ticket is available in the marketplace.
  *
- * @author Henry Lee, Lab Section L20
- * @version October 30, 2023
+ * @author Henry J. Lee, Lab Section L20
+ * @version November 13, 2023
  */
 
 public class Ticket {
@@ -58,5 +58,24 @@ public class Ticket {
     public String toString() {
         return getSportType() + ";" + getLocation() + ";" + getSection() + ";" + String.format(
                 "%.2f", getPrice());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else {
+            if(obj instanceof Ticket) {
+                if(sportType.equals(((Ticket) obj).getSportType()) && location.equals(((Ticket) obj).getLocation())
+                        && section.equals(((Ticket) obj).getSection()) && price == ((Ticket) obj).getPrice()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
     }
 }

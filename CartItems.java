@@ -1,10 +1,10 @@
 /**
- * Project 4: CartItems
+ * Project 5: CartItems
  *
  * Allows a buyer to buy more than 1 ticket and allows sellers to sell more than 1 ticket.
  *
  * @author Rahul Siddharth, Lab Section L20
- * @version October 30, 2023
+ * @version November 13, 2023
  */
 
 public class CartItems {
@@ -35,5 +35,23 @@ public class CartItems {
     public String toString() {
 
         return String.format("%s|%d", ticket.toString(), qty);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        } else {
+            if(obj instanceof CartItems) {
+                if(this.getTicket().equals(((CartItems) obj).getTicket()) &&
+                        this.getQTY()==((CartItems) obj).getQTY()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
     }
 }

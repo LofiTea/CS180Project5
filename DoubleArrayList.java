@@ -1,12 +1,12 @@
 import java.util.ArrayList;
 
 /**
- * Project 4: DoubleArrayList
+ * Project 5: DoubleArrayList
  *
  * Returns all available tickets from a seller and returns a list of the name of all stores.
  *
  * @author Rahul Siddharth, Lab Section L20
- * @version October 30, 2023
+ * @version November 13, 2023
  */
 
 public class DoubleArrayList {

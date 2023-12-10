@@ -1,12 +1,12 @@
 import java.util.ArrayList;
 
 /**
- * Project 4: TicketInfoCombo
+ * Project 5: TicketInfoCombo
  *
  * This class returns the type and number of tickets that buyers can from sellers in the marketplace.
  *
  * @author Rahul Siddharth, Lab Section L20
- * @version October 30, 2023
+ * @version November 13, 2023
  */
 
 public class TicketInfoCombo {

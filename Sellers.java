@@ -3,25 +3,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Project 4: Sellers
- *
+ * Project 5: Sellers
+ * 
  * This class allows a user to sell a ticket.
  *
  * @author Rahul Siddharth, Shrish Mahesh, Lab Section L20
- * @version October 30, 2023
+ * @version November 13, 2023
  */
 
 public class Sellers {
-    private LoginInfo loginInfo;
     private double grossSales;
     private ArrayList<Ticket> products;
     private ArrayList<String> stores;
     private int sellerID;
 
 
-    public Sellers(LoginInfo loginInfo,int sellerID)
+    public Sellers(int sellerID)
     {
-        this.loginInfo = loginInfo;
         this.sellerID= sellerID;
         products = new ArrayList<>();
         stores = new ArrayList<>();
@@ -41,7 +39,7 @@ public class Sellers {
     public void deleteTicket(Ticket oldTicket, String store)
     {
 
-        ArrayList<String> sellers = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> sellers = MarketplaceServer.readFile("SellerInfo.txt");
         int indexToChange = 0;
         for (int i = 0; i < sellers.size(); i++) {
             String[] line = sellers.get(i).split(",");
@@ -91,7 +89,7 @@ public class Sellers {
             String replacement = store+"{"+contents;
             sellers.set(indexToChange, sellers.get(indexToChange).replace(toReplace, replacement));
 
-            Marketplace.writeFile(sellers, "SellerInfo.txt");
+            MarketplaceServer.writeFile(sellers, "SellerInfo.txt");
         }
 
     }
@@ -99,7 +97,7 @@ public class Sellers {
     public boolean addStore(String store) {
         try {
             stores.add(store);
-            ArrayList<String> sellers = Marketplace.readFile("SellerInfo.txt");
+            ArrayList<String> sellers = MarketplaceServer.readFile("SellerInfo.txt");
             int indexToChange = 0;
             for (int i = 0; i < sellers.size(); i++) {
                 String[] line = sellers.get(i).split(",");
@@ -111,7 +109,7 @@ public class Sellers {
 
             String currentLine = sellers.get(indexToChange)+","+store+"{}";
             sellers.set(indexToChange, currentLine);
-            Marketplace.writeFile(sellers, "SellerInfo.txt");
+            MarketplaceServer.writeFile(sellers, "SellerInfo.txt");
         } catch (Exception e) {
             return false;
         }
@@ -121,7 +119,7 @@ public class Sellers {
 
     public ArrayList<String> retrieveStores() {
         ArrayList<String> storesList = new ArrayList<>();
-        ArrayList<String> sellers = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> sellers = MarketplaceServer.readFile("SellerInfo.txt");
         int indexToSearch = 0;
         for (int i = 0; i < sellers.size(); i++) {
             String[] line = sellers.get(i).split(",");
@@ -146,7 +144,7 @@ public class Sellers {
 
     public ArrayList<String> retrieveListings(String store) {
         ArrayList<String> listings = new ArrayList<>();
-        ArrayList<String> sellers = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> sellers = MarketplaceServer.readFile("SellerInfo.txt");
         int indexToSearch = 0;
         for (int i = 0; i < sellers.size(); i++) {
             String[] line = sellers.get(i).split(",");
@@ -206,7 +204,7 @@ public class Sellers {
     public SellerListing retrieveProducts(String store) {
         ArrayList<Ticket> tickets = new ArrayList<>();
         ArrayList<String> quantities = new ArrayList<>();
-        ArrayList<String> sellers = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> sellers = MarketplaceServer.readFile("SellerInfo.txt");
         int indexToSearch = 0;
         for (int i = 0; i < sellers.size(); i++) {
             String[] line = sellers.get(i).split(",");
@@ -266,7 +264,7 @@ public class Sellers {
             }
         }
 
-        ArrayList<String> sellers = Marketplace.readFile("SellerInfo.txt");
+        ArrayList<String> sellers = MarketplaceServer.readFile("SellerInfo.txt");
         int indexToChange = 0;
         for (int i = 0; i < sellers.size(); i++) {
             String[] line = sellers.get(i).split(",");
@@ -298,10 +296,12 @@ public class Sellers {
 
             if(lastIndex != -1) {
                 String currentQty = contents.substring(indexOfQty, lastIndex);
-                contents = contents.replace(oldTicket.toString()+"|"+currentQty, newTicket.toString()+"|"+qty);
+                contents = contents.replace(oldTicket.toString()+"|"+currentQty,
+                        newTicket.toString()+"|"+qty);
             } else {
                 String currentQty = contents.substring(indexOfQty);
-                contents = contents.replace(oldTicket.toString()+"|"+currentQty, newTicket.toString()+"|"+qty);
+                contents = contents.replace(oldTicket.toString()+"|"+currentQty,
+                        newTicket.toString()+"|"+qty);
             }
 
             int storeIndex = sellers.get(indexToChange).indexOf(store+"{");
@@ -309,7 +309,7 @@ public class Sellers {
             String toReplace = sellers.get(indexToChange).substring(storeIndex, closingBracket);
             String replacement = store+"{"+contents;
             sellers.set(indexToChange, sellers.get(indexToChange).replace(toReplace, replacement));
-            Marketplace.writeFile(sellers, "SellerInfo.txt");
+            MarketplaceServer.writeFile(sellers, "SellerInfo.txt");
         } else {
             System.out.println("Nothing in store to edit");
             return false;
@@ -323,7 +323,7 @@ public class Sellers {
     public boolean addTickets(Ticket b, int qty, String store)
     {
         try {
-            ArrayList<String> sellers = Marketplace.readFile("SellerInfo.txt");
+            ArrayList<String> sellers = MarketplaceServer.readFile("SellerInfo.txt");
             int indexToChange = 0;
             for (int i = 0; i < sellers.size(); i++) {
                 String[] line = sellers.get(i).split(",");
@@ -360,7 +360,7 @@ public class Sellers {
             String toReplace = sellers.get(indexToChange).substring(storeIndex, closingBracket);
             String replacement = store+"{"+contents;
             sellers.set(indexToChange, sellers.get(indexToChange).replace(toReplace, replacement));
-            Marketplace.writeFile(sellers, "SellerInfo.txt");
+            MarketplaceServer.writeFile(sellers, "SellerInfo.txt");
         } catch (Exception e) {
             return false;
         }

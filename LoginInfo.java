@@ -1,15 +1,12 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Project 4: LoginInfo
+ * Project 5: LoginInfo
  *
  * This class authenticates a user to enter the marketplace.  They need a valid username and password.
  *
- * @author Henry Lee, Lab Section L20
- * @version October 30, 2023
+ * @author Henry J. Lee, Lab Section L20
+ * @version November 13, 2023
  */
 
 public class LoginInfo {
@@ -39,24 +36,10 @@ public class LoginInfo {
         this.password = password;
     }
 
-    // This method is utilized to read off files when checking a valid user
-    public ArrayList<String> readFile(String fileName) {
-        ArrayList<String> list = new ArrayList<>();
-        try (BufferedReader bfr = new BufferedReader(new FileReader(fileName))) {
-            String line = bfr.readLine();
-            while (line != null) {
-                list.add(line);
-                line = bfr.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
 
     // This method checks to see whether a user is valid or not
     public String authenticate(String email, String password) {
-        ArrayList<String> arrayList = readFile("LoginInfo.txt");
+        ArrayList<String> arrayList = MarketplaceServer.readFile("LoginInfo.txt");
         for (int i = 0; i < arrayList.size(); i++) {
             String[] userInfo = arrayList.get(i).split(",");
             if (userInfo.length != 4) {
