@@ -23,15 +23,16 @@ public class AccountGUI extends JComponent implements Runnable {
     JButton returnToMenuButton;
     MarketplaceClient client;
     ActionListener actionListener = new ActionListener() {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == viewAccountDetailsButton) {
 
                 client.sendInt(1);
+
                 String details = client.receiveAccountDetails();
 
-                JOptionPane.showMessageDialog(null, details, "Account Details",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, details, "Account Details", JOptionPane.INFORMATION_MESSAGE);
 
             }
             if (e.getSource() == editEmailButton) {
@@ -67,15 +68,14 @@ public class AccountGUI extends JComponent implements Runnable {
                         + "change your password to?", "Change Password", JOptionPane.QUESTION_MESSAGE);
                 if (newPassword != null) {
                     if (newPassword.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Error! Password needs to be at " +
-                                "least 8 characters long!", "Change Password", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Error! Password needs to be at least "
+                                + "8 characters long!", "Change Password", JOptionPane.ERROR_MESSAGE);
                     } else if (newPassword.length() < 8) {
-                        JOptionPane.showMessageDialog(null, "Error! Password needs to be at " +
-                                "least 8 characters long!", "Change Password", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Error! Password needs to be at least "
+                                + "8 characters long!", "Change Password", JOptionPane.ERROR_MESSAGE);
                     } else if (!MarketplaceClient.isStrongAlphanumeric(newPassword)) {
-                        JOptionPane.showMessageDialog(null, "Error! Password must have " +
-                                "letters, numbers and special characters.", "Change Password",
-                                JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Error! Password must have letters, " +
+                                "numbers and special characters.", "Change Password", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
@@ -130,6 +130,9 @@ public class AccountGUI extends JComponent implements Runnable {
 
     }
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new AccountGUI());
+    }
 
     public String viewDetails(String email, String password) {
         ArrayList<String> details = Marketplace.readFile("LoginInfo.txt");
@@ -204,9 +207,5 @@ public class AccountGUI extends JComponent implements Runnable {
 
     synchronized public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new AccountGUI());
     }
 }

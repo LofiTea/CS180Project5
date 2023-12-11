@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: MarketplaceClient
- *
+ * <p>
  * Holds the client for the marketplace.
  *
  * @author Shrish Mahesh, Rahul Siddharth, Lab Section L20
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class MarketplaceClient {
     public static MarketplaceClient client;
 
-    Socket socket = new Socket("localhost", 8080);
+    Socket socket = new Socket("100.69.90.215", 8080);
 
     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
@@ -25,11 +25,13 @@ public class MarketplaceClient {
     public MarketplaceClient() throws IOException {
     }
 
+
     public static MarketplaceClient getClient() {
         return client;
     }
 
     public static void main(String[] args) throws Exception {
+
         LoginInGUI loginInGUI = new LoginInGUI();
         loginInGUI.run();
     }
@@ -50,8 +52,15 @@ public class MarketplaceClient {
         }
         return letterCount != 0 && numCount != 0 && specialCount != 0;
     }
+
+    public void sendOptionInitial(int optionInitial) throws IOException {
+//        oos.writeObject(optionInitial);
+//        oos.flush();
+    }
+
     synchronized public boolean sendLogin(String email, String password, int optionInitial) throws IOException,
             ClassNotFoundException {
+        //System.out.println("I am in here");
         oos.writeObject(optionInitial);
         oos.writeObject(email);
         oos.writeObject(password);

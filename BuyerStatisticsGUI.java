@@ -2,12 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * Project 5: BuyerStatisticsGUI
- *
+ * <p>
  * Utilizes GUI to allow a buyer to see their statistics.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -253,25 +252,4 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
         this.client = client;
     }
 
-    public void setCurrentBuyer(Buyers currentBuyer) {
-        this.currentBuyer = currentBuyer;
-    }
-
-    public ArrayList<String> printBuyerDash(ArrayList<ArrayList<String>> dashInfo) {
-        ArrayList<String> list = new ArrayList<String>();
-        for (ArrayList<String> thing : dashInfo) {
-            for (String b : thing) {
-                list.add(b + " ");
-            }
-        }
-        return list;
-    }
-
-    public ArrayList<String> printGeneralDash(ArrayList<String> dashInfo) {
-        ArrayList<String> list = new ArrayList<String>();
-        for (String thing : dashInfo) {
-            list.add(thing + " ");
-        }
-        return list;
-    }
 }

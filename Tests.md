@@ -224,4 +224,3 @@ Steps:
 Expected Result: The application displays and option pane saying "Thank you for using Tickets@Purdue! We hope to see you soon!"
 
 Test Status: Passed
-

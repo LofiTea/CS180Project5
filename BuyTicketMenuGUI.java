@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: BuyTicketMenuGUI
- *
+ * <p>
  * Utilizes GUI to allow a buyer to buy a ticket, view their shopping cart, and more.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -28,8 +28,13 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == buyTicketButton) {
                 client.sendInt(1);
+                // shoppingCart = currentBuyer.retrieveShoppingCart();
                 BuyTicketGUI buyTicketGUI = new BuyTicketGUI();
                 buyTicketGUI.setClient(client);
+                //buyTicketGUI.setLoginInfo(loginInfo);
+                //buyTicketGUI.setCurrentBuyer(currentBuyer);
+                // buyTicketGUI.setShoppingCart(shoppingCart);
+                // buyTicketGUI.setPreviousShoppingCart(previousShoppingCart);
                 buyTicketGUI.run();
                 frame.dispose();
             }
@@ -112,6 +117,10 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
 
     }
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new BuyTicketMenuGUI());
+    }
+
     public void run() {
         frame = new JFrame("Buy A Ticket");
         frame.setLayout(new GridBagLayout());
@@ -168,13 +177,7 @@ public class BuyTicketMenuGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-
     public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new BuyTicketMenuGUI());
     }
 }

@@ -1,6 +1,6 @@
 /**
  * Project 5: PrintableStat
- * 
+ * <p>
  * Created to help display seller statistics.
  *
  * @author Shrish Mahesh, Lab Section L20
@@ -53,7 +53,6 @@ public class PrintableStat {
     }
 
     public String toString() {
-        return "Customer Info - \nID: " + this.buyerID + "\nEmail: " + this.buyerEmail +
-                "\nTotal items purchased: " + this.totalItems + "\nUnique items purchased: " + this.uniqueItems;
+        return "Customer Info - \nID: " + this.buyerID + "\nEmail: " + this.buyerEmail + "\nTotal items purchased: " + this.totalItems + "\nUnique items purchased: " + this.uniqueItems;
     }
 }

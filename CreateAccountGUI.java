@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
@@ -70,6 +71,8 @@ public class CreateAccountGUI extends JComponent implements Runnable {
                     } catch (ClassNotFoundException ex) {
                         throw new RuntimeException(ex);
                     }
+
+
                     if (type.equals("b")) {
                         BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
                         buyerDashboardGUI.setClient(client);
@@ -88,6 +91,10 @@ public class CreateAccountGUI extends JComponent implements Runnable {
 
     public CreateAccountGUI() {
 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new CreateAccountGUI());
     }
 
     public void run() {
@@ -202,10 +209,5 @@ public class CreateAccountGUI extends JComponent implements Runnable {
         bottomPanel.add(createAccountButton, gbc);
 
         return bottomPanel;
-    }
-
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new CreateAccountGUI());
     }
 }

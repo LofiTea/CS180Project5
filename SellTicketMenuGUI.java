@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 /**
  * Project 5: SellTicketMenuGUI
- * 
+ * <p>
  * Utilizes GUI to allow a seller to sell a ticket, edit a ticket, and more.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -25,7 +25,14 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
     MarketplaceClient client;
     int num;
     int number;
-    ActionListener actionListener = new ActionListener() {
+
+    public SellTicketMenuGUI() {
+
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new SellTicketMenuGUI());
+    }    ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
 //            currentSeller = new Sellers(determineID(loginInfo.getEmail(), loginInfo.getPassword()));
@@ -63,29 +70,28 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
                             JOptionPane.PLAIN_MESSAGE, null, options1, options1[0]);
                     client.sendString(decision);
 
-                    if(decision != null) {
+                    if (decision != null) {
                         num = Arrays.asList(options1).indexOf(decision);
                         client.sendString(stores3.get(num));
 
                         ArrayList<String> listings = client.recieveStringArrayList();
 
-                        if(listings != null) {
+                        if (listings != null) {
                             String[] options2 = new String[listings.size()];
                             for (int i = 0; i < listings.size(); i++) {
-                                options2[i] = "<html>" + listings.get(i).replace("\n", "<br>") +
-                                        "</html>";
+                                options2[i] = "<html>" + listings.get(i).replace("\n", "<br>") + "</html>";
                             }
                             String ticket = (String) JOptionPane.showInputDialog(frame,
                                     "Which ticket would you like to delete?", "Delete Ticket",
                                     JOptionPane.PLAIN_MESSAGE, null, options2, options2[0]);
                             client.sendString(ticket);
 
-                            if(ticket != null) {
+                            if (ticket != null) {
                                 number = Arrays.asList(options2).indexOf(ticket);
                                 client.sendInt(number);
                                 boolean success = client.receiveBoolean();
 
-                                if(success) {
+                                if (success) {
                                     JOptionPane.showMessageDialog(frame, "Ticket deleted successfully! "
                                             , "Edit Successful", JOptionPane.INFORMATION_MESSAGE);
                                 } else {
@@ -114,10 +120,6 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
             }
         }
     };
-
-    public SellTicketMenuGUI() {
-
-    }
 
     public void run() {
         frame = new JFrame("Sell A Ticket");
@@ -169,8 +171,6 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-    
-
     public void setStores(ArrayList<String> stores) {
         this.stores = stores;
     }
@@ -191,7 +191,7 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
         this.client = client;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new SellTicketMenuGUI());
-    }
+
+
+
 }

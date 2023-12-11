@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 /**
  * Project 5: SellerDashboardGUI
- * 
+ * <p>
  * Utilizes GUI to allow a seller to sell a ticket, view their selling history, and more.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -23,7 +23,13 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
     MarketplaceClient client;
 
 
-    ActionListener actionListener = new ActionListener() {
+    public SellerDashboardGUI() {
+
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new SellerDashboardGUI());
+    }    ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == sellTicketButton) {
@@ -69,14 +75,6 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
             }
         }
     };
-
-
-    public SellerDashboardGUI()
-    {
-
-    }
-
-   
 
     public void run() {
         frame = new JFrame("Tickets@Purdue Seller Dashboard");
@@ -135,13 +133,12 @@ public class SellerDashboardGUI extends JComponent implements Runnable {
 
     }
 
-   
-
     synchronized public void setClient(MarketplaceClient client) {
         this.client = client;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new SellerDashboardGUI());
-    }
+
+
+
+
 }

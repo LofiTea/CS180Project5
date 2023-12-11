@@ -8,8 +8,8 @@ import java.util.Comparator;
 
 /**
  * Project 5: MarketplaceServerThread
- *
- *  Utilizes threads in the server for the marketplace.
+ * <p>
+ * Utilizes threads in the server for the marketplace.
  *
  * @author Shrish Mahesh, Lab Section L20
  * @version November 13, 2023
@@ -19,9 +19,11 @@ public class MarketplaceServerThread extends Thread {
     public static Object obj = new Object();
     Socket socket;
 
+
     MarketplaceServerThread(Socket socket) {
         this.socket = socket;
     }
+
 
     @Override
     public void run() {
@@ -40,12 +42,10 @@ public class MarketplaceServerThread extends Thread {
                 switch (optionInitial) {
                     case 1:
                         boolean successful = false;
-                        //while (notLoggedIn) {
                         String message = "";
                         email = (String) ois.readObject();
                         password = (String) ois.readObject();
 
-                        //System.out.println(email2 + password2);
                         LoginInfo user = new LoginInfo(email, password);
                         String currentAuthentication = user.authenticate(email, password);
                         if (!currentAuthentication.isEmpty()) {
@@ -60,24 +60,19 @@ public class MarketplaceServerThread extends Thread {
 
                         }
 
-                        //oos.writeObject(notLoggedIn);
                         oos.writeObject(successful);
                         if (successful) {
                             role = MarketplaceServer.determineRole(email, password);
                             oos.writeObject(role);
-                            //System.out.println(notLoggedIn);
                         }
                         oos.flush();
-                        // }
+
 
                         break;
                     case 2:
                         email = (String) ois.readObject();
                         password = (String) ois.readObject();
-                        System.out.println(email + password);
                         String accountChoice = (String) ois.readObject();
-
-                        // System.out.println(email + password + accountChoice);
 
 
                         ArrayList<String> fileInfo = MarketplaceServer.readFile("LoginInfo.txt");
@@ -101,7 +96,6 @@ public class MarketplaceServerThread extends Thread {
                             userInfo.add(String.format("1,%s", email));
                             id = 1;
                         } else {
-                            System.out.println("hello");
                             String[] lastLine = fileInfo.get(fileInfo.size() - 1).split(",");
 
 
@@ -134,9 +128,8 @@ public class MarketplaceServerThread extends Thread {
             while (notLoggedOut) {
                 switch (role) {
                     case "b":
-                        System.out.println("Before waiting for object");
                         int whatDash = (int) ois.readObject();
-                        System.out.println(whatDash);
+
                         switch (whatDash) {
                             case 1:
                                 LoginInfo curLoginInfo = new LoginInfo(email, password);
@@ -146,17 +139,11 @@ public class MarketplaceServerThread extends Thread {
                                     boolean whileInListMenu = true;
                                     //boolean shouldRecieveListItem = true;
                                     while (whileInListMenu) {
-                                        System.out.println("Waiting for buying selection");
-
                                         int whatSelect = (int) ois.readObject();
-
-                                        System.out.println("Current listMenuSelection: " + whatSelect);
                                         switch (whatSelect) {
                                             case 1:
-                                                ArrayList<CartItems> currentShoppingCart =
-                                                        curBuyer.retrieveShoppingCart();
-                                                ArrayList<CartItems> previousShoppingCart =
-                                                        curBuyer.retrieveShoppingCart2();
+                                                ArrayList<CartItems> currentShoppingCart = curBuyer.retrieveShoppingCart();
+                                                ArrayList<CartItems> previousShoppingCart = curBuyer.retrieveShoppingCart2();
                                                 if (currentShoppingCart == null) {
                                                     currentShoppingCart = new ArrayList<>();
                                                 }
@@ -166,8 +153,7 @@ public class MarketplaceServerThread extends Thread {
                                                 }
                                                 curBuyer.setShoppingCart(currentShoppingCart);
                                                 curBuyer.setPreviousShopped(previousShoppingCart);
-                                                ArrayList<String> currentShoppingPackage = MarketplaceServer.
-                                                        buildBuyerCurrentShoppingCartPackage(curBuyer);
+                                                ArrayList<String> currentShoppingPackage = MarketplaceServer.buildBuyerCurrentShoppingCartPackage(curBuyer);
                                                 int howList = (int) ois.readObject();
                                                 if (howList != -3) {
                                                     oos.writeObject(currentShoppingPackage);
@@ -176,28 +162,21 @@ public class MarketplaceServerThread extends Thread {
                                                     case 0:
                                                         ArrayList<String> b = Buyers.viewAllListingsGeneral2();
                                                         if (!(b.isEmpty() || b == null)) {
-                                                            ArrayList<String> ticketPackage = MarketplaceServer.
-                                                                    buildListedTicketsPackage3(b);
+                                                            ArrayList<String> ticketPackage = MarketplaceServer.buildListedTicketsPackage3(b);
                                                             oos.writeObject(ticketPackage);
                                                             boolean wantToBuy = (boolean) ois.readObject();
                                                             if (wantToBuy) {
                                                                 int whatTicket = (int) ois.readObject();
                                                                 int howMany = (int) ois.readObject();
                                                                 synchronized (obj) {
-                                                                    currentShoppingCart =
-                                                                            curBuyer.retrieveShoppingCart();
+                                                                    currentShoppingCart = curBuyer.retrieveShoppingCart();
                                                                     if (currentShoppingCart == null) {
                                                                         currentShoppingCart = new ArrayList<>();
                                                                     }
-                                                                    TicketInfoCombo bAgain =
-                                                                            Buyers.viewAllListingsGeneral();
-                                                                    Ticket boughtTicket =
-                                                                            Buyers.buyTicket(bAgain.getListedTicks(),
-                                                                                    whatTicket, howMany,
-                                                                                    bAgain.getHowManyTicks());
+                                                                    TicketInfoCombo bAgain = Buyers.viewAllListingsGeneral();
+                                                                    Ticket boughtTicket = Buyers.buyTicket(bAgain.getListedTicks(), whatTicket, howMany, bAgain.getHowManyTicks());
                                                                     if (boughtTicket != null) {
-                                                                        currentShoppingCart.add(new
-                                                                                CartItems(boughtTicket, howMany));
+                                                                        currentShoppingCart.add(new CartItems(boughtTicket, howMany));
                                                                         curBuyer.setShoppingCart(currentShoppingCart);
                                                                         curBuyer.updateShoppingCart();
                                                                         oos.writeObject(true);
@@ -218,30 +197,22 @@ public class MarketplaceServerThread extends Thread {
                                                             String constraint = (String) ois.readObject();
                                                             b = Buyers.viewListingsWithConstraint2(constraint);
                                                             if (!(b.isEmpty() || b == null)) {
-                                                                ArrayList<String> ticketPackage =
-                                                                        MarketplaceServer.buildListedTicketsPackage3(b);
+                                                                ArrayList<String> ticketPackage = MarketplaceServer.buildListedTicketsPackage3(b);
                                                                 oos.writeObject(ticketPackage);
                                                                 boolean wantToBuy = (boolean) ois.readObject();
                                                                 if (wantToBuy) {
                                                                     int whatTicket = (int) ois.readObject();
                                                                     int howMany = (int) ois.readObject();
                                                                     synchronized (obj) {
-                                                                        currentShoppingCart = curBuyer.
-                                                                                retrieveShoppingCart();
+                                                                        currentShoppingCart = curBuyer.retrieveShoppingCart();
                                                                         if (currentShoppingCart == null) {
                                                                             currentShoppingCart = new ArrayList<>();
                                                                         }
-                                                                        TicketInfoCombo bAgain = Buyers.
-                                                                                viewListingsWithConstraint(constraint);
-                                                                        Ticket boughtTicket = Buyers.
-                                                                                buyTicket(bAgain.getListedTicks(),
-                                                                                        whatTicket, howMany,
-                                                                                        bAgain.getHowManyTicks());
+                                                                        TicketInfoCombo bAgain = Buyers.viewListingsWithConstraint(constraint);
+                                                                        Ticket boughtTicket = Buyers.buyTicket(bAgain.getListedTicks(), whatTicket, howMany, bAgain.getHowManyTicks());
                                                                         if (boughtTicket != null) {
-                                                                            currentShoppingCart.add(new
-                                                                                    CartItems(boughtTicket, howMany));
-                                                                            curBuyer.setShoppingCart(
-                                                                                    currentShoppingCart);
+                                                                            currentShoppingCart.add(new CartItems(boughtTicket, howMany));
+                                                                            curBuyer.setShoppingCart(currentShoppingCart);
                                                                             curBuyer.updateShoppingCart();
                                                                             oos.writeObject(true);
                                                                         } else {
@@ -262,29 +233,22 @@ public class MarketplaceServerThread extends Thread {
                                                             String constraint = (String) ois.readObject();
                                                             b = Buyers.viewListingsWithConstraint2(constraint);
                                                             if (!(b.isEmpty() || b == null)) {
-                                                                ArrayList<String> ticketPackage = MarketplaceServer.
-                                                                        buildListedTicketsPackage3(b);
+                                                                ArrayList<String> ticketPackage = MarketplaceServer.buildListedTicketsPackage3(b);
                                                                 oos.writeObject(ticketPackage);
                                                                 boolean wantToBuy = (boolean) ois.readObject();
                                                                 if (wantToBuy) {
                                                                     int whatTicket = (int) ois.readObject();
                                                                     int howMany = (int) ois.readObject();
                                                                     synchronized (obj) {
-                                                                        currentShoppingCart = curBuyer.
-                                                                                retrieveShoppingCart();
+                                                                        currentShoppingCart = curBuyer.retrieveShoppingCart();
                                                                         if (currentShoppingCart == null) {
                                                                             currentShoppingCart = new ArrayList<>();
                                                                         }
-                                                                        TicketInfoCombo bAgain = Buyers
-                                                                                .viewListingsWithConstraint(constraint);
-                                                                        Ticket boughtTicket = Buyers.buyTicket(
-                                                                                bAgain.getListedTicks(), whatTicket,
-                                                                                howMany, bAgain.getHowManyTicks());
+                                                                        TicketInfoCombo bAgain = Buyers.viewListingsWithConstraint(constraint);
+                                                                        Ticket boughtTicket = Buyers.buyTicket(bAgain.getListedTicks(), whatTicket, howMany, bAgain.getHowManyTicks());
                                                                         if (boughtTicket != null) {
-                                                                            currentShoppingCart.add(new CartItems
-                                                                                    (boughtTicket, howMany));
-                                                                            curBuyer.setShoppingCart(
-                                                                                    currentShoppingCart);
+                                                                            currentShoppingCart.add(new CartItems(boughtTicket, howMany));
+                                                                            curBuyer.setShoppingCart(currentShoppingCart);
                                                                             curBuyer.updateShoppingCart();
                                                                             oos.writeObject(true);
                                                                         } else {
@@ -302,27 +266,21 @@ public class MarketplaceServerThread extends Thread {
                                                     case 3:
                                                         b = Buyers.viewAllListingsSortedByTicketQuantity2();
                                                         if (!(b.isEmpty() || b == null)) {
-                                                            ArrayList<String> ticketPackage = MarketplaceServer.
-                                                                    buildListedTicketsPackage3(b);
+                                                            ArrayList<String> ticketPackage = MarketplaceServer.buildListedTicketsPackage3(b);
                                                             oos.writeObject(ticketPackage);
                                                             boolean wantToBuy = (boolean) ois.readObject();
                                                             if (wantToBuy) {
                                                                 int whatTicket = (int) ois.readObject();
                                                                 int howMany = (int) ois.readObject();
                                                                 synchronized (obj) {
-                                                                    currentShoppingCart = curBuyer.
-                                                                            retrieveShoppingCart();
+                                                                    currentShoppingCart = curBuyer.retrieveShoppingCart();
                                                                     if (currentShoppingCart == null) {
                                                                         currentShoppingCart = new ArrayList<>();
                                                                     }
-                                                                    TicketInfoCombo bAgain = Buyers.
-                                                                            viewAllListingsSortedByTicketQuantity();
-                                                                    Ticket boughtTicket = Buyers.buyTicket2(
-                                                                            bAgain.getListedTicks(), whatTicket,
-                                                                            howMany, bAgain.getHowManyTicks());
+                                                                    TicketInfoCombo bAgain = Buyers.viewAllListingsSortedByTicketQuantity();
+                                                                    Ticket boughtTicket = Buyers.buyTicket2(bAgain.getListedTicks(), whatTicket, howMany, bAgain.getHowManyTicks());
                                                                     if (boughtTicket != null) {
-                                                                        currentShoppingCart.add(
-                                                                                new CartItems(boughtTicket, howMany));
+                                                                        currentShoppingCart.add(new CartItems(boughtTicket, howMany));
                                                                         curBuyer.setShoppingCart(currentShoppingCart);
                                                                         curBuyer.updateShoppingCart();
                                                                         oos.writeObject(true);
@@ -352,8 +310,7 @@ public class MarketplaceServerThread extends Thread {
                                                 synchronized (obj) {
                                                     curBuyer.setShoppingCart(currentShoppingCart);
                                                     curBuyer.setPreviousShopped(previousShoppingCart);
-                                                    currentShoppingPackage = MarketplaceServer.
-                                                            buildBuyerCurrentShoppingCartPackage(curBuyer);
+                                                    currentShoppingPackage = MarketplaceServer.buildBuyerCurrentShoppingCartPackage(curBuyer);
                                                     for (int i = 0; i < currentShoppingPackage.size(); i++) {
                                                         String originalString = currentShoppingPackage.get(i);
                                                         String[] parts = originalString.split(";");
@@ -365,9 +322,7 @@ public class MarketplaceServerThread extends Thread {
                                                         String quantity = priceAndQuantity[1];
 
                                                         // Format the string without spaces after semicolons
-                                                        String formattedString = String.
-                                                                format("Sport:%s;Location:%s;Section:%s;Price:" +
-                                                                                "%s;Quantity:%s",
+                                                        String formattedString = String.format("Sport:%s;Location:%s;Section:%s;Price:%s;Quantity:%s",
                                                                 sport, location, section, price, quantity);
 
                                                         // Replace the original string in the ArrayList
@@ -386,8 +341,7 @@ public class MarketplaceServerThread extends Thread {
 
                                                 curBuyer.setShoppingCart(currentShoppingCart);
                                                 curBuyer.setPreviousShopped(previousShoppingCart);
-                                                currentShoppingPackage = MarketplaceServer.
-                                                        buildBuyerCurrentShoppingCartPackage(curBuyer);
+                                                currentShoppingPackage = MarketplaceServer.buildBuyerCurrentShoppingCartPackage(curBuyer);
                                                 oos.writeObject(currentShoppingPackage);
 
 
@@ -399,44 +353,27 @@ public class MarketplaceServerThread extends Thread {
                                                             ArrayList<CartItems> currentShoppingCart2 =
                                                                     curBuyer.retrieveShoppingCart();
                                                             try {
-                                                                if (currentShoppingCart.get(idx).
-                                                                        equals(currentShoppingCart2.get(idx))) {
+                                                                if (currentShoppingCart.get(idx).equals(currentShoppingCart2.get(idx))) {
 
                                                                     StoreNameIDCombo combo =
-                                                                            Buyers.getSellerID(currentShoppingCart.
-                                                                                    get(idx).getTicket().toString());
-                                                                    Buyers.updateTicketQuantity(
-                                                                            "SellerInfo.txt",
-                                                                            combo.getSellerID(),
-                                                                            currentShoppingCart.get(idx).getTicket().
-                                                                                    toString(),
-                                                                            -1 * currentShoppingCart.
-                                                                                    get(idx).getQTY());
+                                                                            Buyers.getSellerID(currentShoppingCart.get(idx).getTicket().toString());
+                                                                    Buyers.updateTicketQuantity("SellerInfo.txt", combo.getSellerID(),
+                                                                            currentShoppingCart.get(idx).getTicket().toString(),
+                                                                            -1 * currentShoppingCart.get(idx).getQTY());
                                                                     currentShoppingCart.remove(idx);
                                                                     curBuyer.setShoppingCart(currentShoppingCart);
                                                                     curBuyer.updateShoppingCart();
                                                                     oos.writeObject(true);
                                                                 } else {
                                                                     try {
-                                                                        if (currentShoppingCart.get(idx).equals(
-                                                                                currentShoppingCart2.get(idx - 1))) {
+                                                                        if (currentShoppingCart.get(idx).equals(currentShoppingCart2.get(idx - 1))) {
                                                                             StoreNameIDCombo combo =
-                                                                                    Buyers.getSellerID(
-                                                                                            currentShoppingCart2.
-                                                                                                    get(idx - 1).
-                                                                                                    getTicket().
-                                                                                                    toString());
-                                                                            Buyers.updateTicketQuantity(
-                                                                                    "SellerInfo.txt",
-                                                                                    combo.getSellerID(),
-                                                                                    currentShoppingCart2.get(idx - 1).
-                                                                                            getTicket().toString(),
-                                                                                    -1 *
-                                                                                            currentShoppingCart2.get
-                                                                                                    (idx - 1).getQTY());
+                                                                                    Buyers.getSellerID(currentShoppingCart2.get(idx - 1).getTicket().toString());
+                                                                            Buyers.updateTicketQuantity("SellerInfo.txt", combo.getSellerID(),
+                                                                                    currentShoppingCart2.get(idx - 1).getTicket().toString(),
+                                                                                    -1 * currentShoppingCart2.get(idx - 1).getQTY());
                                                                             currentShoppingCart2.remove(idx - 1);
-                                                                            curBuyer.setShoppingCart
-                                                                                    (currentShoppingCart2);
+                                                                            curBuyer.setShoppingCart(currentShoppingCart2);
                                                                             curBuyer.updateShoppingCart();
                                                                             oos.writeObject(true);
                                                                         } else {
@@ -448,21 +385,12 @@ public class MarketplaceServerThread extends Thread {
                                                                 }
                                                             } catch (Exception e) {
                                                                 try {
-                                                                    if (currentShoppingCart.get(idx).equals
-                                                                            (currentShoppingCart2.get(idx - 1))) {
+                                                                    if (currentShoppingCart.get(idx).equals(currentShoppingCart2.get(idx - 1))) {
                                                                         StoreNameIDCombo combo =
-                                                                                Buyers.getSellerID(
-                                                                                        currentShoppingCart2.
-                                                                                                get(idx - 1).
-                                                                                                getTicket().toString());
-                                                                        Buyers.updateTicketQuantity(
-                                                                                "SellerInfo.txt",
-                                                                                combo.getSellerID(),
-                                                                                currentShoppingCart2.get(idx - 1).
-                                                                                        getTicket().toString(),
-                                                                                -1 *
-                                                                                        currentShoppingCart2.
-                                                                                                get(idx - 1).getQTY());
+                                                                                Buyers.getSellerID(currentShoppingCart2.get(idx - 1).getTicket().toString());
+                                                                        Buyers.updateTicketQuantity("SellerInfo.txt", combo.getSellerID(),
+                                                                                currentShoppingCart2.get(idx - 1).getTicket().toString(),
+                                                                                -1 * currentShoppingCart2.get(idx - 1).getQTY());
                                                                         currentShoppingCart2.remove(idx - 1);
                                                                         curBuyer.setShoppingCart(currentShoppingCart2);
                                                                         curBuyer.updateShoppingCart();
@@ -482,8 +410,7 @@ public class MarketplaceServerThread extends Thread {
 
                                                 break;
                                             case 4:
-                                                ArrayList<CartItems> currentShoppingCart2 =
-                                                        curBuyer.retrieveShoppingCart();
+                                                ArrayList<CartItems> currentShoppingCart2 = curBuyer.retrieveShoppingCart();
                                                 previousShoppingCart = curBuyer.retrieveShoppingCart2();
                                                 if (currentShoppingCart2 == null)
                                                     currentShoppingCart = new ArrayList<>();
@@ -491,14 +418,12 @@ public class MarketplaceServerThread extends Thread {
                                                     previousShoppingCart = new ArrayList<>();
                                                 curBuyer.setShoppingCart(currentShoppingCart2);
                                                 curBuyer.setPreviousShopped(previousShoppingCart);
-                                                currentShoppingPackage = MarketplaceServer.
-                                                        buildBuyerCurrentShoppingCartPackage(curBuyer);
+                                                currentShoppingPackage = MarketplaceServer.buildBuyerCurrentShoppingCartPackage(curBuyer);
                                                 oos.writeObject(currentShoppingPackage);
                                                 boolean wantToCheckout = (boolean) ois.readObject();
                                                 synchronized (obj) {
                                                     if (wantToCheckout) {
                                                         currentShoppingCart2 = curBuyer.retrieveShoppingCart();
-                                                        System.out.println(currentShoppingCart2);
                                                         boolean succesfulCheckout = false;
                                                         if (currentShoppingCart2 != null) {
                                                             succesfulCheckout = curBuyer.checkoutCart();
@@ -531,15 +456,13 @@ public class MarketplaceServerThread extends Thread {
                             case 2:
                                 curLoginInfo = new LoginInfo(email, password);
                                 curBuyer = new Buyers(id, curLoginInfo);
-                                ArrayList<String> shoppingCartPackage = MarketplaceServer.
-                                        buildBuyerPreviousShoppingCartPackage(curBuyer);
+                                ArrayList<String> shoppingCartPackage = MarketplaceServer.buildBuyerPreviousShoppingCartPackage(curBuyer);
                                 oos.writeObject(shoppingCartPackage);
                                 boolean willGoIntoMenu = (boolean) ois.readObject();
 
                                 for (int i = 0; willGoIntoMenu; i++) {
                                     if (i == 0) {
-                                        ArrayList<String> shoppingCartPackage2 =
-                                                MarketplaceServer.buildBuyerPreviousShoppingCartPackage(curBuyer);
+                                        ArrayList<String> shoppingCartPackage2 = MarketplaceServer.buildBuyerPreviousShoppingCartPackage(curBuyer);
                                         oos.writeObject(shoppingCartPackage2);
                                     }
 
@@ -624,13 +547,12 @@ public class MarketplaceServerThread extends Thread {
                                 while (notReturnedToMenu) {
                                     email = MarketplaceServer.getEmailPassword(id).get(0);
                                     password = MarketplaceServer.getEmailPassword(id).get(1);
-                                    System.out.println(email + password);
+
                                     int whatEditOption = (int) ois.readObject();
-                                    System.out.println(whatEditOption);
+
                                     switch (whatEditOption) {
                                         case 1:
-                                            ArrayList<String> details = MarketplaceServer.readFile
-                                                    ("LoginInfo.txt");
+                                            ArrayList<String> details = MarketplaceServer.readFile("LoginInfo.txt");
                                             for (int i = 0; i < details.size(); i++) {
                                                 String[] arr = details.get(i).split(",");
                                                 if (email.equals(arr[1]) && password.equals(arr[2])) {
@@ -651,11 +573,8 @@ public class MarketplaceServerThread extends Thread {
                                             String newEmail = (String) ois.readObject();
                                             if (!newEmail.equals("")) {
                                                 MarketplaceServer.editEmail(id, newEmail);
-                                                //Thread.sleep(1000);
-//                                                email = MarketplaceServer.getEmailPassword(id).get(0);
-//                                                System.out.println(email);
                                             }
-                                            //editing the email
+
                                             break;
                                         case 3:
                                             String newPassword = (String) ois.readObject();
@@ -682,22 +601,17 @@ public class MarketplaceServerThread extends Thread {
                                 }
                                 break;
                             case 5:
-                                System.out.println("Thread closing");
                                 notLoggedOut = false;
                                 break;
                         }
                         break;
                     case "s":
-                        System.out.println("Before waiting for object");
                         whatDash = (int) ois.readObject();
-                        System.out.println(whatDash);
                         switch (whatDash) {
                             case 1:
                                 int sellOption = 0;
                                 while (sellOption != 4) {
-                                    System.out.println("In loop");
                                     sellOption = (int) ois.readObject();
-                                    System.out.println(sellOption);
                                     Sellers seller = new Sellers(id);
                                     ArrayList<String> stores1 = seller.retrieveStores();
                                     if (sellOption != 4) {
@@ -722,7 +636,6 @@ public class MarketplaceServerThread extends Thread {
                                                             notDone = (boolean) ois.readObject();
                                                             if (notDone) {
                                                                 String store = (String) ois.readObject();
-                                                                System.out.println(store);
                                                                 if (store != null) {
                                                                     if (store.isEmpty() || store.equals("\n")) {
                                                                     } else {
@@ -751,8 +664,7 @@ public class MarketplaceServerThread extends Thread {
                                                                             double price = (double) ois.readObject();
                                                                             int quantity = (int) ois.readObject();
                                                                             String store = (String) ois.readObject();
-                                                                            seller.addTickets(new Ticket(sport,
-                                                                                    location, section,
+                                                                            seller.addTickets(new Ticket(sport, location, section,
                                                                                     price), quantity, store);
                                                                         }
                                                                     } else {
@@ -795,25 +707,20 @@ public class MarketplaceServerThread extends Thread {
                                                                                             (boolean) ois.readObject();
                                                                                     if (!invalid) {
                                                                                         synchronized (obj) {
-                                                                                            listing = seller.
-                                                                                                    retrieveProducts
-                                                                                                            (store);
+                                                                                            listing =
+                                                                                                    seller.retrieveProducts(store);
                                                                                             String sport =
-                                                                                                    (String) ois.
-                                                                                                           readObject();
+                                                                                                    (String) ois.readObject();
                                                                                             String location =
-                                                                                                    (String) ois.
-                                                                                                           readObject();
+                                                                                                    (String) ois.readObject();
                                                                                             String section =
-                                                                                                    (String) ois.
-                                                                                                           readObject();
+                                                                                                    (String) ois.readObject();
                                                                                             double price =
-                                                                                                    (double) ois.
-                                                                                                           readObject();
+                                                                                                    (double) ois.readObject();
                                                                                             try {
-                                       seller.modTicket(listing.getTickets().get(ticketIdx), new Ticket(sport,
-                                                                          location, section, price), store,
-                                                        Integer.parseInt(listing.getQuantities().get(ticketIdx)));
+                                                                                                seller.modTicket(listing.getTickets().get(ticketIdx), new Ticket(sport,
+                                                                                                                location, section, price), store,
+                                                                                                        Integer.parseInt(listing.getQuantities().get(ticketIdx)));
                                                                                                 oos.writeObject(true);
                                                                                                 notDone = false;
                                                                                             } catch (Exception e) {
@@ -835,13 +742,13 @@ public class MarketplaceServerThread extends Thread {
                                                                                     if (!invalid) {
                                                                                         synchronized (obj) {
                                                                                             listing =
-                                                                                       seller.retrieveProducts(store);
+                                                                                                    seller.retrieveProducts(store);
                                                                                             int quantity =
-                                                                           (int) ois.readObject();
+                                                                                                    (int) ois.readObject();
                                                                                             try {
-                                                             seller.modTicket(listing.getTickets().get(ticketIdx),
-                                                            listing.getTickets().get(ticketIdx),
-                                                                 store, quantity);
+                                                                                                seller.modTicket(listing.getTickets().get(ticketIdx),
+                                                                                                        listing.getTickets().get(ticketIdx),
+                                                                                                        store, quantity);
                                                                                                 oos.writeObject(true);
                                                                                                 notDone = false;
                                                                                             } catch (Exception e) {
@@ -863,27 +770,22 @@ public class MarketplaceServerThread extends Thread {
                                                                                     if (!invalid) {
                                                                                         synchronized (obj) {
                                                                                             listing =
-                                                                                                    seller.
-                                                                                                  retrieveProducts(store);
+                                                                                                    seller.retrieveProducts(store);
                                                                                             String sport =
-                                                                                                    (String) ois.
-                                                                                             readObject();
+                                                                                                    (String) ois.readObject();
                                                                                             String location =
-                                                                                                    (String) ois.
-                                                                                     readObject();
+                                                                                                    (String) ois.readObject();
                                                                                             String section =
-                                                                                                    (String) ois.
-                                                                                             readObject();
+                                                                                                    (String) ois.readObject();
                                                                                             double price =
-                                                                                                    (double) ois.
-                                                                                            readObject();
+                                                                                                    (double) ois.readObject();
                                                                                             int quantity =
-                                                                                            (int) ois.readObject();
+                                                                                                    (int) ois.readObject();
                                                                                             try {
-                                                                                                seller.
-                                                         modTicket(listing.getTickets().get(ticketIdx),
-                                                                 new Ticket(sport, location, section, price),
-                                                                                            store, quantity);
+                                                                                                seller.modTicket(listing.getTickets().get(ticketIdx),
+                                                                                                        new Ticket(sport,
+                                                                                                                location, section, price),
+                                                                                                        store, quantity);
                                                                                                 oos.writeObject(true);
                                                                                                 notDone = false;
                                                                                             } catch (Exception e) {
@@ -921,25 +823,17 @@ public class MarketplaceServerThread extends Thread {
                                                         String ticket = (String) ois.readObject();
                                                         if (ticket != null) {
                                                             int ticketIdx = (int) ois.readObject();
-                                                            System.out.println("Ticket index:" + ticketIdx);
                                                             synchronized (obj) {
                                                                 SellerListing listing1 = seller.retrieveProducts(store);
                                                                 try {
-                                                                    if (listing.getTickets().get(ticketIdx).
-                                                                            equals(listing1.getTickets().
-                                                                                    get(ticketIdx))) {
-                                                                        seller.deleteTicket(listing1.getTickets().
-                                                                                get(ticketIdx), store);
+                                                                    if (listing.getTickets().get(ticketIdx).equals(listing1.getTickets().get(ticketIdx))) {
+                                                                        seller.deleteTicket(listing1.getTickets().get(ticketIdx), store);
                                                                         oos.writeObject(true);
                                                                     } else {
                                                                         try {
                                                                             int ticketIdx1 = ticketIdx - 1;
-                                                                            if (listing.getTickets().get(ticketIdx).
-                                                                                    equals(listing1.getTickets().
-                                                                                            get(ticketIdx1))) {
-                                                                                seller.deleteTicket(listing1.
-                                                                                        getTickets().
-                                                                                        get(ticketIdx1), store);
+                                                                            if (listing.getTickets().get(ticketIdx).equals(listing1.getTickets().get(ticketIdx1))) {
+                                                                                seller.deleteTicket(listing1.getTickets().get(ticketIdx1), store);
                                                                                 oos.writeObject(true);
                                                                             } else {
                                                                                 oos.writeObject(false);
@@ -951,13 +845,8 @@ public class MarketplaceServerThread extends Thread {
                                                                 } catch (Exception e) {
                                                                     try {
                                                                         int ticketIdx1 = ticketIdx - 1;
-                                                                        System.out.println(listing1.getTickets().
-                                                                                get(ticketIdx1));
-                                                                        if (listing.getTickets().get(ticketIdx).
-                                                                                equals(listing1.getTickets().
-                                                                                        get(ticketIdx1))) {
-                                                                            seller.deleteTicket(listing1.getTickets().
-                                                                                    get(ticketIdx1), store);
+                                                                        if (listing.getTickets().get(ticketIdx).equals(listing1.getTickets().get(ticketIdx1))) {
+                                                                            seller.deleteTicket(listing1.getTickets().get(ticketIdx1), store);
                                                                             oos.writeObject(true);
                                                                         } else {
                                                                             oos.writeObject(false);
@@ -986,16 +875,14 @@ public class MarketplaceServerThread extends Thread {
                                         if (curSeleciton == 1) {
                                             int selectedStore = (int) ois.readObject();
                                             ArrayList<String> sales = new ArrayList<>();
-                                            ArrayList<String> allTransactions = MarketplaceServer.
-                                                    readFile("TransactionInfo.txt");
+                                            ArrayList<String> allTransactions = MarketplaceServer.readFile("TransactionInfo.txt");
                                             double totalRevenue = 0.0;
                                             for (int i = 0; i < allTransactions.size(); i++) {
                                                 String[] transactionInfo = allTransactions.get(i).split(",");
                                                 if (transactionInfo[2].equals(String.valueOf(id))) {
                                                     if (transactionInfo[3].equals(stores.get(selectedStore - 1))) {
                                                         String buyerEmail = null;
-                                                        ArrayList<String> buyers = Marketplace.
-                                                                readFile("BuyerHistory.txt");
+                                                        ArrayList<String> buyers = Marketplace.readFile("BuyerHistory.txt");
                                                         for (int j = 0; j < buyers.size(); j++) {
                                                             String[] buyerInfo = buyers.get(j).split(",");
                                                             if (buyerInfo[0].equals(transactionInfo[1])) {
@@ -1014,12 +901,10 @@ public class MarketplaceServerThread extends Thread {
                                                                 "ID: " + transactionInfo[1] + "\n" +
                                                                 "Email: " + buyerEmail + "\n" +
                                                                 "Revenue from sale: " + String.format("%.2f",
-                                                                Double.parseDouble(transactionInfo[4]) *
-                                                                        Integer.parseInt(transactionInfo[5]))
+                                                                Double.parseDouble(transactionInfo[4]) * Integer.parseInt(transactionInfo[5]))
                                                         );
 
-                                                        totalRevenue += Double.parseDouble(transactionInfo[4]) *
-                                                                Integer.parseInt(transactionInfo[5]);
+                                                        totalRevenue += Double.parseDouble(transactionInfo[4]) * Integer.parseInt(transactionInfo[5]);
 
                                                     }
                                                 }
@@ -1027,8 +912,9 @@ public class MarketplaceServerThread extends Thread {
                                             }
 
                                             if (!sales.isEmpty()) {
-                                                sales.add("Total Revenue from store: " +
-                                                        String.format("%.2f", totalRevenue));
+
+
+                                                sales.add("Total Revenue from store: " + String.format("%.2f", totalRevenue));
                                             }
                                             oos.writeObject(sales);
                                         } else if (curSeleciton == 2) {
@@ -1045,8 +931,7 @@ public class MarketplaceServerThread extends Thread {
                                 while (notDone) {
                                     notDone = (boolean) ois.readObject();
                                     if (notDone) {
-                                        ArrayList<String> allTransactions2 = MarketplaceServer.
-                                                readFile("TransactionInfo" +
+                                        ArrayList<String> allTransactions2 = MarketplaceServer.readFile("TransactionInfo" +
                                                 ".txt");
                                         String choice = (String) ois.readObject();
                                         if (choice != null) {
@@ -1061,10 +946,8 @@ public class MarketplaceServerThread extends Thread {
                                                         ArrayList<PrintableStat> toPrint = new ArrayList<>();
 
                                                         for (int i = 0; i < allTransactions2.size(); i++) {
-                                                            String[] transactionLine = allTransactions2.
-                                                                    get(i).split(",");
-                                                            if (Integer.parseInt(transactionLine[2]) ==
-                                                                    seller.getSellerID() &&
+                                                            String[] transactionLine = allTransactions2.get(i).split(",");
+                                                            if (Integer.parseInt(transactionLine[2]) == seller.getSellerID() &&
                                                                     transactionLine[3].equals(stores1.get(storeIdx))) {
                                                                 if (buyerIDList.isEmpty()) {
                                                                     buyerIDList.add(transactionLine[1]);
@@ -1082,26 +965,19 @@ public class MarketplaceServerThread extends Thread {
                                                             ArrayList<String> uniqueItems = new ArrayList<>();
                                                             int qty = 0;
                                                             for (int j = 0; j < allTransactions2.size(); j++) {
-                                                                String[] transactionLine = allTransactions2.
-                                                                        get(j).split(",");
-                                                                if (Integer.parseInt(transactionLine[2]) ==
-                                                                        seller.getSellerID() &&
+                                                                String[] transactionLine = allTransactions2.get(j).split(",");
+                                                                if (Integer.parseInt(transactionLine[2]) == seller.getSellerID() &&
                                                                         transactionLine[1].equals(buyerIDList.get(i)) &&
-                                                                        transactionLine[3].equals(stores1.
-                                                                                get(storeIdx))) {
-                                                                    String[] ticketInfo = transactionLine[6].
-                                                                            split(";");
+                                                                        transactionLine[3].equals(stores1.get(storeIdx))) {
+                                                                    String[] ticketInfo = transactionLine[6].split(";");
                                                                     qty += Integer.parseInt(transactionLine[5]);
                                                                     if (uniqueItems.isEmpty()) {
-                                                                        uniqueItems.add(ticketInfo[0] + ";" +
-                                                                                ticketInfo[1] + ";" +
+                                                                        uniqueItems.add(ticketInfo[0] + ";" + ticketInfo[1] + ";" +
                                                                                 ticketInfo[3]);
                                                                     } else {
-                                                                        if (!uniqueItems.contains(ticketInfo[0] + ";"
-                                                                                + ticketInfo[1] + ";"
+                                                                        if (!uniqueItems.contains(ticketInfo[0] + ";" + ticketInfo[1] + ";"
                                                                                 + ticketInfo[3])) {
-                                                                            uniqueItems.add(ticketInfo[0] + ";" +
-                                                                                    ticketInfo[1] + ";"
+                                                                            uniqueItems.add(ticketInfo[0] + ";" + ticketInfo[1] + ";"
                                                                                     + ticketInfo[3]);
                                                                         }
                                                                     }
@@ -1111,8 +987,7 @@ public class MarketplaceServerThread extends Thread {
 
                                                             String buyerEmail = "";
 
-                                                            ArrayList<String> buyers = Marketplace.readFile
-                                                                    ("BuyerHistory.txt");
+                                                            ArrayList<String> buyers = Marketplace.readFile("BuyerHistory.txt");
                                                             for (int j = 0; j < buyers.size(); j++) {
                                                                 String[] buyerInfo = buyers.get(j).split(",");
                                                                 if (buyerInfo[0].equals(buyerIDList.get(i))) {
@@ -1121,8 +996,7 @@ public class MarketplaceServerThread extends Thread {
                                                                 }
                                                             }
 
-                                                            toPrint.add(new PrintableStat(Integer.parseInt
-                                                                    (buyerIDList.get(i)), buyerEmail,
+                                                            toPrint.add(new PrintableStat(Integer.parseInt(buyerIDList.get(i)), buyerEmail,
                                                                     quantities.get(i),
                                                                     uniqueItems.size()));
                                                         }
@@ -1158,20 +1032,17 @@ public class MarketplaceServerThread extends Thread {
                                                         switch (sort) {
                                                             case 0:
                                                                 listToSend =
-                                                                        MarketplaceServer.uniqueProductsByLocation
-                                                                                (stores1.get(storeIdx),
+                                                                        MarketplaceServer.uniqueProductsByLocation(stores1.get(storeIdx),
                                                                                 seller.getSellerID());
                                                                 break;
                                                             case 1:
                                                                 listToSend =
-                                                                        MarketplaceServer.uniqueProductsBySport
-                                                                                (stores1.get(storeIdx),
+                                                                        MarketplaceServer.uniqueProductsBySport(stores1.get(storeIdx),
                                                                                 seller.getSellerID());
                                                                 break;
                                                             case 2:
                                                                 listToSend =
-                                                                        Marketplace.uniqueProductsBySales
-                                                                                (stores1.get(storeIdx),
+                                                                        Marketplace.uniqueProductsBySales(stores1.get(storeIdx),
                                                                                 seller.getSellerID());
                                                                 break;
                                                         }
@@ -1190,13 +1061,10 @@ public class MarketplaceServerThread extends Thread {
                                 while (notReturnedToMenu) {
                                     email = MarketplaceServer.getEmailPassword(id).get(0);
                                     password = MarketplaceServer.getEmailPassword(id).get(1);
-                                    System.out.println(email + password);
                                     int whatEditOption = (int) ois.readObject();
-                                    System.out.println(whatEditOption);
                                     switch (whatEditOption) {
                                         case 1:
-                                            ArrayList<String> details = MarketplaceServer.
-                                                    readFile("LoginInfo.txt");
+                                            ArrayList<String> details = MarketplaceServer.readFile("LoginInfo.txt");
                                             for (int i = 0; i < details.size(); i++) {
                                                 String[] arr = details.get(i).split(",");
                                                 if (email.equals(arr[1]) && password.equals(arr[2])) {
@@ -1244,12 +1112,10 @@ public class MarketplaceServerThread extends Thread {
                                 }
                                 break;
                             case 5:
-                                System.out.println("Thread closing");
                                 notLoggedOut = false;
                         }
                 }
             }
-
         } catch (Exception e) {
 
         }

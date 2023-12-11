@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 /**
  * Project 5: BuyTicketGUI
- *
+ * <p>
  * Utilizes GUI to allow a buyer to buy tickets from a seller.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -31,9 +31,7 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                 int option = list.getSelectedIndex();
                 list.removeAllItems();
                 client.sendInt(option);
-                // System.out.println("able to reach");
                 realShoppingCart = client.recieveStringArrayList();
-                //System.out.println("Unable to reach");
 
                 switch (option) {
                     case 0 -> {
@@ -71,16 +69,14 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                                         try {
                                             howMany = Integer.parseInt(num);
                                             if (howMany <= 0) {
-                                                JOptionPane.showMessageDialog(null,
-                                                        "Error! Please enter a valid ticket quantity",
+                                                JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
                                                         "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
 
                                             } else {
                                                 isValidNum = true;
                                             }
                                         } catch (NumberFormatException nf) {
-                                            JOptionPane.showMessageDialog(null,
-                                                    "Error! Please enter a valid ticket quantity",
+                                            JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
                                                     "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
                                         }
                                     }
@@ -96,13 +92,11 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                                 client.sendInt(howMany);
                                 boolean wasTicketPurchaseSuccesful = client.receiveBoolean();
                                 if (wasTicketPurchaseSuccesful) {
-                                    JOptionPane.showMessageDialog(frame, "Ticket purchase successful!",
-                                            "Success",
+                                    JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
                                             JOptionPane.INFORMATION_MESSAGE);
                                     client.sendInt(1);
                                 } else {
-                                    JOptionPane.showMessageDialog(frame, "Ticket purchase failed!",
-                                            "Failed Purchase",
+                                    JOptionPane.showMessageDialog(frame, "Ticket purchase failed!", "Failed Purchase",
                                             JOptionPane.ERROR_MESSAGE);
                                     client.sendInt(1);
                                 }
@@ -152,8 +146,7 @@ public class BuyTicketGUI extends JComponent implements Runnable {
 
                                     do {
                                         String num = JOptionPane.showInputDialog(frame, "How many would " +
-                                                "you like to buy?", "View All Listings",
-                                                JOptionPane.QUESTION_MESSAGE);
+                                                "you like to buy?", "View All Listings", JOptionPane.QUESTION_MESSAGE);
                                         if (num == null) {
                                             wantToPurchase = false;
                                             isValidNum = true;
@@ -161,16 +154,14 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                                             try {
                                                 howMany = Integer.parseInt(num);
                                                 if (howMany <= 0) {
-                                                    JOptionPane.showMessageDialog(null,
-                                                            "Error! Please enter a valid ticket quantity",
+                                                    JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
                                                             "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
 
                                                 } else {
                                                     isValidNum = true;
                                                 }
                                             } catch (NumberFormatException nf) {
-                                                JOptionPane.showMessageDialog(null,
-                                                        "Error! Please enter a valid ticket quantity",
+                                                JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
                                                         "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
                                             }
                                         }
@@ -186,13 +177,11 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                                     client.sendInt(howMany);
                                     boolean wasTicketPurchaseSuccesful = client.receiveBoolean();
                                     if (wasTicketPurchaseSuccesful) {
-                                        JOptionPane.showMessageDialog(frame,
-                                                "Ticket purchase successful!", "Success",
+                                        JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
                                                 JOptionPane.INFORMATION_MESSAGE);
                                         client.sendInt(1);
                                     } else {
-                                        JOptionPane.showMessageDialog(frame,
-                                                "Ticket purchase failed!", "Failed Purchase",
+                                        JOptionPane.showMessageDialog(frame, "Ticket purchase failed!", "Failed Purchase",
                                                 JOptionPane.ERROR_MESSAGE);
                                         client.sendInt(1);
                                     }
@@ -203,16 +192,15 @@ public class BuyTicketGUI extends JComponent implements Runnable {
 
 
                             } else {
-                                JOptionPane.showMessageDialog(frame, "There are no listings",
-                                        "No Listings", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(frame, "There are no listings", "No Listings",
+                                        JOptionPane.ERROR_MESSAGE);
                                 client.sendInt(1);
                             }
                         }
                     }
                     case 2 -> {
                         String curStore = JOptionPane.showInputDialog(frame, "What Sport would "
-                                + "you like to buy tickets for?", "View Listings By Store",
-                                JOptionPane.QUESTION_MESSAGE);
+                                + "you like to buy tickets for?", "View Listings By Store", JOptionPane.QUESTION_MESSAGE);
                         if (curStore == null) {
                             client.sendBoolean(true);
                             client.sendInt(1);
@@ -244,8 +232,7 @@ public class BuyTicketGUI extends JComponent implements Runnable {
 
                                     do {
                                         String num = JOptionPane.showInputDialog(frame, "How many would " +
-                                                "you like to buy?", "View All Listings",
-                                                JOptionPane.QUESTION_MESSAGE);
+                                                "you like to buy?", "View All Listings", JOptionPane.QUESTION_MESSAGE);
                                         if (num == null) {
                                             wantToPurchase = false;
                                             isValidNum = true;
@@ -253,16 +240,14 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                                             try {
                                                 howMany = Integer.parseInt(num);
                                                 if (howMany <= 0) {
-                                                    JOptionPane.showMessageDialog(null,
-                                                            "Error! Please enter a valid ticket quantity",
+                                                    JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
                                                             "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
 
                                                 } else {
                                                     isValidNum = true;
                                                 }
                                             } catch (NumberFormatException nf) {
-                                                JOptionPane.showMessageDialog(null,
-                                                        "Error! Please enter a valid ticket quantity",
+                                                JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
                                                         "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
                                             }
                                         }
@@ -278,13 +263,11 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                                     client.sendInt(howMany);
                                     boolean wasTicketPurchaseSuccesful = client.receiveBoolean();
                                     if (wasTicketPurchaseSuccesful) {
-                                        JOptionPane.showMessageDialog(frame, "Ticket purchase successful!",
-                                                "Success",
+                                        JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
                                                 JOptionPane.INFORMATION_MESSAGE);
                                         client.sendInt(1);
                                     } else {
-                                        JOptionPane.showMessageDialog(frame, "Ticket purchase failed!",
-                                                "Failed Purchase",
+                                        JOptionPane.showMessageDialog(frame, "Ticket purchase failed!", "Failed Purchase",
                                                 JOptionPane.ERROR_MESSAGE);
                                         client.sendInt(1);
                                     }
@@ -295,8 +278,8 @@ public class BuyTicketGUI extends JComponent implements Runnable {
 
 
                             } else {
-                                JOptionPane.showMessageDialog(frame, "There are no listings",
-                                        "No Listings", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(frame, "There are no listings", "No Listings",
+                                        JOptionPane.ERROR_MESSAGE);
                                 client.sendInt(1);
                             }
                         }
@@ -336,16 +319,14 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                                         try {
                                             howMany = Integer.parseInt(num);
                                             if (howMany <= 0) {
-                                                JOptionPane.showMessageDialog(null,
-                                                        "Error! Please enter a valid ticket quantity",
+                                                JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
                                                         "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
 
                                             } else {
                                                 isValidNum = true;
                                             }
                                         } catch (NumberFormatException nf) {
-                                            JOptionPane.showMessageDialog(null,
-                                                    "Error! Please enter a valid ticket quantity",
+                                            JOptionPane.showMessageDialog(null, "Error! Please enter a valid ticket quantity",
                                                     "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
                                         }
                                     }
@@ -361,13 +342,11 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                                 client.sendInt(howMany);
                                 boolean wasTicketPurchaseSuccesful = client.receiveBoolean();
                                 if (wasTicketPurchaseSuccesful) {
-                                    JOptionPane.showMessageDialog(frame, "Ticket purchase successful!",
-                                            "Success",
+                                    JOptionPane.showMessageDialog(frame, "Ticket purchase successful!", "Success",
                                             JOptionPane.INFORMATION_MESSAGE);
                                     client.sendInt(1);
                                 } else {
-                                    JOptionPane.showMessageDialog(frame, "Ticket purchase failed!",
-                                            "Failed Purchase",
+                                    JOptionPane.showMessageDialog(frame, "Ticket purchase failed!", "Failed Purchase",
                                             JOptionPane.ERROR_MESSAGE);
                                     client.sendInt(1);
                                 }
@@ -401,6 +380,10 @@ public class BuyTicketGUI extends JComponent implements Runnable {
 
     public BuyTicketGUI() {
 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new BuyTicketGUI());
     }
 
     public void run() {
@@ -484,9 +467,7 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                         s = "";
 
                         String[] tickInformation = new String[5];
-                        for (int j = 0; j < 4; j++) {
-                            tickInformation[j] = thing[j];
-                        }
+                        System.arraycopy(thing, 0, tickInformation, 0, 4);
                         tickInformation[4] = qtyNumber;
                         allListedTicks.add(tickInformation);
                     }
@@ -518,8 +499,8 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                     if (!Buyers.isNumeric(curItem)) {
                         boolean shouldList = false;
                         String[] thing = Buyers.listTicket(curItem);
-                        if (curStoreListing.toLowerCase().equals(constraint.toLowerCase()) || thing[0].toLowerCase().
-                                equals(constraint.toLowerCase())) {
+                        if (curStoreListing.equalsIgnoreCase(constraint) || thing[0].
+                                equalsIgnoreCase(constraint)) {
                             shouldList = true;
                         }
                         if (shouldList) {
@@ -535,9 +516,7 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                             s = "";
 
                             String[] tickInformation = new String[5];
-                            for (int j = 0; j < 4; j++) {
-                                tickInformation[j] = thing[j];
-                            }
+                            System.arraycopy(thing, 0, tickInformation, 0, 4);
                             tickInformation[4] = qtyNumber;
                             allListedTicks.add(tickInformation);
                         }
@@ -570,9 +549,7 @@ public class BuyTicketGUI extends JComponent implements Runnable {
                         String[] thing = Buyers.listTicket(curItem);
                         String qtyNumber = stuffInStores.get(i + 1);
                         String[] tickInformation = new String[7];
-                        for (int j = 2; j < 6; j++) {
-                            tickInformation[j] = thing[j - 2];
-                        }
+                        System.arraycopy(thing, 0, tickInformation, 2, 4);
                         tickInformation[6] = qtyNumber;
                         tickInformation[1] = curStoreListing;
                         tickInformation[0] = curSeller;
@@ -603,10 +580,5 @@ public class BuyTicketGUI extends JComponent implements Runnable {
 
     public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new BuyTicketGUI());
     }
 }

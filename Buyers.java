@@ -28,8 +28,8 @@ public class Buyers {
         this.previousShopped = new ArrayList<>();
     }
 
-    public static void updateTicketQuantity(String filePath, int userId, String ticketDescription,
-                                            int purchasedQuantity) {
+    synchronized public static void updateTicketQuantity(String filePath, int userId, String ticketDescription,
+                                                         int purchasedQuantity) {
         try {
             File inputFile = new File(filePath);
             File tempFile = new File(filePath + ".temp");
@@ -343,8 +343,7 @@ public class Buyers {
             System.out.println("Seller: " + things[0]);
             System.out.println("Store: " + things[1]);
 
-            String lmao = "Sport: " + things[2] + "\nLocation: " + things[3] + "\nRow/Section Area: " + things[4] +
-                    "\nPrice: " +
+            String lmao = "Sport: " + things[2] + "\nLocation: " + things[3] + "\nRow/Section Area: " + things[4] + "\nPrice: " +
                     things[5] + "\n";
             System.out.print(lmao);
             System.out.println("Quantity: " + things[6]);
@@ -355,8 +354,7 @@ public class Buyers {
 
     }
 
-    public static Ticket buyTicket(ArrayList<String[]> tickets, int ticketToBuy, int ticketAmount,
-                                   int howManyThereAre) {
+    public static Ticket buyTicket(ArrayList<String[]> tickets, int ticketToBuy, int ticketAmount, int howManyThereAre) {
         if (ticketToBuy > howManyThereAre) {
             //System.out.println("Error enter a valid ticket number");
             return null;
@@ -376,8 +374,7 @@ public class Buyers {
         }
     }
 
-    public static Ticket buyTicket2(ArrayList<String[]> tickets, int ticketToBuy, int ticketAmount,
-                                    int howManyThereAre) {
+    public static Ticket buyTicket2(ArrayList<String[]> tickets, int ticketToBuy, int ticketAmount, int howManyThereAre) {
         if (ticketToBuy > howManyThereAre) {
             System.out.println("Error enter a valid ticket number");
             return null;
@@ -967,6 +964,8 @@ public class Buyers {
                 newEntryList.add(thing.get(0));
                 newEntryList.addAll(subsetList);
                 dashInfo.set(i, newEntryList);
+
+
             }
 
         }

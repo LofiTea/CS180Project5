@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: BuyerDashboardGUI
- *
+ * <p>
  * Utilizes GUI to make a menu page for buyers to buy tickets, view history, and more.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -33,6 +33,7 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
             if (e.getSource() == buyTicketButton) {
                 client.sendInt(1);
 
+                // shoppingCart = currentBuyer.retrieveShoppingCart();
                 BuyTicketMenuGUI buyTicketMenuGUI = new BuyTicketMenuGUI();
                 buyTicketMenuGUI.setClient(client);
                 buyTicketMenuGUI.run();
@@ -81,6 +82,10 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
 
     }
 
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new BuyerDashboardGUI());
+    }
 
     @Override
     public void run() {
@@ -141,9 +146,5 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
 
     public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new BuyerDashboardGUI());
     }
 }

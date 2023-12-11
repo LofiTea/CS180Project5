@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 /**
  * Project 5: SellerEditTicketGUI
- *
+ * <p>
  * Utilizes GUI to allow a seller to edit a ticket in a store.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -49,7 +49,7 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
 
                     boolean invalid = false;
 
-                    if(sport == null || location == null || section == null || priceStr == null) {
+                    if (sport == null || location == null || section == null || priceStr == null) {
                         client.sendBoolean(false);
                         SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
                         sellTicketMenuGUI.setClient(client);
@@ -76,7 +76,7 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
                     }
 
                     try {
-                        if(!priceStr.isEmpty()) {
+                        if (!priceStr.isEmpty()) {
                             double price = Double.parseDouble(priceStr);
                             if (price <= 0) {
                                 JOptionPane.showMessageDialog(frame, "Please enter a " +
@@ -94,12 +94,12 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
 
                     client.sendBoolean(invalid);
 
-                    if(!invalid) {
+                    if (!invalid) {
                         client.sendModTicket(sport, location, section, Double.parseDouble(priceStr));
 
                         boolean success = client.receiveBoolean();
 
-                        if(success) {
+                        if (success) {
                             JOptionPane.showMessageDialog(frame, "Ticket edited successfully! "
                                     , "Edit Successful", JOptionPane.INFORMATION_MESSAGE);
                         } else {
@@ -117,7 +117,7 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
                     String qtyStr = quantityTextField.getText();
                     boolean invalid = false;
 
-                    if(qtyStr == null) {
+                    if (qtyStr == null) {
                         client.sendBoolean(false);
                         SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
                         sellTicketMenuGUI.setClient(client);
@@ -128,13 +128,13 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
                     client.sendBoolean(true);
 
                     try {
-                        if(qtyStr.isEmpty()) {
+                        if (qtyStr.isEmpty()) {
                             invalid = true;
                             JOptionPane.showMessageDialog(frame, "Please enter a " +
                                     "valid quantity!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
                         } else {
                             int qty = Integer.parseInt(qtyStr);
-                            if(qty <= 0) {
+                            if (qty <= 0) {
                                 JOptionPane.showMessageDialog(frame, "Please enter a " +
                                         "valid quantity!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
                                 invalid = true;
@@ -148,11 +148,11 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
 
                     client.sendBoolean(invalid);
 
-                    if(!invalid) {
+                    if (!invalid) {
                         client.sendInt(Integer.parseInt(qtyStr));
                         boolean success = client.receiveBoolean();
 
-                        if(success) {
+                        if (success) {
                             JOptionPane.showMessageDialog(frame, "Ticket edited successfully! "
                                     , "Edit Successful", JOptionPane.INFORMATION_MESSAGE);
                         } else {
@@ -175,7 +175,7 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
 
                     boolean invalid = false;
 
-                    if(sport == null || location == null || section == null || priceStr == null || qtyStr == null) {
+                    if (sport == null || location == null || section == null || priceStr == null || qtyStr == null) {
                         client.sendBoolean(false);
                         SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
                         sellTicketMenuGUI.setClient(client);
@@ -202,7 +202,7 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
 
                     try {
                         double price = Double.parseDouble(priceStr);
-                        if ( price <= 0) {
+                        if (price <= 0) {
                             JOptionPane.showMessageDialog(frame, "Please enter a " +
                                     "valid price!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
                             invalid = true;
@@ -214,13 +214,13 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
                     }
 
                     try {
-                        if(qtyStr.isEmpty()) {
+                        if (qtyStr.isEmpty()) {
                             invalid = true;
                             JOptionPane.showMessageDialog(frame, "Please enter a " +
                                     "valid quantity!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
                         } else {
                             int qty = Integer.parseInt(qtyStr);
-                            if(qty <= 0) {
+                            if (qty <= 0) {
                                 JOptionPane.showMessageDialog(frame, "Please enter a " +
                                         "valid quantity!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
                                 invalid = true;
@@ -234,12 +234,12 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
 
                     client.sendBoolean(invalid);
 
-                    if(!invalid) {
+                    if (!invalid) {
                         client.sendModTicket(sport, location, section, Double.parseDouble(priceStr));
                         client.sendInt(Integer.parseInt(qtyStr));
                         boolean success = client.receiveBoolean();
 
-                        if(success) {
+                        if (success) {
                             JOptionPane.showMessageDialog(frame, "Ticket edited successfully! "
                                     , "Edit Successful", JOptionPane.INFORMATION_MESSAGE);
                         } else {
@@ -252,7 +252,6 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
                         sellTicketMenuGUI.run();
                         frame.dispose();
                     }
-
                 }
             }
 
@@ -268,6 +267,10 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
 
     public SellerEditTicketGUI() {
 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new SellerEditTicketGUI());
     }
 
     public void run() {
@@ -288,7 +291,7 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
                     JOptionPane.PLAIN_MESSAGE, null, options1, options1[0]);
 
             client.sendString(decision);
-            if(decision == null) {
+            if (decision == null) {
                 SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
                 sellTicketMenuGUI.setClient(client);
                 sellTicketMenuGUI.run();
@@ -313,7 +316,7 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
                         JOptionPane.PLAIN_MESSAGE, null, options2, options2[0]);
 
                 client.sendString(ticket);
-                if(ticket == null) {
+                if (ticket == null) {
                     SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
                     sellTicketMenuGUI.setClient(client);
                     sellTicketMenuGUI.run();
@@ -569,8 +572,6 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
         }
     }
 
-    
-
     public void setCurrentSeller(Sellers currentSeller) {
         this.currentSeller = currentSeller;
     }
@@ -581,9 +582,5 @@ public class SellerEditTicketGUI extends JComponent implements Runnable {
 
     public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new SellerEditTicketGUI());
     }
 }

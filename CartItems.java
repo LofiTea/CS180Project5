@@ -1,6 +1,6 @@
 /**
  * Project 5: CartItems
- *
+ * <p>
  * Allows a buyer to buy more than 1 ticket and allows sellers to sell more than 1 ticket.
  *
  * @author Rahul Siddharth, Lab Section L20
@@ -20,12 +20,12 @@ public class CartItems {
         return ticket;
     }
 
-    public int getQTY() {
-        return this.qty;
-    }
-
     public void setTicket(Ticket ticket) {
         this.ticket = ticket;
+    }
+
+    public int getQTY() {
+        return this.qty;
     }
 
     public void setQTY(int qty) {
@@ -39,16 +39,11 @@ public class CartItems {
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj) {
+        if (this == obj) {
             return true;
         } else {
-            if(obj instanceof CartItems) {
-                if(this.getTicket().equals(((CartItems) obj).getTicket()) &&
-                        this.getQTY()==((CartItems) obj).getQTY()) {
-                    return true;
-                } else {
-                    return false;
-                }
+            if (obj instanceof CartItems) {
+                return this.getTicket().equals(((CartItems) obj).getTicket()) && this.getQTY() == ((CartItems) obj).getQTY();
             } else {
                 return false;
             }

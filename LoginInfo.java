@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: LoginInfo
- *
+ * <p>
  * This class authenticates a user to enter the marketplace.  They need a valid username and password.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -23,13 +23,13 @@ public class LoginInfo {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     // Setters are made so that a user can change either their username or password if they desired
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {

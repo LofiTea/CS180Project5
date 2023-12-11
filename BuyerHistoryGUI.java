@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: BuyerHistoryGUI
- *
+ * <p>
  * Utilizes GUI to allow a buyer to see their shopping history.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -21,11 +21,6 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
     JButton returnToMenuButton;
     MarketplaceClient client;
     ArrayList<String> previousCart;
-
-    public BuyerHistoryGUI() {
-
-    }
-
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -45,10 +40,8 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
 
                 String transactionDetails = (selectedIndex + 1) + ":\nSport: " +
                         tickInfoSplit[0] + "\nLocation: " + tickInfoSplit[1] +
-                        "\nSection: " + tickInfoSplit[2] + "\nPrice: $" + String.format("%.2f",
-                        Double.parseDouble(tickInfoSplit[3])) +
-                        "\nQuantity: " + curTicketSplit[1] + "\nPrice of Transaction: $" +
-                        String.format("%.2f", transactionAction);
+                        "\nSection: " + tickInfoSplit[2] + "\nPrice: $" + String.format("%.2f", Double.parseDouble(tickInfoSplit[3])) +
+                        "\nQuantity: " + curTicketSplit[1] + "\nPrice of Transaction: $" + String.format("%.2f", transactionAction);
 
                 JOptionPane.showMessageDialog(null, transactionDetails, "Ticket " + selectedOption,
                         JOptionPane.INFORMATION_MESSAGE);
@@ -66,6 +59,14 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
             }
         }
     };
+
+    public BuyerHistoryGUI() {
+
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new BuyerHistoryGUI());
+    }
 
     public void run() {
         frame = new JFrame("Buyer History");
@@ -125,12 +126,7 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-
     public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new BuyerHistoryGUI());
     }
 }

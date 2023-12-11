@@ -1,11 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
  * Project 5: LoginInGUI
- *
+ * <p>
  * Utilizes GUI to allow a user to login to the application.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -13,8 +14,12 @@ import java.io.IOException;
  */
 
 public class LoginInGUI extends JComponent implements Runnable {
+
+    //MarketplaceClient client;
+    int optionInitial;
     String email;
     String password;
+    int id;
     JFrame frame;
     JLabel welcomeMessage;
     JLabel emailLabel;
@@ -44,6 +49,7 @@ public class LoginInGUI extends JComponent implements Runnable {
                 password = passwordTextField.getText();
 
                 try {
+                    //client.sendOptionInitial(1);
                     loginSuccess = client.sendLogin(email, password, 1);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -92,6 +98,10 @@ public class LoginInGUI extends JComponent implements Runnable {
 
     public LoginInGUI() {
 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new LoginInGUI());
     }
 
     public void run() {
@@ -171,10 +181,5 @@ public class LoginInGUI extends JComponent implements Runnable {
         createAccountPanel.add(createAccountButton, gbc);
 
         return createAccountPanel;
-    }
-
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new LoginInGUI());
     }
 }

@@ -2,13 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * Project 5: SellTicketGUI
- *
+ * <p>
  * Utilizes GUI to allow a seller to sell a ticket.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -42,7 +41,7 @@ public class SellTicketGUI extends JComponent implements Runnable {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == confirmButton) {
-                if(choiceIdx == 0) {
+                if (choiceIdx == 0) {
                     client.sendBoolean(true);
                     String store = storeTextField.getText();
                     client.sendString(store);
@@ -72,7 +71,7 @@ public class SellTicketGUI extends JComponent implements Runnable {
                     String price = priceTextField.getText();
                     String quantity = quantityTextField.getText();
 
-                    if(sport == null || location == null || section == null || price == null || quantity == null) {
+                    if (sport == null || location == null || section == null || price == null || quantity == null) {
                         client.sendBoolean(false);
                         SellTicketMenuGUI sellTicketMenuGUI = new SellTicketMenuGUI();
                         sellTicketMenuGUI.setClient(client);
@@ -100,7 +99,7 @@ public class SellTicketGUI extends JComponent implements Runnable {
 
                     try {
                         double priceNum = Double.parseDouble(price);
-                        if(price.isEmpty() || priceNum <= 0) {
+                        if (price.isEmpty() || priceNum <= 0) {
                             JOptionPane.showMessageDialog(frame, "Please enter a " +
                                     "valid price!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
                             invalidPrice = true;
@@ -116,7 +115,7 @@ public class SellTicketGUI extends JComponent implements Runnable {
 
                     try {
                         int quantityNum = Integer.parseInt(quantity);
-                        if(quantity.isEmpty() || quantityNum <= 0) {
+                        if (quantity.isEmpty() || quantityNum <= 0) {
                             JOptionPane.showMessageDialog(frame, "Please enter a " +
                                     "valid quantity!", "Invalid Price", JOptionPane.ERROR_MESSAGE);
                             invalidQty = true;
@@ -131,7 +130,7 @@ public class SellTicketGUI extends JComponent implements Runnable {
 
                     boolean invalid = false;
 
-                    if(!invalidSport && !invalidLocation && !invalidSection && !invalidPrice && !invalidQty) {
+                    if (!invalidSport && !invalidLocation && !invalidSection && !invalidPrice && !invalidQty) {
                         client.sendBoolean(invalid);
                         client.sendTicketInfo(sport, location, section, Double.parseDouble(price),
                                 Integer.parseInt(quantity), stores.get(num));
@@ -157,8 +156,13 @@ public class SellTicketGUI extends JComponent implements Runnable {
             }
         }
     };
+
     public SellTicketGUI() {
 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new SellTicketGUI());
     }
 
     public void run() {
@@ -282,110 +286,97 @@ public class SellTicketGUI extends JComponent implements Runnable {
 
                 num = Arrays.asList(options2).indexOf(decision);
 
-//                if (num < 0 || num > stores.size()-1) {
-//                    JOptionPane.showMessageDialog(frame, "Please enter a valid store!",
-//                            "Invalid Store", JOptionPane.ERROR_MESSAGE);
-//                } else {
-                    frame = new JFrame("Sell A Ticket");
-                    frame.setLayout(new GridBagLayout());
+                frame = new JFrame("Sell A Ticket");
+                frame.setLayout(new GridBagLayout());
 
-                    JPanel panel = new JPanel(new GridBagLayout());
-                    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                JPanel panel = new JPanel(new GridBagLayout());
+                panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-                    GridBagConstraints gbc = new GridBagConstraints();
-                    gbc.gridx = 0;
-                    gbc.gridy = 0;
-                    gbc.insets = new Insets(5, 10, 5, 10);
-                    gbc.anchor = GridBagConstraints.CENTER;
-                    gbc.gridy++;
-                    gbc.gridwidth = 1;
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                gbc.insets = new Insets(5, 10, 5, 10);
+                gbc.anchor = GridBagConstraints.CENTER;
+                gbc.gridy++;
+                gbc.gridwidth = 1;
 
-                    sportLabel = new JLabel("Sport: ");
-                    panel.add(sportLabel, gbc);
+                sportLabel = new JLabel("Sport: ");
+                panel.add(sportLabel, gbc);
 
-                    gbc.gridx++;
-                    sportTextField = new JTextField(15);
-                    panel.add(sportTextField, gbc);
+                gbc.gridx++;
+                sportTextField = new JTextField(15);
+                panel.add(sportTextField, gbc);
 
-                    gbc.gridx = 0;
-                    gbc.gridy++;
-                    locationLabel = new JLabel("Location: ");
-                    panel.add(locationLabel, gbc);
+                gbc.gridx = 0;
+                gbc.gridy++;
+                locationLabel = new JLabel("Location: ");
+                panel.add(locationLabel, gbc);
 
-                    gbc.gridx++;
-                    locationTextField = new JTextField(15);
-                    panel.add(locationTextField, gbc);
+                gbc.gridx++;
+                locationTextField = new JTextField(15);
+                panel.add(locationTextField, gbc);
 
-                    gbc.gridx = 0;
-                    gbc.gridy++;
-                    sectionLabel = new JLabel("Section: ");
-                    panel.add(sectionLabel, gbc);
+                gbc.gridx = 0;
+                gbc.gridy++;
+                sectionLabel = new JLabel("Section: ");
+                panel.add(sectionLabel, gbc);
 
-                    gbc.gridx++;
-                    sectionTextField = new JTextField(15);
-                    panel.add(sectionTextField, gbc);
+                gbc.gridx++;
+                sectionTextField = new JTextField(15);
+                panel.add(sectionTextField, gbc);
 
-                    gbc.gridx = 0;
-                    gbc.gridy++;
-                    priceLabel = new JLabel("Price: ");
-                    panel.add(priceLabel, gbc);
+                gbc.gridx = 0;
+                gbc.gridy++;
+                priceLabel = new JLabel("Price: ");
+                panel.add(priceLabel, gbc);
 
-                    gbc.gridx++;
-                    priceTextField = new JTextField(15);
-                    panel.add(priceTextField, gbc);
+                gbc.gridx++;
+                priceTextField = new JTextField(15);
+                panel.add(priceTextField, gbc);
 
-                    gbc.gridx = 0;
-                    gbc.gridy++;
-                    quantityLabel = new JLabel("Quantity: ");
-                    panel.add(quantityLabel, gbc);
+                gbc.gridx = 0;
+                gbc.gridy++;
+                quantityLabel = new JLabel("Quantity: ");
+                panel.add(quantityLabel, gbc);
 
-                    gbc.gridx++;
-                    quantityTextField = new JTextField(15);
-                    panel.add(quantityTextField, gbc);
+                gbc.gridx++;
+                quantityTextField = new JTextField(15);
+                panel.add(quantityTextField, gbc);
 
-                    gbc.gridx = 0;
-                    gbc.gridy++;
-                    confirmButton = new JButton("Create Ticket");
-                    confirmButton.addActionListener(actionListener);
-                    gbc.anchor = GridBagConstraints.CENTER;
-                    gbc.gridwidth = 2;
-                    panel.add(confirmButton, gbc);
+                gbc.gridx = 0;
+                gbc.gridy++;
+                confirmButton = new JButton("Create Ticket");
+                confirmButton.addActionListener(actionListener);
+                gbc.anchor = GridBagConstraints.CENTER;
+                gbc.gridwidth = 2;
+                panel.add(confirmButton, gbc);
 
-                    GridBagConstraints gbc2 = new GridBagConstraints();
-                    gbc2.gridx = 0;
-                    gbc2.gridy = gbc.gridy + 1;
-                    gbc2.insets = new Insets(50, 10, 10, 10);
-                    gbc2.anchor = GridBagConstraints.CENTER;
+                GridBagConstraints gbc2 = new GridBagConstraints();
+                gbc2.gridx = 0;
+                gbc2.gridy = gbc.gridy + 1;
+                gbc2.insets = new Insets(50, 10, 10, 10);
+                gbc2.anchor = GridBagConstraints.CENTER;
 
-                    returnToMenuButton = new JButton("Return to Sell Ticket Menu");
-                    returnToMenuButton.addActionListener(actionListener);
-                    returnToMenuButton.setPreferredSize(new Dimension(200, 50));
-                    gbc2.anchor = GridBagConstraints.CENTER;
-                    gbc2.gridwidth = 2;
-                    panel.add(returnToMenuButton, gbc2);
+                returnToMenuButton = new JButton("Return to Sell Ticket Menu");
+                returnToMenuButton.addActionListener(actionListener);
+                returnToMenuButton.setPreferredSize(new Dimension(200, 50));
+                gbc2.anchor = GridBagConstraints.CENTER;
+                gbc2.gridwidth = 2;
+                panel.add(returnToMenuButton, gbc2);
 
-                    frame.add(panel);
-                    frame.setSize(500, 500);
-                    frame.setLocationRelativeTo(null);
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    frame.setVisible(true);
+                frame.add(panel);
+                frame.setSize(500, 500);
+                frame.setLocationRelativeTo(null);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
 
                 //}
             }
         }
     }
 
-   
-
-    public void setStores(ArrayList<String> stores) {
-        this.stores = stores;
-    }
 
     synchronized public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new SellTicketGUI());
     }
 }
