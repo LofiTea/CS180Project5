@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: AccountGUI
- * <p>
+ *
  * Utilizes GUI for account details such as editing email or password, deleting accounts, and more.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -23,7 +23,6 @@ public class AccountGUI extends JComponent implements Runnable {
     JButton returnToMenuButton;
     MarketplaceClient client;
     ActionListener actionListener = new ActionListener() {
-        final int count = 0;
 
         @Override
         public void actionPerformed(ActionEvent e) {
