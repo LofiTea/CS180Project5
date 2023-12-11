@@ -1,4 +1,4 @@
-# Test Case 1: Create Buyer Account
+# Test Case 1: Create buyer account
 
 Steps:
 1. The user launches the application
@@ -13,7 +13,7 @@ Expected Result: The application creates a new buyer account with the entered em
 
 Test Status: Passed
 
-# Test Case 2: Create Seller Account
+# Test Case 2: Create seller account
 
 Steps:
 1. The user launches the application
@@ -28,7 +28,7 @@ Expected Result: The application creates a new seller account with the entered e
 
 Test Status: Passed
 
-# Test Case 3: Buyer User Login
+# Test Case 3: Buyer user login
 
 Steps: 
 1. The user launches the application
@@ -40,7 +40,7 @@ Expected Result: The application logs in with the login information and loads th
 
 Test Status: Passed
 
-# Test Case 4: Seller User Login
+# Test Case 4: Seller user login
 
 Steps: 
 1. The user launches the application
