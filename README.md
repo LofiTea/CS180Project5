@@ -9,7 +9,7 @@ Run the MarketplaceServer on a device. All clients and server must be connected 
 
 The program starts once MarketplaceClient.java starts. Once the program starts, a login page will show up.  On the bottom is a button to create a new account.  Either a buyer or a seller account can be created.  When creating a new account, please make a valid email structure with the '@' character (it does not have to be a real email.  For example, it can be purduecsstudent@gmail.com) and a password that has at least 8 characters that have at least 1 letter, number, and special character (this measure is taken to ensure a user has a strong password).  Once logged in, a menu dashboard will appear (a buyer menu will appear for a buyer account and a seller menu will appear for a seller account) with different options. The buyer dashboard will have options to buy a ticket while the seller dashboard will have options to create a store and sell a ticket. 
 
-Submissions: Henry turned in the report, the video presentation, and the Vocareum workspace.  All were turned in on Brightspace. 
+Submissions: Henry turned in the report and the Vocareum workspace.  Rahul turned in the video presentation. All were turned in on Brightspace. 
 
 List of Classes:
 - AccountGUI.java: This class allows a user to view their account settings, edit their corresponding email or password, or delete their accounts.
