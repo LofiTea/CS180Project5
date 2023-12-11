@@ -1,12 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Project 5: CreateAccountGUI
- * 
+ * <p>
  * Utilizes GUI to allow a user to create an account.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -72,49 +72,12 @@ public class CreateAccountGUI extends JComponent implements Runnable {
                         throw new RuntimeException(ex);
                     }
 
-//                    ArrayList<String> fileInfo = Marketplace.readFile("LoginInfo.txt");
-//                    ArrayList<String> userInfo = new ArrayList<>();
-//                    LoginInfo loginInfo = new LoginInfo(emailTextField.getText(), passwordTextField.getText());
-
-                    // AccountGUI accountGUI = new AccountGUI(loginInfo);
-//                    String filename;
-//                    String role;
-//                    int id;
-//                    if (type.equals("b")) {
-//                        role = "b";
-//                        filename = "BuyerInfo.txt";
-//                    } else {
-//                        role = "s";
-//                        filename = "SellerInfo.txt";
-//                    }
-//                    userInfo = Marketplace.readFile(filename);
-//                    if (fileInfo.isEmpty()) {
-//                        fileInfo.add(String.format("1,%s,%s,%s", emailTextField.getText(), passwordTextField.getText(),
-//                                role));
-//                        userInfo.add(String.format("1,%s", emailTextField.getText()));
-//                        id = 1;
-//                    } else {
-//                        String[] lastLine = fileInfo.get(fileInfo.size() - 1).split(",");
-//
-//                        fileInfo.add(String.format("%d,%s,%s,%s", Integer.parseInt(lastLine[0]) + 1,
-//                                emailTextField.getText(), passwordTextField.getText(), role));
-//                        id = Integer.parseInt(lastLine[0]) + 1;
-//                        userInfo.add(String.format("%d,%s", Integer.parseInt(lastLine[0]) + 1, emailTextField.getText()));
-//                    }
-//                    Marketplace.writeFile(userInfo, filename);
-//                    Marketplace.writeFile(fileInfo, "LoginInfo.txt");
-//
-//                    String filename2 = "";
-//                    if (role.equals("b")) {
-//                        filename2 = "BuyerHistory.txt";
-//                        Marketplace.writeFile(userInfo, filename2);
-//                    }
 
                     if (type.equals("b")) {
-                 BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
-                      buyerDashboardGUI.setClient(client);
-                       buyerDashboardGUI.run();
-                     frame.setVisible(false);
+                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
+                        buyerDashboardGUI.setClient(client);
+                        buyerDashboardGUI.run();
+                        frame.setVisible(false);
                     } else {
                         SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
                         sellerDashboardGUI.setClient(client);
@@ -128,6 +91,10 @@ public class CreateAccountGUI extends JComponent implements Runnable {
 
     public CreateAccountGUI() {
 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new CreateAccountGUI());
     }
 
     public void run() {
@@ -242,11 +209,5 @@ public class CreateAccountGUI extends JComponent implements Runnable {
         bottomPanel.add(createAccountButton, gbc);
 
         return bottomPanel;
-    }
-
-
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new CreateAccountGUI());
     }
 }

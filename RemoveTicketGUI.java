@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: RemoveTicketGUI
- * 
+ * <p>
  * Utilizes GUi to allow a seller to remove a ticket from a store.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -40,7 +40,7 @@ public class RemoveTicketGUI extends JComponent implements Runnable {
 
                 boolean success = client.receiveBoolean();
 
-                if(success) {
+                if (success) {
                     JOptionPane.showMessageDialog(null, "Item successfully deleted!",
                             "Deleted Item", JOptionPane.INFORMATION_MESSAGE);
 
@@ -72,6 +72,10 @@ public class RemoveTicketGUI extends JComponent implements Runnable {
 
     }
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new RemoveTicketGUI());
+    }
+
     public void run() {
         frame = new JFrame("Remove A Ticket");
         frame.setLayout(new GridBagLayout());
@@ -91,7 +95,6 @@ public class RemoveTicketGUI extends JComponent implements Runnable {
 
         gbc1.gridy++;
 
-        //ArrayList<CartItems> shoppingCart2 = currentBuyer.retrieveShoppingCart();
 
         String[] arr = new String[realShoppingCart.size()];
         for (int i = 0; i < realShoppingCart.size(); i++) {
@@ -108,7 +111,6 @@ public class RemoveTicketGUI extends JComponent implements Runnable {
                     location + "<br>Section: " + section + "<br>Price: " +
                     String.format("%.2f", price) + "<br>Quantity: " + quantity + "</html>";
         }
-
 
 
         list = new JComboBox<>(arr);
@@ -147,8 +149,5 @@ public class RemoveTicketGUI extends JComponent implements Runnable {
 
     public void setRealShoppingCart(ArrayList<String> realShoppingCart) {
         this.realShoppingCart = realShoppingCart;
-    }
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new RemoveTicketGUI());
     }
 }

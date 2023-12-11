@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: DoubleArrayList
- *
+ * <p>
  * Returns all available tickets from a seller and returns a list of the name of all stores.
  *
  * @author Rahul Siddharth, Lab Section L20
@@ -22,12 +22,12 @@ public class DoubleArrayList {
         return stuffInStores;
     }
 
-    public ArrayList<String> getStoreList() {
-        return storeList;
-    }
-
     public void setStuffInStores(ArrayList<String> stuffInStores) {
         this.stuffInStores = stuffInStores;
+    }
+
+    public ArrayList<String> getStoreList() {
+        return storeList;
     }
 
     public void setStoreList(ArrayList<String> storeList) {

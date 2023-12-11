@@ -28,8 +28,8 @@ public class Buyers {
         this.previousShopped = new ArrayList<>();
     }
 
-    public static void updateTicketQuantity(String filePath, int userId, String ticketDescription,
-                                            int purchasedQuantity) {
+    synchronized public static void updateTicketQuantity(String filePath, int userId, String ticketDescription,
+                                                         int purchasedQuantity) {
         try {
             File inputFile = new File(filePath);
             File tempFile = new File(filePath + ".temp");

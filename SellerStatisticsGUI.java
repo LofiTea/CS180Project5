@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 /**
  * Project 5: SellerStatisticsGUI
- *
+ * <p>
  * Utilizes GUI to allow a seller to view their stores' statistics.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -65,7 +65,7 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
                                 ArrayList<String> listToPrint = client.recieveStringArrayList();
                                 StringBuilder stats = new StringBuilder();
 
-                                if(!listToPrint.isEmpty()) {
+                                if (!listToPrint.isEmpty()) {
                                     for (int i = 0; i < listToPrint.size() - 1; i++) {
                                         stats.append("Customer ").append(i + 1).append("\n").append(listToPrint.get(i)).append("\n\n");
                                     }
@@ -85,8 +85,8 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
                                     statsFrame.setContentPane(scrollPane);
 
                                     // Set frame properties
-                                    int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
-                                    int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                    int frameWidth = Math.min(800, textArea.getPreferredSize().width * 2);
+                                    int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height * 1.5);
                                     statsFrame.setSize(frameWidth, frameHeight);
                                     statsFrame.setLocationRelativeTo(null);
                                     statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -106,23 +106,23 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
                                     JOptionPane.PLAIN_MESSAGE, null, options4, options4[0]);
                             client.sendString(decision4);
 
-                            if(decision4 != null) {
+                            if (decision4 != null) {
                                 anotherOne = Arrays.asList(options4).indexOf(decision4);
                                 client.sendInt(anotherOne);
 
                                 ArrayList<String> listToPrint = client.recieveStringArrayList();
 
-                                if(!listToPrint.isEmpty()) {
+                                if (!listToPrint.isEmpty()) {
                                     StringBuilder stats = new StringBuilder();
 
-                                    for (int i = 0; i < listToPrint.size()-1; i++) {
+                                    for (int i = 0; i < listToPrint.size() - 1; i++) {
                                         String[] listItem = listToPrint.get(i).split(";");
 
                                         stats.append("Product ").append(i + 1).append("\n").append("Product Info - \nSport: ").append(listItem[1]).append("\nLocation: ").append(listItem[2]).append("\nSection: ").append(listItem[3]).append("\nSales: ").append(listItem[0]).append("\n\n");
 
                                     }
 
-                                    String[] listItem = listToPrint.get(listToPrint.size()-1).split(";");
+                                    String[] listItem = listToPrint.get(listToPrint.size() - 1).split(";");
                                     stats.append("Product ").append(listToPrint.size()).append("\n").append("Product Info" +
                                             " - " +
                                             "\nSport: ").append(listItem[1]).append("\nLocation: ").append(listItem[2]).append("\nSection: ").append(listItem[3]).append("\nSales: ").append(listItem[0]);
@@ -140,8 +140,8 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
                                     statsFrame.setContentPane(scrollPane);
 
                                     // Set frame properties
-                                    int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
-                                    int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                    int frameWidth = Math.min(800, textArea.getPreferredSize().width * 2);
+                                    int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height * 1.5);
                                     statsFrame.setSize(frameWidth, frameHeight);
                                     statsFrame.setLocationRelativeTo(null);
                                     statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -174,6 +174,10 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
 
     public SellerStatisticsGUI() {
 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new SellerStatisticsGUI());
     }
 
     public void run() {
@@ -231,15 +235,11 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-        synchronized public void setClient(MarketplaceClient client) {
+    synchronized public void setClient(MarketplaceClient client) {
         this.client = client;
     }
-        
-        public void setStores(ArrayList<String> stores) {
-            this.stores = stores;
-        }
 
-        public static void main(String[] args) {
-            SwingUtilities.invokeLater(new SellerStatisticsGUI());
-        }
+    public void setStores(ArrayList<String> stores) {
+        this.stores = stores;
     }
+}

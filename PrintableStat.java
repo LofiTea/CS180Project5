@@ -1,6 +1,6 @@
 /**
  * Project 5: PrintableStat
- * 
+ * <p>
  * Created to help display seller statistics.
  *
  * @author Shrish Mahesh, Lab Section L20

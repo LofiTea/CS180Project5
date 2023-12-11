@@ -1,11 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
  * Project 5: LoginInGUI
- *
+ * <p>
  * Utilizes GUI to allow a user to login to the application.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -56,24 +57,22 @@ public class LoginInGUI extends JComponent implements Runnable {
                     throw new RuntimeException(ex);
                 }
 
-                if(loginSuccess) {
+                if (loginSuccess) {
                     String role;
 
                     role = client.getString();
 
 
                     if (role.equals("b")) {
-                         //System.out.println(role);
-                       BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
-                      buyerDashboardGUI.run();
-                      buyerDashboardGUI.setClient(client);
-                      frame.dispose();
+                        BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
+                        buyerDashboardGUI.run();
+                        buyerDashboardGUI.setClient(client);
+                        frame.dispose();
                     } else {
-                        //System.out.println(role)
-                     SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
-                     sellerDashboardGUI.setClient(client);
-                     sellerDashboardGUI.run();
-                     frame.dispose();
+                        SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
+                        sellerDashboardGUI.setClient(client);
+                        sellerDashboardGUI.run();
+                        frame.dispose();
                     }
 
                 } else {
@@ -99,6 +98,10 @@ public class LoginInGUI extends JComponent implements Runnable {
 
     public LoginInGUI() {
 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new LoginInGUI());
     }
 
     public void run() {
@@ -178,11 +181,5 @@ public class LoginInGUI extends JComponent implements Runnable {
         createAccountPanel.add(createAccountButton, gbc);
 
         return createAccountPanel;
-    }
-
-
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new LoginInGUI());
     }
 }

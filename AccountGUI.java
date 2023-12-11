@@ -2,12 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
  * Project 5: AccountGUI
- *
+ * <p>
  * Utilizes GUI for account details such as editing email or password, deleting accounts, and more.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -24,21 +23,13 @@ public class AccountGUI extends JComponent implements Runnable {
     JButton returnToMenuButton;
     MarketplaceClient client;
     ActionListener actionListener = new ActionListener() {
-        int count = 0;
+        final int count = 0;
+
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == viewAccountDetailsButton) {
 
                 client.sendInt(1);
-
-//                if (count == 0) {
-//                    JOptionPane.showMessageDialog(null, viewDetails(loginInfo.getEmail(),
-//                            loginInfo.getPassword()), "Account Details", JOptionPane.INFORMATION_MESSAGE);
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "Please logout to see the " +
-//                            "new account details.", "Account Details", JOptionPane.INFORMATION_MESSAGE);
-//                    count = 0;
-//                }
 
                 String details = client.receiveAccountDetails();
 
@@ -51,22 +42,20 @@ public class AccountGUI extends JComponent implements Runnable {
                 String newEmail = "";
                 do {
                     newEmail = JOptionPane.showInputDialog(null, "What would you like to " +
-                                "change your email to?", "Change Email", JOptionPane.QUESTION_MESSAGE);
+                            "change your email to?", "Change Email", JOptionPane.QUESTION_MESSAGE);
                     if (newEmail == null || newEmail.isEmpty()) {
-                         newEmail = "";
-                         isValidEmail = true;
+                        newEmail = "";
+                        isValidEmail = true;
                     } else if (!newEmail.contains("@")) {
                         JOptionPane.showMessageDialog(null, "Error! Email needs an '@' symbol!",
                                 "Change Email", JOptionPane.ERROR_MESSAGE);
-                    }
-                    else{
+                    } else {
                         isValidEmail = true;
                     }
-                } while(!isValidEmail);
+                } while (!isValidEmail);
 
 
-
-                if(newEmail == null) {
+                if (newEmail == null) {
                     JOptionPane.showMessageDialog(null, "String null!",
                             "Change Email", JOptionPane.ERROR_MESSAGE);
                 }
@@ -78,7 +67,7 @@ public class AccountGUI extends JComponent implements Runnable {
 
                 String newPassword = JOptionPane.showInputDialog(null, "What would you like to "
                         + "change your password to?", "Change Password", JOptionPane.QUESTION_MESSAGE);
-                if(newPassword != null) {
+                if (newPassword != null) {
                     if (newPassword.isEmpty()) {
                         JOptionPane.showMessageDialog(null, "Error! Password needs to be at least "
                                 + "8 characters long!", "Change Password", JOptionPane.ERROR_MESSAGE);
@@ -120,15 +109,14 @@ public class AccountGUI extends JComponent implements Runnable {
                 String role = "";
                 try {
                     role = client.getString();
-                } 
-                catch(Exception ef){
+                } catch (Exception ef) {
                     ef.printStackTrace();
                 }
                 if (role.equals("b")) {
-                 BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
-                 buyerDashboardGUI.setClient(client);
-                 buyerDashboardGUI.run();
-                  frame.dispose();
+                    BuyerDashboardGUI buyerDashboardGUI = new BuyerDashboardGUI();
+                    buyerDashboardGUI.setClient(client);
+                    buyerDashboardGUI.run();
+                    frame.dispose();
                 } else {
                     SellerDashboardGUI sellerDashboardGUI = new SellerDashboardGUI();
                     sellerDashboardGUI.setClient(client);
@@ -143,7 +131,9 @@ public class AccountGUI extends JComponent implements Runnable {
 
     }
 
-
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new AccountGUI());
+    }
 
     public String viewDetails(String email, String password) {
         ArrayList<String> details = Marketplace.readFile("LoginInfo.txt");
@@ -218,11 +208,5 @@ public class AccountGUI extends JComponent implements Runnable {
 
     synchronized public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-
-  
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new AccountGUI());
     }
 }

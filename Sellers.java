@@ -1,10 +1,8 @@
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Project 5: Sellers
- * 
+ * <p>
  * This class allows a user to sell a ticket.
  *
  * @author Rahul Siddharth, Shrish Mahesh, Lab Section L20
@@ -12,32 +10,45 @@ import java.util.Arrays;
  */
 
 public class Sellers {
+    private final ArrayList<String> stores;
     private double grossSales;
     private ArrayList<Ticket> products;
-    private ArrayList<String> stores;
     private int sellerID;
 
 
-    public Sellers(int sellerID)
-    {
-        this.sellerID= sellerID;
+    public Sellers(int sellerID) {
+        this.sellerID = sellerID;
         products = new ArrayList<>();
         stores = new ArrayList<>();
     }
 
 
-    public double getGrossSales(){return grossSales;}
-    public ArrayList<Ticket> getTickets(){return products;}
-    public int getSellerID(){return sellerID;}
+    public double getGrossSales() {
+        return grossSales;
+    }
+
     //for restoration purposes when object gets deleted
-    public void setGrossSales(double grossSales){this.grossSales = grossSales;}
-    public void setProducts(ArrayList<Ticket> products){this.products = products;}
-    public void setSellerID(int buyerID){this.sellerID= buyerID;}
+    public void setGrossSales(double grossSales) {
+        this.grossSales = grossSales;
+    }
 
+    public ArrayList<Ticket> getTickets() {
+        return products;
+    }
 
+    public int getSellerID() {
+        return sellerID;
+    }
 
-    public void deleteTicket(Ticket oldTicket, String store)
-    {
+    public void setSellerID(int buyerID) {
+        this.sellerID = buyerID;
+    }
+
+    public void setProducts(ArrayList<Ticket> products) {
+        this.products = products;
+    }
+
+    public void deleteTicket(Ticket oldTicket, String store) {
 
         ArrayList<String> sellers = MarketplaceServer.readFile("SellerInfo.txt");
         int indexToChange = 0;
@@ -54,17 +65,17 @@ public class Sellers {
         int indexOfBracket;
         int indexOfBracket2;
 
-        for(int i = 2; i< elements.length;i++) {
+        for (int i = 2; i < elements.length; i++) {
             indexOfBracket = elements[i].indexOf("{");
             String tempStore = elements[i].substring(0, indexOfBracket);
-            if(tempStore.equals(store)) {
+            if (tempStore.equals(store)) {
                 indexOfBracket2 = elements[i].indexOf("}");
-                contents = elements[i].substring(indexOfBracket+1, indexOfBracket2);
+                contents = elements[i].substring(indexOfBracket + 1, indexOfBracket2);
                 break;
             }
         }
 
-        if(contents.isEmpty()) {
+        if (contents.isEmpty()) {
             System.out.println("Nothing in store to remove");
         } else {
             int indexOfTicket = contents.indexOf(oldTicket.toString());
@@ -72,21 +83,21 @@ public class Sellers {
             int indexOfQty = contents.indexOf("|", indexOfTicket) + 1;
             int lastIndex = contents.indexOf(":", indexOfQty);
 
-            if(lastIndex != -1) {
+            if (lastIndex != -1) {
                 String currentQty = contents.substring(indexOfQty, lastIndex);
-                contents = contents.replace(oldTicket.toString()+"|"+currentQty+":", "");
+                contents = contents.replace(oldTicket + "|" + currentQty + ":", "");
             } else {
                 String currentQty = contents.substring(indexOfQty);
-                if(contents.contains(":"+oldTicket.toString()+"|"+currentQty)) {
-                    contents = contents.replace(":"+oldTicket.toString()+"|"+currentQty, "");
+                if (contents.contains(":" + oldTicket + "|" + currentQty)) {
+                    contents = contents.replace(":" + oldTicket + "|" + currentQty, "");
                 } else {
-                    contents = contents.replace(oldTicket.toString()+"|"+currentQty, "");
+                    contents = contents.replace(oldTicket + "|" + currentQty, "");
                 }
             }
             int storeIndex = sellers.get(indexToChange).indexOf(store);
             int closingBracket = sellers.get(indexToChange).indexOf("}", storeIndex);
             String toReplace = sellers.get(indexToChange).substring(storeIndex, closingBracket);
-            String replacement = store+"{"+contents;
+            String replacement = store + "{" + contents;
             sellers.set(indexToChange, sellers.get(indexToChange).replace(toReplace, replacement));
 
             MarketplaceServer.writeFile(sellers, "SellerInfo.txt");
@@ -107,7 +118,7 @@ public class Sellers {
                 }
             }
 
-            String currentLine = sellers.get(indexToChange)+","+store+"{}";
+            String currentLine = sellers.get(indexToChange) + "," + store + "{}";
             sellers.set(indexToChange, currentLine);
             MarketplaceServer.writeFile(sellers, "SellerInfo.txt");
         } catch (Exception e) {
@@ -124,7 +135,7 @@ public class Sellers {
         for (int i = 0; i < sellers.size(); i++) {
             String[] line = sellers.get(i).split(",");
             if (line[0].equals(String.valueOf(this.sellerID))) {
-                if(line.length < 3) {
+                if (line.length < 3) {
                     return null;
                 }
                 indexToSearch = i;
@@ -159,27 +170,27 @@ public class Sellers {
         int indexOfBracket;
         int indexOfBracket2;
 
-        for(int i = 2; i< elements.length;i++) {
+        for (int i = 2; i < elements.length; i++) {
             indexOfBracket = elements[i].indexOf("{");
             String tempStore = elements[i].substring(0, indexOfBracket);
-            if(tempStore.equals(store)) {
+            if (tempStore.equals(store)) {
                 indexOfBracket2 = elements[i].indexOf("}");
-                contents = elements[i].substring(indexOfBracket+1, indexOfBracket2);
+                contents = elements[i].substring(indexOfBracket + 1, indexOfBracket2);
                 break;
             }
         }
 
-        if(contents.isEmpty()) {
+        if (contents.isEmpty()) {
             return null;
         } else {
-            if(contents.contains(":")) {
+            if (contents.contains(":")) {
                 String[] items = contents.split(":");
                 for (int i = 0; i < items.length; i++) {
                     String[] itemParts = items[i].split("\\|");
                     String[] ticketParts = itemParts[0].split(";");
-                    listings.add(i+1+":\n" +
-                            "Sport: " + ticketParts[0]+"\n" +
-                            "Location: " + ticketParts[1]+"\n" +
+                    listings.add(i + 1 + ":\n" +
+                            "Sport: " + ticketParts[0] + "\n" +
+                            "Location: " + ticketParts[1] + "\n" +
                             "Section: " + ticketParts[2] + "\n" +
                             "Price: " + ticketParts[3] + "\n" +
                             "Quantity: " + itemParts[1]
@@ -188,9 +199,9 @@ public class Sellers {
             } else {
                 String[] itemParts = contents.split("\\|");
                 String[] ticketParts = itemParts[0].split(";");
-                listings.add(1+":\n" +
-                        "Sport: " + ticketParts[0]+"\n" +
-                        "Location: " + ticketParts[1]+"\n" +
+                listings.add(1 + ":\n" +
+                        "Sport: " + ticketParts[0] + "\n" +
+                        "Location: " + ticketParts[1] + "\n" +
                         "Section: " + ticketParts[2] + "\n" +
                         "Price: " + ticketParts[3] + "\n" +
                         "Quantity: " + itemParts[1]
@@ -219,20 +230,20 @@ public class Sellers {
         int indexOfBracket;
         int indexOfBracket2;
 
-        for(int i = 2; i< elements.length;i++) {
+        for (int i = 2; i < elements.length; i++) {
             indexOfBracket = elements[i].indexOf("{");
             String tempStore = elements[i].substring(0, indexOfBracket);
-            if(tempStore.equals(store)) {
+            if (tempStore.equals(store)) {
                 indexOfBracket2 = elements[i].indexOf("}");
-                contents = elements[i].substring(indexOfBracket+1, indexOfBracket2);
+                contents = elements[i].substring(indexOfBracket + 1, indexOfBracket2);
                 break;
             }
         }
 
-        if(contents.isEmpty()) {
+        if (contents.isEmpty()) {
             return null;
         } else {
-            if(contents.contains(":")) {
+            if (contents.contains(":")) {
                 String[] items = contents.split(":");
                 for (int i = 0; i < items.length; i++) {
                     String[] itemParts = items[i].split("\\|");
@@ -253,9 +264,8 @@ public class Sellers {
         return new SellerListing(tickets, quantities);
     }
 
-    public boolean modTicket(Ticket oldTicket, Ticket newTicket, String store, int qty)
-    {
-        if(qty == 0) {
+    public boolean modTicket(Ticket oldTicket, Ticket newTicket, String store, int qty) {
+        if (qty == 0) {
             try {
                 deleteTicket(oldTicket, store);
                 return true;
@@ -279,33 +289,33 @@ public class Sellers {
         int indexOfBracket;
         int indexOfBracket2;
 
-        for(int i = 2; i< elements.length;i++) {
+        for (int i = 2; i < elements.length; i++) {
             indexOfBracket = elements[i].indexOf("{");
             String tempStore = elements[i].substring(0, indexOfBracket);
-            if(tempStore.equals(store)) {
+            if (tempStore.equals(store)) {
                 indexOfBracket2 = elements[i].indexOf("}");
-                contents = elements[i].substring(indexOfBracket+1, indexOfBracket2);
+                contents = elements[i].substring(indexOfBracket + 1, indexOfBracket2);
                 break;
             }
         }
 
-        if(!contents.isEmpty()) {
+        if (!contents.isEmpty()) {
             int indexOfTicket = contents.indexOf(oldTicket.toString());
             int indexOfQty = contents.indexOf("|", indexOfTicket) + 1;
             int lastIndex = contents.indexOf(":", indexOfQty);
 
-            if(lastIndex != -1) {
+            if (lastIndex != -1) {
                 String currentQty = contents.substring(indexOfQty, lastIndex);
-                contents = contents.replace(oldTicket.toString()+"|"+currentQty, newTicket.toString()+"|"+qty);
+                contents = contents.replace(oldTicket + "|" + currentQty, newTicket.toString() + "|" + qty);
             } else {
                 String currentQty = contents.substring(indexOfQty);
-                contents = contents.replace(oldTicket.toString()+"|"+currentQty, newTicket.toString()+"|"+qty);
+                contents = contents.replace(oldTicket + "|" + currentQty, newTicket.toString() + "|" + qty);
             }
 
-            int storeIndex = sellers.get(indexToChange).indexOf(store+"{");
+            int storeIndex = sellers.get(indexToChange).indexOf(store + "{");
             int closingBracket = sellers.get(indexToChange).indexOf("}", storeIndex);
             String toReplace = sellers.get(indexToChange).substring(storeIndex, closingBracket);
-            String replacement = store+"{"+contents;
+            String replacement = store + "{" + contents;
             sellers.set(indexToChange, sellers.get(indexToChange).replace(toReplace, replacement));
             MarketplaceServer.writeFile(sellers, "SellerInfo.txt");
         } else {
@@ -318,8 +328,7 @@ public class Sellers {
 
     }
 
-    public boolean addTickets(Ticket b, int qty, String store)
-    {
+    public boolean addTickets(Ticket b, int qty, String store) {
         try {
             ArrayList<String> sellers = MarketplaceServer.readFile("SellerInfo.txt");
             int indexToChange = 0;
@@ -337,26 +346,26 @@ public class Sellers {
             int indexOfBracket;
             int indexOfBracket2;
 
-            for(int i = 2; i< elements.length;i++) {
+            for (int i = 2; i < elements.length; i++) {
                 indexOfBracket = elements[i].indexOf("{");
                 String tempStore = elements[i].substring(0, indexOfBracket);
-                if(tempStore.equals(store)) {
+                if (tempStore.equals(store)) {
                     indexOfBracket2 = elements[i].indexOf("}");
-                    contents = elements[i].substring(indexOfBracket+1, indexOfBracket2);
+                    contents = elements[i].substring(indexOfBracket + 1, indexOfBracket2);
                     break;
                 }
             }
 
-            if(!contents.isEmpty()) {
-                contents = contents + ":" + b.toString() + "|"+qty;
+            if (!contents.isEmpty()) {
+                contents = contents + ":" + b.toString() + "|" + qty;
             } else {
-                contents = b.toString() + "|"+qty;
+                contents = b.toString() + "|" + qty;
             }
 
             int storeIndex = sellers.get(indexToChange).indexOf(store);
             int closingBracket = sellers.get(indexToChange).indexOf("}", storeIndex);
             String toReplace = sellers.get(indexToChange).substring(storeIndex, closingBracket);
-            String replacement = store+"{"+contents;
+            String replacement = store + "{" + contents;
             sellers.set(indexToChange, sellers.get(indexToChange).replace(toReplace, replacement));
             MarketplaceServer.writeFile(sellers, "SellerInfo.txt");
         } catch (Exception e) {
@@ -367,8 +376,7 @@ public class Sellers {
     }
 
 
-    public void viewDash(String dashFile)
-    {
+    public void viewDash(String dashFile) {
 
 
     }

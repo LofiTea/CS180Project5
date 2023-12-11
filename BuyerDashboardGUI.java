@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: BuyerDashboardGUI
- *
+ * <p>
  * Utilizes GUI to make a menu page for buyers to buy tickets, view history, and more.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -26,14 +26,13 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
     MarketplaceClient client;
 
 
-
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
 
             if (e.getSource() == buyTicketButton) {
                 client.sendInt(1);
-                 
+
                 // shoppingCart = currentBuyer.retrieveShoppingCart();
                 BuyTicketMenuGUI buyTicketMenuGUI = new BuyTicketMenuGUI();
                 buyTicketMenuGUI.setClient(client);
@@ -83,7 +82,10 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
 
     }
 
-   
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new BuyerDashboardGUI());
+    }
 
     @Override
     public void run() {
@@ -142,25 +144,7 @@ public class BuyerDashboardGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
- 
-
-    public static int determineID(String email, String password) {
-        ArrayList<String> arrayList = Marketplace.readFile("LoginInfo.txt");
-        int id = 0;
-        for (int i = 0; i < arrayList.size(); i++) {
-            String[] userInfo = arrayList.get(i).split(",");
-            if (email.equals(userInfo[1]) && password.equals(userInfo[2])) {
-                id = Integer.parseInt(userInfo[0]);
-            }
-        }
-        return id;
-    }
-
-    public void setClient(MarketplaceClient client)
-    {
+    public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new BuyerDashboardGUI());
     }
 }

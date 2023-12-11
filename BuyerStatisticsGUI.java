@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -44,10 +43,10 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
                                 case 0:
                                     String s = client.getString();
 
-                                    if(s.isEmpty()) {
+                                    if (s.isEmpty()) {
                                         JOptionPane.showMessageDialog(frame, "No statistics available",
                                                 "Raw Data Buyer Statistics", JOptionPane.ERROR_MESSAGE);
-                                    } else  {
+                                    } else {
                                         JTextArea textArea = new JTextArea(s);
                                         textArea.setEditable(false);
                                         textArea.setLineWrap(true);
@@ -61,8 +60,8 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
                                         statsFrame.setContentPane(scrollPane);
 
                                         // Set frame properties
-                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
-                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width * 2);
+                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height * 1.5);
                                         statsFrame.setSize(frameWidth, frameHeight);
                                         statsFrame.setLocationRelativeTo(null);
                                         statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -75,7 +74,7 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
                                 case 1:
                                     String s1 = client.getString();
 
-                                    if(!s1.isEmpty()) {
+                                    if (!s1.isEmpty()) {
                                         JTextArea textArea = new JTextArea(s1);
                                         textArea.setEditable(false);
                                         textArea.setLineWrap(true);
@@ -89,8 +88,8 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
                                         statsFrame.setContentPane(scrollPane);
 
                                         // Set frame properties
-                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
-                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width * 2);
+                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height * 1.5);
                                         statsFrame.setSize(frameWidth, frameHeight);
                                         statsFrame.setLocationRelativeTo(null);
                                         statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -111,17 +110,17 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
                                 "How would you like to view the dashboard?", "View Buyer Statistics",
                                 JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
                         client.sendString(decision2);
-                        if(decision2 != null) {
+                        if (decision2 != null) {
                             int num2 = Arrays.asList(options).indexOf(decision2);
                             client.sendInt(num2);
                             switch (num2) {
                                 case 0:
                                     String s = client.getString();
 
-                                    if(s.isEmpty()) {
+                                    if (s.isEmpty()) {
                                         JOptionPane.showMessageDialog(frame, "No statistics available",
                                                 "Raw Data Buyer Statistics", JOptionPane.ERROR_MESSAGE);
-                                    } else  {
+                                    } else {
                                         JTextArea textArea = new JTextArea(s);
                                         textArea.setEditable(false);
                                         textArea.setLineWrap(true);
@@ -135,8 +134,8 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
                                         statsFrame.setContentPane(scrollPane);
 
                                         // Set frame properties
-                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
-                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width * 2);
+                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height * 1.5);
                                         statsFrame.setSize(frameWidth, frameHeight);
                                         statsFrame.setLocationRelativeTo(null);
                                         statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -148,7 +147,7 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
                                 case 1:
                                     String s1 = client.getString();
 
-                                    if(!s1.isEmpty()) {
+                                    if (!s1.isEmpty()) {
                                         JTextArea textArea = new JTextArea(s1);
                                         textArea.setEditable(false);
                                         textArea.setLineWrap(true);
@@ -162,8 +161,8 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
                                         statsFrame.setContentPane(scrollPane);
 
                                         // Set frame properties
-                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width*2);
-                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height*1.5);
+                                        int frameWidth = Math.min(800, textArea.getPreferredSize().width * 2);
+                                        int frameHeight = (int) Math.min(600, textArea.getPreferredSize().height * 1.5);
                                         statsFrame.setSize(frameWidth, frameHeight);
                                         statsFrame.setLocationRelativeTo(null);
                                         statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -248,29 +247,9 @@ public class BuyerStatisticsGUI extends JComponent implements Runnable {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
+
     synchronized public void setClient(MarketplaceClient client) {
         this.client = client;
     }
 
-    public void setCurrentBuyer(Buyers currentBuyer) {
-        this.currentBuyer = currentBuyer;
-    }
-
-    public ArrayList<String> printBuyerDash(ArrayList<ArrayList<String>> dashInfo) {
-        ArrayList<String> list = new ArrayList<String>();
-        for (ArrayList<String> thing : dashInfo) {
-            for (String b : thing) {
-                list.add(b + " ");
-            }
-        }
-        return list;
-    }
-
-    public ArrayList<String> printGeneralDash(ArrayList<String> dashInfo) {
-        ArrayList<String> list = new ArrayList<String>();
-        for (String thing : dashInfo) {
-            list.add(thing + " ");
-        }
-        return list;
-    }
 }

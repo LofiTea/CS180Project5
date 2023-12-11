@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: BuyerHistoryGUI
- * 
+ * <p>
  * Utilizes GUI to allow a buyer to see their shopping history.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -21,11 +21,6 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
     JButton returnToMenuButton;
     MarketplaceClient client;
     ArrayList<String> previousCart;
-
-    public BuyerHistoryGUI() {
-
-    }
-
     ActionListener actionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -34,26 +29,25 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
                 String selectedOption = (String) list.getSelectedItem();
 
                 int selectedIndex = Integer.parseInt(selectedOption) - 1;
-                
+
                 String currentTicketInfo = previousCart.get(selectedIndex);
 
                 String[] curTicketSplit = currentTicketInfo.split("&");
                 String[] tickInfoSplit = curTicketSplit[0].split(";");
-                
 
 
-            double transactionAction = Double.parseDouble(curTicketSplit[1]) * Double.parseDouble(tickInfoSplit[3]);
+                double transactionAction = Double.parseDouble(curTicketSplit[1]) * Double.parseDouble(tickInfoSplit[3]);
 
-        String transactionDetails = (selectedIndex + 1) + ":\nSport: " +
-        tickInfoSplit[0] + "\nLocation: " + tickInfoSplit[1] +
-        "\nSection: " + tickInfoSplit[2] + "\nPrice: $" + String.format("%.2f", Double.parseDouble(tickInfoSplit[3])) +
-        "\nQuantity: " + curTicketSplit[1] + "\nPrice of Transaction: $" + String.format("%.2f", transactionAction);
+                String transactionDetails = (selectedIndex + 1) + ":\nSport: " +
+                        tickInfoSplit[0] + "\nLocation: " + tickInfoSplit[1] +
+                        "\nSection: " + tickInfoSplit[2] + "\nPrice: $" + String.format("%.2f", Double.parseDouble(tickInfoSplit[3])) +
+                        "\nQuantity: " + curTicketSplit[1] + "\nPrice of Transaction: $" + String.format("%.2f", transactionAction);
 
-                    JOptionPane.showMessageDialog(null, transactionDetails, "Ticket "+selectedOption,
-                            JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, transactionDetails, "Ticket " + selectedOption,
+                        JOptionPane.INFORMATION_MESSAGE);
 
                 client.sendInt(13);
-                
+
             }
 
             if (e.getSource() == returnToMenuButton) {
@@ -65,6 +59,14 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
             }
         }
     };
+
+    public BuyerHistoryGUI() {
+
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new BuyerHistoryGUI());
+    }
 
     public void run() {
         frame = new JFrame("Buyer History");
@@ -88,7 +90,7 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
 
         if (previousCart == null) {
             JOptionPane.showMessageDialog(null, "Error! Cannot view the previous cart" +
-                            " because it is empty!", "No Items!", JOptionPane.ERROR_MESSAGE);
+                    " because it is empty!", "No Items!", JOptionPane.ERROR_MESSAGE);
         } else {
             String[] options = new String[previousCart.size()];
             for (int i = 0; i < previousCart.size(); i++) {
@@ -124,14 +126,7 @@ public class BuyerHistoryGUI extends JComponent implements Runnable {
         frame.setVisible(true);
     }
 
-   
-
-
-    public void setClient(MarketplaceClient client)
-    {
+    public void setClient(MarketplaceClient client) {
         this.client = client;
-    }
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new BuyerHistoryGUI());
     }
 }
