@@ -175,17 +175,6 @@ public class SellTicketMenuGUI extends JComponent implements Runnable {
         this.stores = stores;
     }
 
-    public int determineID(String email, String password) {
-        ArrayList<String> arrayList = Marketplace.readFile("LoginInfo.txt");
-        int id = 0;
-        for (int i = 0; i < arrayList.size(); i++) {
-            String[] userInfo = arrayList.get(i).split(",");
-            if (email.equals(userInfo[1]) && password.equals(userInfo[2])) {
-                id = Integer.parseInt(userInfo[0]);
-            }
-        }
-        return id;
-    }
 
     synchronized public void setClient(MarketplaceClient client) {
         this.client = client;

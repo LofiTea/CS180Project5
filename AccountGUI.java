@@ -134,20 +134,7 @@ public class AccountGUI extends JComponent implements Runnable {
         SwingUtilities.invokeLater(new AccountGUI());
     }
 
-    public String viewDetails(String email, String password) {
-        ArrayList<String> details = Marketplace.readFile("LoginInfo.txt");
-        for (int i = 0; i < details.size(); i++) {
-            String[] arr = details.get(i).split(",");
-            if (email.equals(arr[1]) && password.equals(arr[2])) {
-                if (arr[3].equals("b")) {
-                    return "ID: " + arr[0] + "\nEmail: " + arr[1] + "\nAccount Type: Buyer";
-                } else {
-                    return "ID: " + arr[0] + "\nEmail: " + arr[1] + "\nAccount Type: Seller";
-                }
-            }
-        }
-        return "";
-    }
+   
 
     public void run() {
         frame = new JFrame("My Account");
