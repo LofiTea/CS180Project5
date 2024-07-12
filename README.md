@@ -1,4 +1,4 @@
-# CS180 Project 5
+# Tickets@Purdue (CS180 Project 5)
 
 For this project, we decided to implement a ticket-sharing market where sellers can sell any tickets to a sports game that they have to willing buyers.  Sellers can decide at what price they decide to sell their tickets while buyers can choose what type of ticket they want to buy.  Server-client interactions, concurrency, and graphical user interfaces were implemented.
 
