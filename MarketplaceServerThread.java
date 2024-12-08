@@ -882,7 +882,8 @@ public class MarketplaceServerThread extends Thread {
                                                 if (transactionInfo[2].equals(String.valueOf(id))) {
                                                     if (transactionInfo[3].equals(stores.get(selectedStore - 1))) {
                                                         String buyerEmail = null;
-                                                        ArrayList<String> buyers = Marketplace.readFile("BuyerHistory.txt");
+                                                        ArrayList<String> buyers = MarketplaceServer.readFile(
+                                                                "BuyerHistory.txt");
                                                         for (int j = 0; j < buyers.size(); j++) {
                                                             String[] buyerInfo = buyers.get(j).split(",");
                                                             if (buyerInfo[0].equals(transactionInfo[1])) {
@@ -987,7 +988,8 @@ public class MarketplaceServerThread extends Thread {
 
                                                             String buyerEmail = "";
 
-                                                            ArrayList<String> buyers = Marketplace.readFile("BuyerHistory.txt");
+                                                            ArrayList<String> buyers = MarketplaceServer.readFile(
+                                                                    "BuyerHistory.txt");
                                                             for (int j = 0; j < buyers.size(); j++) {
                                                                 String[] buyerInfo = buyers.get(j).split(",");
                                                                 if (buyerInfo[0].equals(buyerIDList.get(i))) {
@@ -1042,7 +1044,7 @@ public class MarketplaceServerThread extends Thread {
                                                                 break;
                                                             case 2:
                                                                 listToSend =
-                                                                        Marketplace.uniqueProductsBySales(stores1.get(storeIdx),
+                                                                        MarketplaceServer.uniqueProductsBySales(stores1.get(storeIdx),
                                                                                 seller.getSellerID());
                                                                 break;
                                                         }

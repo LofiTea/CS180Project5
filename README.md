@@ -1,10 +1,15 @@
-# CS180 Project 5
+# Tickets@Purdue (CS180 Project 5)
 
 For this project, we decided to implement a ticket-sharing market where sellers can sell any tickets to a sports game that they have to willing buyers.  Sellers can decide at what price they decide to sell their tickets while buyers can choose what type of ticket they want to buy.  Server-client interactions, concurrency, and graphical user interfaces were implemented.
 
-Instructions: To get into the marketplace, an email and password are needed to gain access to the marketplace.  Start MarketplaceClient.java and MarketplaceClient.java to start the client and server.  The program starts once MarketplaceClient.java starts. Once the program starts, a login page will show up.  On the bottom is a button to create a new account.  Either a buyer or a seller account can be created.  When creating a new account, please make a valid email structure with the '@' character (it does not have to be a real email.  For example, it can be purduecsstudent@gmail.com) and a password that has at least 8 characters that have at least 1 letter, number, and special character (this measure is taken to ensure a user has a strong password).  Once logged in, a menu dashboard will appear (a buyer menu will appear for a buyer account and a seller menu will appear for a seller account) with different options. The buyer dashboard will have options to buy a ticket while the seller dashboard will have options to create a store and sell a ticket. 
+Instructions: To get into the marketplace, an email and password are needed to gain access to the marketplace.  Start MarketplaceServer.java and MarketplaceClient.java to start the client and server.  
 
-Submissions: Henry turned in the report, the video presentation, and the Vocareum workspace.  All were turned in on Brightspace. 
+Important note: To run on different machines, follow the instructions below
+Run the MarketplaceServer on a device. All clients and server must be connected to the same Wifi network. If the device is a Windows machine, type ipconfig in the command prompt and get the Ipv4 address. If it is a Mac, get the address by going into network in system preferences and details of the current network, get the IP address from there. For all clients, (unless running on the same device as the server), replace Socket socket = new Socket("localhost", 8080); with Socket socket = new Socket("[serverIP]", 8080); (note that the square brackets represent a placeholder and the actual IP address of the server must be entered. 
+
+The program starts once MarketplaceClient.java starts. Once the program starts, a login page will show up.  On the bottom is a button to create a new account.  Either a buyer or a seller account can be created.  When creating a new account, please make a valid email structure with the '@' character (it does not have to be a real email.  For example, it can be purduecsstudent@gmail.com) and a password that has at least 8 characters that have at least 1 letter, number, and special character (this measure is taken to ensure a user has a strong password).  Once logged in, a menu dashboard will appear (a buyer menu will appear for a buyer account and a seller menu will appear for a seller account) with different options. The buyer dashboard will have options to buy a ticket while the seller dashboard will have options to create a store and sell a ticket. 
+
+Submissions: Henry turned in the report and the Vocareum workspace.  Rahul turned in the video presentation. All were turned in on Brightspace. 
 
 List of Classes:
 - AccountGUI.java: This class allows a user to view their account settings, edit their corresponding email or password, or delete their accounts.
@@ -19,7 +24,6 @@ List of Classes:
 - DoubleArrayList.java: This class returns a list of available tickets to buy from a seller and a list of the names of all stores.  Buyers.java and the main class utilize this class to show what sellers are available in the marketplace.
 - LoginInfo.java: This class ensures that the user logging into the marketplace is valid and has an account in the system. This prevents any unauthorized users from logging into the marketplace.
 - LoginInGUI.java: This class allows a user to log in to the application or create a new account.
-- Marketplace.java: This class holds important methods for the marketplace application to work.
 - MarketplaceClient.java: This class holds the client for the marketplace.
 - MarketplaceServer.java: This class holds the server for the marketplace.
 - MarketplaceServerThread.java: This class utilizes threads for the marketplace server.

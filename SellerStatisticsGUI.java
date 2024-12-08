@@ -32,7 +32,6 @@ public class SellerStatisticsGUI extends JComponent implements Runnable {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == confirmButton) {
                 client.sendBoolean(true);
-                ArrayList<String> allTransactions2 = Marketplace.readFile("TransactionInfo.txt");
                 num = list.getSelectedIndex();
 
                 String[] options2 = {"1. List of customers and items purchased",

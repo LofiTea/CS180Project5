@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Project 5: AccountGUI
- * <p>
+ *
  * Utilizes GUI for account details such as editing email or password, deleting accounts, and more.
  *
  * @author Henry J. Lee, Lab Section L20
@@ -23,7 +23,6 @@ public class AccountGUI extends JComponent implements Runnable {
     JButton returnToMenuButton;
     MarketplaceClient client;
     ActionListener actionListener = new ActionListener() {
-        final int count = 0;
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -135,20 +134,7 @@ public class AccountGUI extends JComponent implements Runnable {
         SwingUtilities.invokeLater(new AccountGUI());
     }
 
-    public String viewDetails(String email, String password) {
-        ArrayList<String> details = Marketplace.readFile("LoginInfo.txt");
-        for (int i = 0; i < details.size(); i++) {
-            String[] arr = details.get(i).split(",");
-            if (email.equals(arr[1]) && password.equals(arr[2])) {
-                if (arr[3].equals("b")) {
-                    return "ID: " + arr[0] + "\nEmail: " + arr[1] + "\nAccount Type: Buyer";
-                } else {
-                    return "ID: " + arr[0] + "\nEmail: " + arr[1] + "\nAccount Type: Seller";
-                }
-            }
-        }
-        return "";
-    }
+   
 
     public void run() {
         frame = new JFrame("My Account");

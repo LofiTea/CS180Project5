@@ -14,9 +14,8 @@ import java.util.ArrayList;
  */
 
 public class MarketplaceClient {
-    public static MarketplaceClient client;
 
-    Socket socket = new Socket("100.69.90.215", 8080);
+    Socket socket = new Socket("localhost", 8080);
 
     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
@@ -26,9 +25,6 @@ public class MarketplaceClient {
     }
 
 
-    public static MarketplaceClient getClient() {
-        return client;
-    }
 
     public static void main(String[] args) throws Exception {
 
